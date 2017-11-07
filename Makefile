@@ -37,7 +37,7 @@ SRCFLAGS = -ggdb -O1
 CFLAGS   = -fdata-sections -ffunction-sections
 CXXFLAGS = -fno-rtti
 ASFLAGS  = -fdata-sections -ffunction-sections
-LDFLAGS  = -specs=nano.specs -Wl,--gc-sections
+LDFLAGS  = -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections
 
 SRC      = Src/main.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c \

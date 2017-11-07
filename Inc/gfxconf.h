@@ -32,6 +32,9 @@
 //    #define GFX_CPU                                  GFX_CPU_CORTEX_M7_FPU
 //    #define GFX_CPU_NO_ALIGNMENT_FAULTS              FALSE
 //    #define GFX_CPU_ENDIAN                           GFX_CPU_ENDIAN_UNKNOWN
+#define GDISP_NEED_STARTUP_LOGO 						0
+#define GDISP_STARTUP_LOGO_TIMEOUT 						0
+#define GFX_USE_GWIN								TRUE
     #define GFX_OS_HEAP_SIZE                         40960
 //    #define GFX_OS_NO_INIT                           FALSE
     #define GFX_OS_INIT_NO_WARNING                   TRUE
@@ -39,23 +42,25 @@
 //    #define GFX_OS_EXTRA_INIT_FUNCTION               myOSInitRoutine
 //    #define GFX_OS_EXTRA_DEINIT_FUNCTION             myOSDeInitRoutine
 //    #define GFX_EMULATE_MALLOC                       FALSE
-
+#define GDISP_NEED_TEXT					TRUE
+#define GFX_USE_GINPUT					TRUE
+#define GDISP_NEED_TEXT					TRUE
 /* GFX sub-systems to turn on */
 #define GFX_USE_GDISP                   TRUE
-
+#define GFX_USE_GEVENT                               TRUE
+#define GWIN_NEED_LIST                           TRUE
 /* Features for the GDISP sub-system. */
 #define GDISP_NEED_VALIDATION           FALSE
-#define GDISP_NEED_CLIP                 FALSE
-#define GDISP_NEED_TEXT                 FALSE
+#define GDISP_NEED_CLIP                 TRUE
 #define GDISP_NEED_CIRCLE               TRUE
 #define GDISP_NEED_ELLIPSE              FALSE
 #define GDISP_NEED_ARC                  FALSE
 #define GDISP_NEED_SCROLL               FALSE
 #define GDISP_NEED_PIXELREAD            FALSE
 #define GDISP_NEED_CONTROL              FALSE
-#define GDISP_NEED_MULTITHREAD          FALSE
 #define GDISP_NEED_ASYNC                FALSE
 #define GDISP_NEED_MSGAPI               FALSE
+#define GWIN_NEED_WIDGET                TRUE
 
 /* Builtin Fonts */
 #define GDISP_INCLUDE_FONT_SMALL        FALSE
@@ -63,5 +68,12 @@
 #define GDISP_INCLUDE_FONT_UI1          FALSE
 #define GDISP_INCLUDE_FONT_UI2          FALSE
 #define GDISP_INCLUDE_FONT_LARGENUMBERS FALSE
-
+#define GDISP_INCLUDE_FONT_DEJAVUSANS12 TRUE
+#define GINPUT_NEED_MOUSE				TRUE
+#define GDISP_NEED_CONVEX_POLYGON		TRUE
+#define GDISP_NEED_MULTITHREAD			TRUE
+#define GWIN_NEED_WINDOWMANAGER			TRUE
+#define GFX_USE_GTIMER					TRUE
+#define GFX_USE_GQUEUE					TRUE
+#define GQUEUE_NEED_ASYNC				TRUE
 #endif /* _GFXCONF_H */
