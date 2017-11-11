@@ -32,10 +32,18 @@
 //    #define GFX_CPU                                  GFX_CPU_CORTEX_M7_FPU
 //    #define GFX_CPU_NO_ALIGNMENT_FAULTS              FALSE
 //    #define GFX_CPU_ENDIAN                           GFX_CPU_ENDIAN_UNKNOWN
+
+
+#define GWIN_NEED_TABLE                 TRUE
+#define GWIN_NEED_TABLE_IMAGES          FALSE
+#define GWIN_NEED_TABLE_TITLE		TRUE
+#define GWIN_NEED_TABLE_HEADER		TRUE
+#define GWIN_NEED_TABLE_EMBELLISH	TRUE
 #define GDISP_NEED_STARTUP_LOGO 						0
 #define GDISP_STARTUP_LOGO_TIMEOUT 						0
 #define GFX_USE_GWIN								TRUE
     #define GFX_OS_HEAP_SIZE                         40960
+#define GWIN_NEED_TABSET			    TRUE
 //    #define GFX_OS_NO_INIT                           FALSE
     #define GFX_OS_INIT_NO_WARNING                   TRUE
 //    #define GFX_OS_PRE_INIT_FUNCTION                 Raw32OSInit
@@ -45,6 +53,7 @@
 #define GDISP_NEED_TEXT					TRUE
 #define GFX_USE_GINPUT					TRUE
 #define GDISP_NEED_TEXT					TRUE
+#define GWIN_NEED_LABEL			TRUE
 /* GFX sub-systems to turn on */
 #define GFX_USE_GDISP                   TRUE
 #define GFX_USE_GEVENT                               TRUE
