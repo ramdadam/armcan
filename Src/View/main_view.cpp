@@ -4,6 +4,7 @@
 #include "gfx.h"
 #include "gwin_table.h"
 #include <stdio.h>
+#include "can_driver.h"
 GListener	gl;
 GHandle		ghTabset;
 GHandle		tabset_page_1;
@@ -37,16 +38,16 @@ void createTable(void) {
 		char **header = (char *[]){"Onasdoaisjdoijasdoijsadoie", "Two", "Three"};
 		uint32_t** columnWidths = (const uint32_t *[]){60, 100, 140};
 		#else
-		static char* header_temp1 = {"Onasdoaisjdoijasdoijsadoie"};
-		static char* header_temp2 = {"Two"};
-		static char* header_temp3 = {"Three"};
+		static char header_temp1[] = {"Onasdoaisjdoijasdoijsadoie"};
+		static char header_temp2[] = {"Two"};
+		static char header_temp3[] = {"Three"};
 		char* header[3] = {header_temp1, header_temp2, header_temp3};
 		static uint32_t col1 = 100;
 		static uint32_t col2 = 100;
 		static uint32_t col3 = 100;
 		uint32_t* columnWidths[3] = {&col1, &col2, &col3};
 		#endif
-		gwinTableSetHeader(table_view, header, columnWidths);
+		gwinTableSetHeader(table_view, header, &columnWidths[0]);
 		gwinTableSetHeaderBackground(table_view, Gray_80);
 	
 	

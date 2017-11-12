@@ -34,8 +34,8 @@ CMSIS			= ./res/Drivers/CMSIS
 
 ARCH     = arm-none-eabi-
 SRCFLAGS = -ggdb -O1
-CFLAGS   = -fdata-sections -ffunction-sections
-CXXFLAGS = -fno-rtti
+CFLAGS   = -fdata-sections -ffunction-sections -Wfatal-errors
+CXXFLAGS = -fno-rtti -Wfatal-errors
 ASFLAGS  = -fdata-sections -ffunction-sections
 LDFLAGS  = -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections
 

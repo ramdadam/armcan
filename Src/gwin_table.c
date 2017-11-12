@@ -853,7 +853,14 @@ void gwinTableSetHeader(GHandle gh, char** header, uint32_t** columnWidths) {
 		memcpy((char*)gh2obj->header[i], (char*)header[i], rowLen +1);
 
 		gh2obj->columnWidths[i] = gfxAlloc(sizeof(uint32_t*));		
-		memcpy(gh2obj->columnWidths[i], &columnWidths[i], sizeof(uint32_t*));
+		
+		fprintf(stderr, "%d\n", *columnWidths[i]);
+		fflush(stderr);
+		fflush(stdout);
+		fprintf(stderr, "%s\n", header[i]);
+		fflush(stderr);
+		fflush(stdout);
+		memcpy(gh2obj->columnWidths[i], columnWidths[i], sizeof(uint32_t*));
 		
 	}
 	gh2obj->modified |= GTABLE_HEADER_MODIFIED | GTABLE_SCROLL_MODIFIED | GTABLE_BODY_MODIFIED;
