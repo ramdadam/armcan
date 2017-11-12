@@ -99,7 +99,7 @@ typedef struct GTableObject {
 	color_t         titleBackground;
         justify_t       titleJustify;
 #endif
-
+	const uint32_t** columnWidths;
 #if GWIN_NEED_TABLE_HEADER
 	const char**	header;
 	color_t         headerBackground;
@@ -314,7 +314,7 @@ int gwinTableAddRow(GHandle gh, char** rows, bool_t useAlloc);
 	 *
 	 * @api
 	 */
-	void gwinTableSetHeader(GHandle gh, char** header);
+	void gwinTableSetHeader(GHandle gh, char** header, uint32_t** columnWidths);
 
 	/**
 	 * @brief				Set the header background for the table.

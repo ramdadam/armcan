@@ -144,7 +144,7 @@ static void _drawScrollBar(GWidgetObject* gw, int offset, coord_t* iwidth, coord
     
 //#define TABLE_TITLE_TOP gw->g.y +1 +offset
 //#define TABLE_TITLE_HEIGHT gdispGetFontMetric(gw->g.flags & GTABLE_FLG_HASFONT ? gw2obj->titleFont : gw->g.font, fontHeight) + GTABLE_TITLE_PADDING +1
-//#define TABLE_TITLE_BOT TABLE_TITLE_TOP + TABLE_TITLE_HEIGHT
+//#define TABLE_TITLE_BOT TABLE_TITLE_TOP + TABLE_TITLE_HEIPRINT_DEBUGGHT
 
     // Function only called if the table has a title so not checked here
     // Function assumes there may be a structure above, offset available for generality
@@ -254,14 +254,15 @@ static void _drawScrollBar(GWidgetObject* gw, int offset, coord_t* iwidth, coord
 #endif
 			//fprintf(stderr, "X: %d, %d\n", xpos, gw->g.x +xpos +GTABLE_HORIZ_PADDING);
 			for (j = 0; j < gw2obj->columnCount; j++){
+				const columnWidth = *gw2obj->columnWidths[j];
 				gdispGFillStringBox(gw->g.display,
 									gw->g.x +xpos +GTABLE_HORIZ_PADDING,
 									gw->g.y +1 +offset +GTABLE_HEADER_PADDING,
-						            gw2obj->columnWidth -GTABLE_HORIZ_PADDING,
+						            columnWidth -GTABLE_HORIZ_PADDING,
 									fheight,
 								    gw2obj->header[j], gw->g.font, ps->text,
 								    gw2obj->headerBackground == 0 ? ps->fill : gw2obj->headerBackground, justifyLeft);
-				xpos += gw2obj->columnWidth;
+				xpos += columnWidth;
 			}
 		}
 	}
@@ -823,31 +824,37 @@ void gwinTableSetTitleJustify(GHandle gh, justify_t justify){
 #endif
 
 #if GWIN_NEED_TABLE_HEADER
-void gwinTableSetHeader(GHandle gh, char** header) {
+void gwinTableSetHeader(GHandle gh, char** header, uint32_t** columnWidths) {
 	int i;
 	int rowLen;
-
 	// is it a valid handle?
 	if (gh->vmt != (gwinVMT *)&tableVMT)
 		return;
 
 	if (gh2obj->w.g.flags & GTABLE_FLG_HASHEADER){
 		// Free the existing header columns
-		for (i = 0; i < gh2obj->columnCount; i++)
+		for (i = 0; i < gh2obj->columnCount; i++) {
 			gfxFree((char*)gh2obj->header[i]);
+			gfxFree((uint32_t*)gh2obj->columnWidths[i]);
+		}
 	}
-	else {
+	else {		
 		// Mark the flags
 		gh->flags |= GTABLE_FLG_HASHEADER;
 		// Allocate new header
 		gh2obj->header = gfxAlloc((sizeof(char*) * gh2obj->columnCount) +1);
+		gh2obj->columnWidths = gfxAlloc(sizeof(uint32_t*) * gh2obj->columnCount);
 	}
 	// Fill the headers
 	for (i = 0; i < gh2obj->columnCount; i++)
-	{
+	{		
 		rowLen = strlen(header[i]);
 		gh2obj->header[i] = gfxAlloc((sizeof(char) * rowLen) +1);
 		memcpy((char*)gh2obj->header[i], (char*)header[i], rowLen +1);
+
+		gh2obj->columnWidths[i] = gfxAlloc(sizeof(uint32_t*));		
+		memcpy(gh2obj->columnWidths[i], &columnWidths[i], sizeof(uint32_t*));
+		
 	}
 	gh2obj->modified |= GTABLE_HEADER_MODIFIED | GTABLE_SCROLL_MODIFIED | GTABLE_BODY_MODIFIED;
 	_gwinUpdate(gh);
@@ -1381,6 +1388,7 @@ void gwinTableDefaultDraw(GWidgetObject* gw, void* param) {
 		for (y = 1-(gw2obj->top%(iheight+GTABLE_ROW_PADDING)) -1, index = 0;
 			 y < gw->g.height -bodyOffset && qi;
 			 qi = gfxQueueASyncNext(qi), y += (iheight+GTABLE_ROW_PADDING), index++) {
+				 
 			////fprintf(stderr, "Line: %d, %d, %d\n", y, gw->g.y+y+bodyOffset, gw->g.y + bodyOffset + bodyBot);
 			if (qi2li->modified > 0) {
 				// Set the row background color as the fill color by default
@@ -1448,18 +1456,19 @@ void gwinTableDefaultDraw(GWidgetObject* gw, void* param) {
 					//// Draw the row, only the string part
 					//fprintf(stderr, "XX: %d, %d\n", xpos, gw->g.x +xpos +GTABLE_HORIZ_PADDING);
 					for (j = 0; j < gw2obj->columnCount; j++){
+						const columnWidth = *gw2obj->columnWidths[j];
 						////fprintf(stderr, "     Fill: %d, %d\n", bodyTop +y, iheight+GTABLE_ROW_PADDING);
 						gdispGFillArea(gw->g.display,
 								       gw->g.x +xpos +GTABLE_HORIZ_PADDING,
 									   gw->g.y +bodyOffset +y,
-									   gw2obj->columnWidth,
+									   columnWidth,
 									   iheight +GTABLE_ROW_PADDING, fill);
 
-						if (gdispGetStringWidth(qi2li->text[j], gw->g.font) <= gw2obj->columnWidth -GTABLE_HORIZ_PADDING) {
+						if (gdispGetStringWidth(qi2li->text[j], gw->g.font) <= columnWidth -GTABLE_HORIZ_PADDING) {
 							gdispGFillStringBox(gw->g.display,
 									            gw->g.x +xpos +GTABLE_HORIZ_PADDING,
 												gw->g.y +bodyOffset +y,
-												gw2obj->columnWidth -GTABLE_HORIZ_PADDING, iheight,
+												columnWidth -GTABLE_HORIZ_PADDING, iheight,
 									            qi2li->text[j], gw->g.font, ps->text, fill, justifyLeft);
 						}
 						else {
@@ -1471,7 +1480,7 @@ void gwinTableDefaultDraw(GWidgetObject* gw, void* param) {
 							memcpy(foo, qi2li->text[j], len -1);
 							memcpy(foo + len -1, "...", 3);
 							foo[len +2] = '\0';
-							while (gdispGetStringWidth(foo, gw->g.font) > gw2obj->columnWidth-GTABLE_HORIZ_PADDING){
+							while (gdispGetStringWidth(foo, gw->g.font) > columnWidth-GTABLE_HORIZ_PADDING){
 								len--;
 								foo[len -1] = '.';
 								foo[len +2] = '\0';
@@ -1479,11 +1488,11 @@ void gwinTableDefaultDraw(GWidgetObject* gw, void* param) {
 							gdispGFillStringBox(gw->g.display,
 									            gw->g.x+xpos +GTABLE_HORIZ_PADDING,
 												gw->g.y +bodyOffset +y,
-												gw2obj->columnWidth -GTABLE_HORIZ_PADDING, iheight, // and here
+												columnWidth -GTABLE_HORIZ_PADDING, iheight, // and here
                                                 foo, gw->g.font, ps->text, fill, justifyLeft);
 							gfxFree(foo);
 						}
-						xpos += gw2obj->columnWidth;
+						xpos += columnWidth;
 					}
 				}
 			}

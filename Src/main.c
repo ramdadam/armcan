@@ -125,7 +125,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 512);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -895,74 +895,13 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-static GListener gl;
-static GHandle   ghList1;
-
-static void createWidgets(void) {
-	GWidgetInit	wi;
- 
-	// Apply some default values for GWIN
-	wi.customDraw = 0;
-	wi.customParam = 0;
-	wi.customStyle = 0;
-	wi.g.show = FALSE;
- 
-	// Apply the list parameters
-	wi.g.width = 480;
-	wi.g.height = 272;
-	wi.g.y = 0;
-	wi.g.x = 0;
-	wi.text = "List Name";
- 
-	// Create the actual list
-	ghList1 = gwinListCreate(NULL, &wi, FALSE);
-	gwinListSetScroll(ghList1, scrollSmooth);
-}
- 
 /* USER CODE END 4 */
 
 /* StartDefaultTask function */
+extern void initMainPage(void);
 void StartDefaultTask(void const * argument)
 {
-	uint16_t	i;
-	char		item[20];
-	GEvent		*pe;
-	gfxInit();
-
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-
-// Set the widget defaults
-	gwinSetDefaultFont(gdispOpenFont("UI2"));
-	gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
-	gdispClear(White);
- 
-	// Attach the mouse input
-	gwinAttachMouse(0);
- 
-	// create the widget
-	createWidgets();
- 
-	// We want to listen for widget events
-	geventListenerInit(&gl);
-	gwinAttachListener(&gl);
- 
-	// Add some items to the list widget
-	for (i = 0; i < 100; i++) {
-		sprintf(item, "Item Nr.: %d", i);
-		gwinListAddItem(ghList1, item, TRUE);
-	}
- 
-	// Make the list visible
-	gwinSetVisible(ghList1, TRUE);
- 
-	while(1) {
-		// Get an Event
-		pe = geventEventWait(&gl, TIME_INFINITE);
- 
-	}
- 
-	return 0;
+  initMainPage();
   /* USER CODE END 5 */ 
 }
 
