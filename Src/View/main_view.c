@@ -1,5 +1,6 @@
 #include "gfx.h"
 #include "gwin_table.h"
+#include <stdio.h>
 GListener	gl;
 GHandle		ghTabset;
 GHandle		tabset_page_1;
@@ -28,7 +29,13 @@ void createTabset(void) {
 	ghTabset = gwinTabsetCreate(0, &wi, GWIN_TABSET_BORDER);
 	tabset_page_1 = gwinTabsetAddTab(ghTabset, "Receive", FALSE);
 	tabset_page_2 = gwinTabsetAddTab(ghTabset, "Transmit", FALSE);
+	createTable();
+}
 
+void createTable(void) {
+
+	GWidgetInit wi;
+	gwinWidgetClearInit(&wi);
 	wi.g.width = 300;
 	wi.g.height = 200;
 	wi.g.x = 0;
@@ -62,14 +69,37 @@ void createTabset(void) {
 }
 
 void initMainPage(void) {
-	//GEvent* pe;
+	GEvent* pe;
 	gfxInit();
 	gwinSetDefaultFont(gdispOpenFont("UI2"));
 	gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
 	gdispClear(White);
 
 	createTabset();
-	while(1);
+	
+	// We want to listen for widget events
+	geventListenerInit(&gl);
+	gwinAttachListener(&gl);
+ 
+	while(1) {
+		// Get an Event
+		pe = geventEventWait(&gl, TIME_INFINITE);
+		if(pe->type == GEVENT_GWIN_TABSET){
+			createTable();
+			
+			fprintf(stderr, "tabset\n");
+			
+    		fflush(stdout);
+			fflush(stderr);
+		}
+		fprintf(stderr, "gevent\n");
+		
+   		fflush(stdout);
+ 		fflush(stderr);
+		(void)pe;
+	}
+ 
+	return 0;
 }
 
 
