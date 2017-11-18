@@ -32,7 +32,9 @@ ASFLAGS  =
 LDFLAGS  =
 
 SRC	 = Src/gwin_table.c
-SRC	 += Src/View/main_view.c
+SRC	 += Src/View/main_view.cpp
+SRC	 += Src/View/can_view.cpp
+SRC	 += Src/View/tx_can_view.cpp
 SRC      += Src/main_desktop.c
 OBJS     =
 DEFS     =

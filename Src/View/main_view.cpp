@@ -4,59 +4,21 @@
 #include "gfx.h"
 #include "gwin_table.h"
 #include <stdio.h>
-#include "can_driver.h"
+#include "tx_can_view.h"
+
 GListener	gl;
 GHandle		ghTabset;
 GHandle		tabset_page_1;
 GHandle		tabset_page_2;
-GHandle		table_view;
 
-
-static font_t titleFont;
-
-
-#define Gray_40			HTML2COLOR(0x404040)
-#define Gray_80			HTML2COLOR(0x808080)
-#define Gray_A0			HTML2COLOR(0xA0A0A0)
-#define Gray_C0			HTML2COLOR(0xC0C0C0)
 
 void createTable(void) {
-	
-		GWidgetInit wi;
-		gwinWidgetClearInit(&wi);
-		wi.g.width = 300;
-		wi.g.height = 200;
-		wi.g.x = 0;
-		wi.g.y = 0;
-		wi.g.parent = tabset_page_1;
-		wi.g.show = TRUE;
-	
-		table_view = gwinTableCreate(0, &wi, 3, FALSE);
-		//GHandle		tabset_label_page_1;ate(0, &wi, 3, FALSE);
-		titleFont = gdispOpenFont("DejaVuSans32");
-		#ifndef __cplusplus
-		char **header = (char *[]){"Onasdoaisjdoijasdoijsadoie", "Two", "Three"};
-		uint32_t** columnWidths = (const uint32_t *[]){60, 100, 140};
-		#else
-		static char header_temp1[] = {"Onasdoaisjdoijasdoijsadoie"};
-		static char header_temp2[] = {"Two"};
-		static char header_temp3[] = {"Three"};
-		char* header[3] = {header_temp1, header_temp2, header_temp3};
-		static uint32_t col1 = 100;
-		static uint32_t col2 = 100;
-		static uint32_t col3 = 100;
-		uint32_t* columnWidths[3] = {&col1, &col2, &col3};
-		#endif
-		gwinTableSetHeader(table_view, header, &columnWidths[0]);
-		gwinTableSetHeaderBackground(table_view, Gray_80);
-	
-	
-		// Add some rows to the first table widget
-	/*
-		char **values0 = (char *[]){"abc", "bcd", "cde"};
-	
-		gwinTableAddRow(table_view, values0, TRUE);*/
-		gwinTableEnableRender(table_view, TRUE);
+	static bool firstRun = true;
+	if(!firstRun) {
+		deleteTxCanViewTable();
+	}
+	createTxCanViewTable(&tabset_page_1);
+	firstRun = false;
 }
 
 void createTabset(void) {
@@ -75,13 +37,7 @@ void createTabset(void) {
 }
 
 extern "C" void initMainPage(void) {
-/*	fprintf(stderr, "\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "\n");
-*/	GEvent* pe;
+	GEvent* pe;
 	gfxInit();
 	gwinSetDefaultFont(gdispOpenFont("UI2"));
 	gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);

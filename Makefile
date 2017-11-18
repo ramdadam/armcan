@@ -41,7 +41,8 @@ LDFLAGS  = -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections
 
 SRC	 = Src/gwin_table.c
 SRC	 += Src/View/main_view.c
-SRC      += Src/main.c \
+SRC      += Src/emhashmap.c \
+Src/main.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c \
