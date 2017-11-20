@@ -5,19 +5,23 @@
 #include "gwin_table.h"
 #include <stdio.h>
 #include "tx_can_view.h"
+#include "rx_can_view.h"
+#include "add_can_message.h"
 
 GListener	gl;
 GHandle		ghTabset;
 GHandle		tabset_page_1;
 GHandle		tabset_page_2;
 
-
+extern GHandle ghAddButton;
 void createTable(void) {
 	static bool firstRun = true;
 	if(!firstRun) {
 		deleteTxCanViewTable();
+		deleteRxCanViewTable();
 	}
 	createTxCanViewTable(&tabset_page_1);
+	createRxCanViewTable(&tabset_page_2);
 	firstRun = false;
 }
 
@@ -38,6 +42,7 @@ void createTabset(void) {
 
 extern "C" void initMainPage(void) {
 	GEvent* pe;
+	GHandle* ghK;
 	gfxInit();
 	gwinSetDefaultFont(gdispOpenFont("UI2"));
 	gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
@@ -52,17 +57,37 @@ extern "C" void initMainPage(void) {
 	while(1) {
 		// Get an Event
 		pe = geventEventWait(&gl, TIME_INFINITE);
-		if(pe->type == GEVENT_GWIN_TABSET){
-			createTable();
-			
-			
-    		fflush(stdout);
-			fflush(stderr);
+		switch(pe->type) {
+			case GEVENT_GWIN_TABSET: {		
+				createTable();
+				fflush(stdout);
+				fflush(stderr);
+				break;
+			}
+			case GEVENT_GWIN_BUTTON: {
+				GWindowObject* target = ((GEventGWinButton*)pe)->gwin;
+				fprintf(stderr, "%d\n", target);
+				fprintf(stderr, "%d", ghAddButton);
+				ghK = showAddFrame();
+				geventAttachSource(&gl, gwinKeyboardGetEventSource(*ghK), GLISTEN_KEYTRANSITIONS|GLISTEN_KEYUP);
+				break;
+			}
+			case GEVENT_KEYBOARD: {	
+				GEventKeyboard * pk = (GEventKeyboard *)pe;
+				fprintf(stderr, "%d\n", pk->bytecount);
+				if (pk->bytecount) {
+					for(uint32_t i = 0; i< pk->bytecount; i++) {
+						fprintf(stderr, "%d\n", pk->c[i]);
+					}
+				}
+				fflush(stdout);
+				fflush(stderr);
+				break;
+			}
+			case GEVENT_GWIN_SLIDER: {
+				setSliderPosition(((GEventGWinSlider *)pe)->position);;
+			}
 		}
-		
-   		fflush(stdout);
- 		fflush(stderr);
-		(void)pe;
 	}
  
 	return;

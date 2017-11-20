@@ -50,10 +50,12 @@
 //    #define GFX_OS_EXTRA_INIT_FUNCTION               myOSInitRoutine
 //    #define GFX_OS_EXTRA_DEINIT_FUNCTION             myOSDeInitRoutine
 //    #define GFX_EMULATE_MALLOC                       FALSE
+#define GWIN_BUTTON_LAZY_RELEASE        TRUE
 #define GDISP_NEED_TEXT					TRUE
 #define GFX_USE_GINPUT					TRUE
 #define GDISP_NEED_TEXT					TRUE
 #define GWIN_NEED_LABEL			TRUE
+#define GWIN_NEED_BUTTON                TRUE
 /* GFX sub-systems to turn on */
 #define GFX_USE_GDISP                   TRUE
 #define GFX_USE_GEVENT                               TRUE
@@ -70,7 +72,12 @@
 #define GDISP_NEED_ASYNC                FALSE
 #define GDISP_NEED_MSGAPI               FALSE
 #define GWIN_NEED_WIDGET                TRUE
-
+#define GWIN_NEED_FRAME                 TRUE
+#define GWIN_NEED_KEYBOARD              TRUE
+#define GWIN_NEED_CHECKBOX              TRUE
+#define GWIN_NEED_SLIDER              TRUE
+#define GWIN_LABEL_ATTRIBUTE            TRUE
+#define GWIN_NEED_TEXTEDIT		TRUE
 /* Builtin Fonts */
 #define GDISP_INCLUDE_FONT_SMALL        FALSE
 #define GDISP_INCLUDE_FONT_LARGER       FALSE

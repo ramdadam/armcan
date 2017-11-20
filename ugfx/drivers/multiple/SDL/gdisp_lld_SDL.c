@@ -28,10 +28,10 @@
 	#define GDISP_FORCE_24BIT			FALSE
 #endif
 #ifndef GDISP_SCREEN_WIDTH
-	#define GDISP_SCREEN_WIDTH			640
+	#define GDISP_SCREEN_WIDTH			480
 #endif
 #ifndef GDISP_SCREEN_HEIGHT
-	#define GDISP_SCREEN_HEIGHT			480
+	#define GDISP_SCREEN_HEIGHT			272
 #endif
 
 #if GINPUT_NEED_MOUSE
@@ -179,7 +179,7 @@ static sem_t *input_event;
 
 
 static int SDL_loop (void) {
-	SDL_Window   *window = SDL_CreateWindow("uGFX", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, GDISP_SCREEN_WIDTH, GDISP_SCREEN_HEIGHT, 0);
+	SDL_Window   *window = SDL_CreateWindow("armcan - 480x272 - gui demo", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, GDISP_SCREEN_WIDTH, GDISP_SCREEN_HEIGHT, 0);
 	SDL_Renderer *render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_Texture  *texture = SDL_CreateTexture(render, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, GDISP_SCREEN_WIDTH, GDISP_SCREEN_HEIGHT);
 	int done = 0;

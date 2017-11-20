@@ -1,8 +1,29 @@
-
 #include "gfx.h"
 #include "can_view.h"
+#include "tx_can_view.h"
 
 #define TX_CAN_TABLE_COL_COUNT 3
+
+void createButtonGroup(GHandle* parent) {
+	GWidgetInit	wi;    
+    gwinWidgetClearInit(&wi);
+    wi.g.show = TRUE;
+    wi.g.width = 40;
+    wi.g.height = 19;
+    wi.g.x = 440;
+    wi.g.y = 253;
+    wi.text = "+";
+    ghAddButton = gwinButtonCreate(NULL, &wi);
+    
+    gwinWidgetClearInit(&wi);
+    wi.g.show = TRUE;
+    wi.g.width = 40;
+    wi.g.height = 19;
+    wi.g.x = 400;
+    wi.g.y = 253;
+    wi.text = "-";
+	ghRemoveButton = gwinButtonCreate(NULL, &wi);
+}
 
 void createTxCanViewTable(GHandle* parent) {
     const uint8_t colCount = TX_CAN_TABLE_COL_COUNT;
@@ -19,9 +40,9 @@ void createTxCanViewTable(GHandle* parent) {
         static uint32_t col3 = 140;
         uint32_t* columnWidths[3] = {&col1, &col2, &col3};
     #endif
-    createBaseTableWidget(header, columnWidths, colCount, parent);
+    createBaseTableWidget(header, columnWidths, colCount, parent, 480, 235);
+    createButtonGroup(parent);
 }
-
 
 void deleteTxCanViewTable() {
     deleteTableWidget();
