@@ -1439,7 +1439,7 @@ void gwinTableDefaultDraw(GWidgetObject* gw, void* param) {
 						//fprintf(stderr, " Draw Image: \n");
 						gdispImageSetBgColor(qi2li->pimg, fill);
 						gdispGImageDraw(gw->g.display,
-								        qi2li->pimg,
+								        qi2li->pfimg,
 										gw->g.x +1,
 										gw->g.y +bodyOffset +y,
 										iheight-GTABLE_ROW_PADDING,

@@ -84,6 +84,11 @@ extern "C" void initMainPage(void) {
 				fflush(stderr);
 				break;
 			}
+			case GEVENT_GWIN_CLOSE: {
+
+	            gwinRedraw(ghTabset);
+				createTable();
+			}
 			case GEVENT_GWIN_SLIDER: {
 				setSliderPosition(((GEventGWinSlider *)pe)->position);;
 			}

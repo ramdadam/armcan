@@ -62,7 +62,7 @@
 #define GWIN_NEED_LIST                           TRUE
 /* Features for the GDISP sub-system. */
 #define GDISP_NEED_VALIDATION           FALSE
-#define GDISP_NEED_CLIP                 TRUE
+#define GDISP_NEED_CLIP                 FALSE
 #define GDISP_NEED_CIRCLE               TRUE
 #define GDISP_NEED_ELLIPSE              FALSE
 #define GDISP_NEED_ARC                  FALSE

@@ -9,18 +9,20 @@ void createButtonGroup(GHandle* parent) {
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
     wi.g.width = 40;
-    wi.g.height = 19;
+    wi.g.height = 44;
+    wi.g.parent = *parent;
     wi.g.x = 440;
-    wi.g.y = 253;
+    wi.g.y = 225;
     wi.text = "+";
     ghAddButton = gwinButtonCreate(NULL, &wi);
     
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
     wi.g.width = 40;
-    wi.g.height = 19;
+    wi.g.height = 44;
     wi.g.x = 400;
-    wi.g.y = 253;
+    wi.g.parent = *parent;
+    wi.g.y = 225;
     wi.text = "-";
 	ghRemoveButton = gwinButtonCreate(NULL, &wi);
 }
@@ -40,10 +42,12 @@ void createTxCanViewTable(GHandle* parent) {
         static uint32_t col3 = 140;
         uint32_t* columnWidths[3] = {&col1, &col2, &col3};
     #endif
-    createBaseTableWidget(header, columnWidths, colCount, parent, 480, 235);
+    GHandle* table = createBaseTableWidget(header, columnWidths, colCount, parent, 480, 220);
     createButtonGroup(parent);
 }
 
 void deleteTxCanViewTable() {
     deleteTableWidget();
+    gwinDestroy(ghAddButton);
+    gwinDestroy(ghRemoveButton);
 }

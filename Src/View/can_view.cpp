@@ -10,7 +10,7 @@ static font_t titleFont;
 #define Gray_A0			HTML2COLOR(0xA0A0A0)
 #define Gray_C0			HTML2COLOR(0xC0C0C0)
 
-void createBaseTableWidget(char** header, uint32_t** colWidths, uint32_t colCount, GHandle* parent, uint16_t width, uint16_t height) {
+GHandle* createBaseTableWidget(char** header, uint32_t** colWidths, uint32_t colCount, GHandle* parent, uint16_t width, uint16_t height) {
         GWidgetInit wi;        
 		gwinWidgetClearInit(&wi);
 		wi.g.width = width;
@@ -25,7 +25,8 @@ void createBaseTableWidget(char** header, uint32_t** colWidths, uint32_t colCoun
 		titleFont = gdispOpenFont("DejaVuSans32");
         
         gwinTableSetHeader(table_view, header, colWidths);
-        gwinTableSetHeaderBackground(table_view, Gray_80);	
+        gwinTableSetHeaderBackground(table_view, Gray_80);
+        return &table_view;
 }
 
 void deleteTableWidget() {
