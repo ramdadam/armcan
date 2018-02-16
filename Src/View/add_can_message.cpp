@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "../armcan/ugfx/src/gwin/gwin_class.h"
+#include "../armcan/ugfx/src/gwin/gwin_container.h"
 GHandle* showAddFrame() {
     GWidgetInit wi;    
     // Apply some default values for GWIN
@@ -25,7 +26,7 @@ GHandle* showAddFrame() {
 
 	wi.g.show = TRUE;
 	wi.g.x = 50;
-	wi.g.y = 30;
+	wi.g.y = 10;
 	wi.g.width = 45;
 	wi.g.height = 15;
     wi.g.parent = ghFrame1;
@@ -37,7 +38,7 @@ GHandle* showAddFrame() {
 	// TextEdit1
 	wi.g.show = TRUE;
 	wi.g.x = 105;
-	wi.g.y = 30;
+	wi.g.y = 10;
 	wi.g.width = 45;
 	wi.g.height = 15;
     wi.g.parent = ghFrame1;
@@ -49,7 +50,7 @@ GHandle* showAddFrame() {
     
     // Apply the checkbox parameters	
 	wi.g.x = 50;
-	wi.g.y = 60;
+	wi.g.y = 30;
 	wi.g.width = 65;
 	wi.g.height = 15;
     wi.g.parent = ghFrame1;
@@ -62,7 +63,7 @@ GHandle* showAddFrame() {
     
     // create Slider1
     wi.g.x = 95; 
-    wi.g.y = 90; 
+    wi.g.y = 60; 
     wi.g.width = 100; 
     wi.g.height = 15; 
     wi.text = "DLC";
@@ -72,7 +73,7 @@ GHandle* showAddFrame() {
 
 	wi.g.show = TRUE;
 	wi.g.x = 50;
-	wi.g.y = 90;
+	wi.g.y = 60;
 	wi.g.width = 45;
 	wi.g.height = 15;
     wi.g.parent = ghFrame1;
@@ -86,48 +87,42 @@ GHandle* showAddFrame() {
 
 void setSliderPosition(int pos) {
     char buffer[33];
-    GWidgetInit wi;    
-    // Apply some default values for GWIN
     snprintf(buffer, sizeof(buffer), "%d Byte", pos);
-    gwinLabelSetAttribute(ghLabel2, 100, buffer);
-    int16_t tempPos = lastPos - pos;
+	gwinSetText(ghLabel2, buffer, TRUE);
 
-    fprintf(stderr, "lastPos: %d\n", lastPos);
-    fprintf(stderr, "pos: %d\n", pos);
-    fprintf(stderr, "tempPos: %d\n", tempPos);
-    fflush(stdout);
-    fflush(stderr);
-//    if(tempPos < 0) {
-//        for(int i = lastPos; i < pos; i++) {
-//            gwinWidgetClearInit(&wi);
-//            GHandle temp;
-//            wi.g.show = TRUE;
-//            wi.g.x = 50 + i*40;
-//            wi.g.y = 120;
-//            wi.g.width = 25;
-//            wi.g.height = 15;
-//            wi.g.parent = ghFrame1;
-//            wi.text = "";
-//            ghDataTextEdits[i] = gwinTexteditCreate(0, &wi, 100);
-//            lastPos += 1;
-//            fprintf(stderr, "temp %d", lastPos);
-//        }
-//    } else if(tempPos > 0) {
-//        for(int i = lastPos; i>pos; i--) {
-//            gwinDestroy(ghDataTextEdits[i]);
-//            gwinRedraw(ghTextedit1);
-//            gwinRedraw(ghLabel1);
-//            gwinRedraw(ghLabel2);
-//            gwinRedraw(ghCheckbox1);
-//            gwinRedraw(ghSlider1);
-//            gwinRedraw(ghKeyboard);
-//            fprintf(stderr, "remp %d", i);
-//            fflush(stdout);
-//            fflush(stderr);
-//            lastPos -= 1;
-//        }
-//    }
-//    for(int i = 0; i<pos; i++) {
-//        gwinRedraw(ghDataTextEdits[i]);
-//    }
+    gwinDestroy(ghTexteditContainer);
+
+    GWidgetInit wi;
+    gwinWidgetClearInit(&wi);
+    
+    wi.g.show = FALSE;
+    wi.g.width = 400;
+    wi.g.height = 30;
+    wi.g.y = 90;
+    wi.g.x = 0;
+    wi.text = "Container";
+    wi.g.show = TRUE;
+    wi.g.parent = ghFrame1;
+    ghTexteditContainer = gwinContainerCreate(0, &wi, 0);
+
+    for(int i=0; i<pos; i++){
+        gwinWidgetClearInit(&wi);
+        GHandle temp;
+        wi.g.show = TRUE;
+        wi.g.x = 50 + i*40;
+        wi.g.y = 0;
+        wi.g.width = 25;
+        wi.g.height = 25;
+        wi.g.parent = ghTexteditContainer;
+        wi.text = "";
+        ghDataTextEdits[i] = gwinTexteditCreate(0, &wi, 100);
+    }
+}
+
+void showVirtualKeyboard() {
+
+}
+
+void hideVirtualKeyboard() {
+    
 }

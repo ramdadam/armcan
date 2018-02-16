@@ -36,30 +36,19 @@
 
 #define GWIN_NEED_TABLE                 TRUE
 #define GWIN_NEED_TABLE_IMAGES          FALSE
-#define GWIN_NEED_TABLE_TITLE		TRUE
-#define GWIN_NEED_TABLE_HEADER		TRUE
-#define GWIN_NEED_TABLE_EMBELLISH	TRUE
-#define GDISP_NEED_STARTUP_LOGO 						0
-#define GDISP_STARTUP_LOGO_TIMEOUT 						0
-#define GFX_USE_GWIN								TRUE
-    #define GFX_OS_HEAP_SIZE                         40960
-#define GWIN_NEED_TABSET			    TRUE
-//    #define GFX_OS_NO_INIT                           FALSE
-    #define GFX_OS_INIT_NO_WARNING                   TRUE
-//    #define GFX_OS_PRE_INIT_FUNCTION                 Raw32OSInit
-//    #define GFX_OS_EXTRA_INIT_FUNCTION               myOSInitRoutine
-//    #define GFX_OS_EXTRA_DEINIT_FUNCTION             myOSDeInitRoutine
-//    #define GFX_EMULATE_MALLOC                       FALSE
+#define GWIN_NEED_TABLE_TITLE			TRUE
+#define GWIN_NEED_TABLE_HEADER			TRUE
+#define GWIN_NEED_TABLE_EMBELLISH		TRUE
+#define GDISP_NEED_STARTUP_LOGO 		0
+#define GDISP_STARTUP_LOGO_TIMEOUT 		0
+#define GFX_USE_GWIN					TRUE
+#define GFX_OS_HEAP_SIZE				40960
+#define GFX_OS_INIT_NO_WARNING			TRUE
 #define GWIN_BUTTON_LAZY_RELEASE        TRUE
-#define GDISP_NEED_TEXT					TRUE
 #define GFX_USE_GINPUT					TRUE
-#define GDISP_NEED_TEXT					TRUE
-#define GWIN_NEED_LABEL			TRUE
-#define GWIN_NEED_BUTTON                TRUE
 /* GFX sub-systems to turn on */
 #define GFX_USE_GDISP                   TRUE
-#define GFX_USE_GEVENT                               TRUE
-#define GWIN_NEED_LIST                           TRUE
+#define GFX_USE_GEVENT					TRUE
 /* Features for the GDISP sub-system. */
 #define GDISP_NEED_VALIDATION           FALSE
 #define GDISP_NEED_CLIP                 FALSE
@@ -75,9 +64,16 @@
 #define GWIN_NEED_FRAME                 TRUE
 #define GWIN_NEED_KEYBOARD              TRUE
 #define GWIN_NEED_CHECKBOX              TRUE
-#define GWIN_NEED_SLIDER              TRUE
+#define GWIN_NEED_SLIDER              	TRUE
 #define GWIN_LABEL_ATTRIBUTE            TRUE
-#define GWIN_NEED_TEXTEDIT		TRUE
+#define GWIN_NEED_TEXTEDIT				TRUE
+#define GWIN_NEED_CONTAINERS            TRUE
+#define GWIN_NEED_CONTAINER            TRUE
+#define GDISP_NEED_TEXT					TRUE
+#define GWIN_NEED_LABEL					TRUE
+#define GWIN_NEED_BUTTON                TRUE
+#define GWIN_NEED_TABSET			    TRUE
+#define GWIN_NEED_LIST					TRUE
 /* Builtin Fonts */
 #define GDISP_INCLUDE_FONT_SMALL        FALSE
 #define GDISP_INCLUDE_FONT_LARGER       FALSE
