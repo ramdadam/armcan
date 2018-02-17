@@ -9,9 +9,10 @@
 #include "add_can_message.h"
 
 GListener	gl;
-GHandle		ghTabset;
+GHandle		ghTabset = 0;
 GHandle		tabset_page_1;
 GHandle		tabset_page_2;
+GHandle*		table_tx;
 
 extern GHandle ghAddButton;
 void createTable(void) {
@@ -20,12 +21,13 @@ void createTable(void) {
 		deleteTxCanViewTable();
 		deleteRxCanViewTable();
 	}
-	createTxCanViewTable(&tabset_page_1);
+	table_tx = createTxCanViewTable(&tabset_page_1);
 	createRxCanViewTable(&tabset_page_2);
 	firstRun = false;
 }
 
 void createTabset(void) {
+
 	GWidgetInit wi;
 	gwinWidgetClearInit(&wi);
 	wi.g.show = TRUE;
@@ -44,7 +46,7 @@ extern "C" void initMainPage(void) {
 	GEvent* pe;
 	GHandle* ghK;
 	gfxInit();
-	gwinSetDefaultFont(gdispOpenFont("UI2"));
+    gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
 	gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
 	gdispClear(White);
 
@@ -85,9 +87,9 @@ extern "C" void initMainPage(void) {
 				break;
 			}
 			case GEVENT_GWIN_CLOSE: {
-
-	            gwinRedraw(ghTabset);
-				createTable();
+				//gwinDestroy(*ghK);
+				gwinRedraw(ghTabset);
+				//createTable();
 			}
 			case GEVENT_GWIN_SLIDER: {
 				setSliderPosition(((GEventGWinSlider *)pe)->position);;

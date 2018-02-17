@@ -12,6 +12,8 @@ GHandle* showAddFrame() {
     wi.g.show = TRUE;
     const uint16_t width = 400;
     const uint16_t height = 160;
+
+    gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
     // Apply the frame parameters    
     wi.g.width = width;
     wi.g.height = height;
@@ -81,7 +83,7 @@ GHandle* showAddFrame() {
  
 	// Create the actual label
     ghLabel2 = gwinLabelCreate(NULL, &wi);
-
+    //showVirtualKeyboard();
     return &ghFrame1;
 }
 
@@ -90,7 +92,9 @@ void setSliderPosition(int pos) {
     snprintf(buffer, sizeof(buffer), "%d Byte", pos);
 	gwinSetText(ghLabel2, buffer, TRUE);
 
-    gwinDestroy(ghTexteditContainer);
+    if(ghTexteditContainer != NULL) {
+        gwinDestroy(ghTexteditContainer);          
+    }
 
     GWidgetInit wi;
     gwinWidgetClearInit(&wi);
@@ -107,7 +111,6 @@ void setSliderPosition(int pos) {
 
     for(int i=0; i<pos; i++){
         gwinWidgetClearInit(&wi);
-        GHandle temp;
         wi.g.show = TRUE;
         wi.g.x = 50 + i*40;
         wi.g.y = 0;
@@ -120,9 +123,17 @@ void setSliderPosition(int pos) {
 }
 
 void showVirtualKeyboard() {
+    GWidgetInit wi;
 
+    wi.g.show = TRUE;
+    wi.g.width = 480;
+    wi.g.height = 280;
+    wi.g.y = 0;
+    wi.g.x = 0;
+    ghKeyboard = gwinKeyboardCreate(0, &wi);
+    gwinSetBgColor(ghKeyboard, HTML2COLOR(0xF0F0F0));
 }
 
 void hideVirtualKeyboard() {
-    
+    gwinDestroy(ghKeyboard);
 }

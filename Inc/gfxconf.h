@@ -33,7 +33,7 @@
 //    #define GFX_CPU_NO_ALIGNMENT_FAULTS              FALSE
 //    #define GFX_CPU_ENDIAN                           GFX_CPU_ENDIAN_UNKNOWN
 
-
+#define GDISP_INCLUDE_FONT_DEJAVUSANS32	TRUE
 #define GWIN_NEED_TABLE                 TRUE
 #define GWIN_NEED_TABLE_IMAGES          FALSE
 #define GWIN_NEED_TABLE_TITLE			TRUE
@@ -51,7 +51,7 @@
 #define GFX_USE_GEVENT					TRUE
 /* Features for the GDISP sub-system. */
 #define GDISP_NEED_VALIDATION           FALSE
-#define GDISP_NEED_CLIP                 FALSE
+#define GDISP_NEED_CLIP                 TRUE
 #define GDISP_NEED_CIRCLE               TRUE
 #define GDISP_NEED_ELLIPSE              FALSE
 #define GDISP_NEED_ARC                  FALSE
@@ -81,6 +81,7 @@
 #define GDISP_INCLUDE_FONT_UI2          FALSE
 #define GDISP_INCLUDE_FONT_LARGENUMBERS FALSE
 #define GDISP_INCLUDE_FONT_DEJAVUSANS12 TRUE
+#define GDISP_INCLUDE_FONT_DEJAVUSANS24	TRUE
 #define GINPUT_NEED_MOUSE				TRUE
 #define GDISP_NEED_CONVEX_POLYGON		TRUE
 #define GDISP_NEED_MULTITHREAD			TRUE

@@ -27,7 +27,7 @@ void createButtonGroup(GHandle* parent) {
 	ghRemoveButton = gwinButtonCreate(NULL, &wi);
 }
 
-void createTxCanViewTable(GHandle* parent) {
+GHandle* createTxCanViewTable(GHandle* parent) {
     const uint8_t colCount = TX_CAN_TABLE_COL_COUNT;
     #ifndef __cplusplus
         char **header = (char *[]){"ID(hex)", "DLC", "Data"};
@@ -42,8 +42,9 @@ void createTxCanViewTable(GHandle* parent) {
         static uint32_t col3 = 140;
         uint32_t* columnWidths[3] = {&col1, &col2, &col3};
     #endif
-    GHandle* table = createBaseTableWidget(header, columnWidths, colCount, parent, 480, 220);
+    GHandle* table = createBaseTableWidget(header, columnWidths, colCount, parent, 480, 200);
     createButtonGroup(parent);
+    return table;
 }
 
 void deleteTxCanViewTable() {
