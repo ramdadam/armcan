@@ -10,8 +10,11 @@ static uint16_t     lastPos=0;
 static GHandle		ghTexteditContainer = NULL;
 static GHandle      ghDataTextEdits[8] = {NULL};
 
-GHandle* showAddFrame();
+void showAddFrame();
+void hideAddFrame();
+
 void setSliderPosition(int pos);
+void createAddFrame();
 
 void showVirtualKeyboard();
 void hideVirtualKeyboard();

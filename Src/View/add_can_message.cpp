@@ -2,25 +2,35 @@
 #include "add_can_message.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "vkeyboard.h"
 
 #include "../armcan/ugfx/src/gwin/gwin_class.h"
 #include "../armcan/ugfx/src/gwin/gwin_container.h"
-GHandle* showAddFrame() {
+
+void showAddFrame() {
+	gwinShow(ghFrame1);
+}
+
+void hideAddFrame() {
+	gwinHide(ghFrame1);
+}
+
+void createAddFrame() {
     GWidgetInit wi;    
-    // Apply some default values for GWIN
+
     gwinWidgetClearInit(&wi);
-    wi.g.show = TRUE;
+    wi.g.show = FALSE;
     const uint16_t width = 400;
     const uint16_t height = 160;
 
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
     // Apply the frame parameters    
-    wi.g.width = width;
-    wi.g.height = height;
-    wi.g.y = 5;
-    wi.g.x = ((480 - width) / 2);;
+    wi.g.width =  gdispGetWidth();
+    wi.g.height =  gdispGetHeight();
+    wi.g.y = 0;
+    wi.g.x = 0;//((480 - width) / 2);;
     wi.text = "Add Can Message";
-    ghFrame1 = gwinFrameCreate(0, &wi, GWIN_FRAME_CLOSE_BTN );
+    ghFrame1 = gwinFrameCreate(0, &wi, GWIN_FRAME_CLOSE_BTN);
 
 
 	gwinWidgetClearInit(&wi);
@@ -41,11 +51,11 @@ GHandle* showAddFrame() {
 	wi.g.show = TRUE;
 	wi.g.x = 105;
 	wi.g.y = 10;
-	wi.g.width = 45;
+	wi.g.width = 140;
 	wi.g.height = 15;
     wi.g.parent = ghFrame1;
 	wi.text = "";
-    ghTextedit1 = gwinTexteditCreate(0, &wi, 100);
+    ghTextedit1 = gwinTexteditCreate(0, &wi, 11);
 
 
 	wi.g.show = TRUE;
@@ -83,8 +93,8 @@ GHandle* showAddFrame() {
  
 	// Create the actual label
     ghLabel2 = gwinLabelCreate(NULL, &wi);
-    //showVirtualKeyboard();
-    return &ghFrame1;
+    showVirtualKeyboard();
+   // return &ghFrame1;
 }
 
 void setSliderPosition(int pos) {
@@ -93,7 +103,7 @@ void setSliderPosition(int pos) {
 	gwinSetText(ghLabel2, buffer, TRUE);
 
     if(ghTexteditContainer != NULL) {
-        gwinDestroy(ghTexteditContainer);          
+        gfxFree(ghTexteditContainer);
     }
 
     GWidgetInit wi;
@@ -123,17 +133,9 @@ void setSliderPosition(int pos) {
 }
 
 void showVirtualKeyboard() {
-    GWidgetInit wi;
-
-    wi.g.show = TRUE;
-    wi.g.width = 480;
-    wi.g.height = 280;
-    wi.g.y = 0;
-    wi.g.x = 0;
-    ghKeyboard = gwinKeyboardCreate(0, &wi);
-    gwinSetBgColor(ghKeyboard, HTML2COLOR(0xF0F0F0));
+	createKeyBoard(HEX_KEYBOARD);
 }
 
 void hideVirtualKeyboard() {
-    gwinDestroy(ghKeyboard);
+	deleteKeyBoard();
 }

@@ -8,13 +8,13 @@
 #include "rx_can_view.h"
 #include "add_can_message.h"
 
-GListener	gl;
 GHandle		ghTabset = 0;
 GHandle		tabset_page_1;
 GHandle		tabset_page_2;
 GHandle*		table_tx;
-
+gfxQueueASync*  eventQueue;
 extern GHandle ghAddButton;
+
 void createTable(void) {
 	static bool firstRun = true;
 	if(!firstRun) {
@@ -49,29 +49,51 @@ extern "C" void initMainPage(void) {
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
 	gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
 	gdispClear(White);
-
+	createAddFrame();
 	createTabset();
-	
+
+
+	gfxQueueASyncInit(eventQueue);
+
 	// We want to listen for widget events
-	geventListenerInit(&gl);
-	gwinAttachListener(&gl);
  
 	while(1) {
 		// Get an Event
-		pe = geventEventWait(&gl, TIME_INFINITE);
+
+		gfxQueueASyncItem * event = gfxQueueASyncGet(eventQueue);
+		if(event == 0) {
+
+			fprintf(stderr, "getEvent: %d\n", event);
+			fflush(stdout);
+			fflush(stderr);
+			continue;
+		}
+		pe = (GEvent*) event;
+		//pe = geventEventWait(&gl, TIME_INFINITE);
+		fprintf(stderr, "getEvent Done");
+		fflush(stdout);
+		fflush(stderr);
+		fprintf(stderr, "%d--\n", pe);
+		fflush(stdout);
+		fflush(stderr);
+		if(pe == 0) {
+			continue;
+		}
 		switch(pe->type) {
-			case GEVENT_GWIN_TABSET: {		
+			case GEVENT_GWIN_TABSET: {
 				createTable();
-				fflush(stdout);
-				fflush(stderr);
 				break;
 			}
 			case GEVENT_GWIN_BUTTON: {
+				gwinHide(ghTabset);
 				GWindowObject* target = ((GEventGWinButton*)pe)->gwin;
-				fprintf(stderr, "%d\n", target);
+				fprintf(stderr, "win button: %d\n", target);
 				fprintf(stderr, "%d", ghAddButton);
-				ghK = showAddFrame();
-				geventAttachSource(&gl, gwinKeyboardGetEventSource(*ghK), GLISTEN_KEYTRANSITIONS|GLISTEN_KEYUP);
+				fflush(stdout);
+				fflush(stderr);
+				showAddFrame();
+//				ghK = createAddFrame();
+				//geventAttachSource(&gl, gwinKeyboardGetEventSource(*ghK), GLISTEN_KEYTRANSITIONS|GLISTEN_KEYUP);
 				break;
 			}
 			case GEVENT_KEYBOARD: {	
@@ -87,14 +109,21 @@ extern "C" void initMainPage(void) {
 				break;
 			}
 			case GEVENT_GWIN_CLOSE: {
-				//gwinDestroy(*ghK);
-				gwinRedraw(ghTabset);
-				//createTable();
+				fprintf(stderr, "\n\nHello\n");
+				fflush(stdout);
+				fflush(stderr);
+				hideVirtualKeyboard();
+				fprintf(stderr, "Bye\n\n\n");
+				fflush(stdout);
+				fflush(stderr);
+				hideAddFrame();
+				gwinShow(ghTabset);
 			}
 			case GEVENT_GWIN_SLIDER: {
 				setSliderPosition(((GEventGWinSlider *)pe)->position);;
 			}
 		}
+
 	}
  
 	return;
