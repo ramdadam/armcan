@@ -27,12 +27,18 @@ ASFLAGS  =
 LDFLAGS  =
 
 SRC	 = Src/gwin_table.c
-SRC	 += Src/View/main_view.c
+SRC	 += Src/VirtualKeyBoard/vkeyboard.cpp
+SRC	 += Src/View/main_view.cpp
+SRC	 += Src/View/add_can_message.cpp
+SRC	 += Src/View/can_view.cpp
+SRC	 += Src/View/tx_can_view.cpp
+SRC	 += Src/View/rx_can_view.cpp
 SRC      += Src/main_desktop.c
 OBJS     =
 DEFS     =
 LIBS     =
 INCPATH  = Inc
+INCPATH += Src/VirtualKeyBoard
 LIBPATH  =
 
 ##############################################################################################

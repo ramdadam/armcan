@@ -12,7 +12,6 @@ GHandle		ghTabset = 0;
 GHandle		tabset_page_1;
 GHandle		tabset_page_2;
 GHandle*		table_tx;
-gfxQueueASync*  eventQueue;
 extern GHandle ghAddButton;
 
 void createTable(void) {
@@ -37,14 +36,14 @@ void createTabset(void) {
 	wi.g.x = 0;
 	wi.g.y = 0;
 	ghTabset = gwinTabsetCreate(0, &wi, GWIN_TABSET_BORDER);
-	tabset_page_1 = gwinTabsetAddTab(ghTabset, "Receive", FALSE);
-	tabset_page_2 = gwinTabsetAddTab(ghTabset, "Transmit", FALSE);
+	tabset_page_1 = gwinTabsetAddTab(ghTabset, "Receive", 1);
+	tabset_page_2 = gwinTabsetAddTab(ghTabset, "Transmit", 1);
 	createTable();
 }
 
 extern "C" void initMainPage(void) {
 	GEvent* pe;
-	GHandle* ghK;
+	GListener	gl;
 	gfxInit();
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
 	gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
@@ -53,74 +52,46 @@ extern "C" void initMainPage(void) {
 	createTabset();
 
 
-	gfxQueueASyncInit(eventQueue);
+	geventListenerInit(&gl);
+	gwinAttachListener(&gl);
 
-	// We want to listen for widget events
  
 	while(1) {
-		// Get an Event
+		
+		pe = geventEventWait(&gl, TIME_INFINITE);
 
-		gfxQueueASyncItem * event = gfxQueueASyncGet(eventQueue);
-		if(event == 0) {
-
-			fprintf(stderr, "getEvent: %d\n", event);
-			fflush(stdout);
-			fflush(stderr);
-			continue;
-		}
-		pe = (GEvent*) event;
-		//pe = geventEventWait(&gl, TIME_INFINITE);
-		fprintf(stderr, "getEvent Done");
-		fflush(stdout);
-		fflush(stderr);
-		fprintf(stderr, "%d--\n", pe);
-		fflush(stdout);
-		fflush(stderr);
-		if(pe == 0) {
-			continue;
-		}
 		switch(pe->type) {
 			case GEVENT_GWIN_TABSET: {
-				createTable();
+				//createTable();
 				break;
 			}
 			case GEVENT_GWIN_BUTTON: {
-				gwinHide(ghTabset);
-				GWindowObject* target = ((GEventGWinButton*)pe)->gwin;
-				fprintf(stderr, "win button: %d\n", target);
-				fprintf(stderr, "%d", ghAddButton);
-				fflush(stdout);
+				fprintf(stderr, "temp");
 				fflush(stderr);
+				fflush(stdout);
+				gwinHide(ghTabset);
+				//GWindowObject* target = ((GEventGWinButton*)pe)->gwin;
 				showAddFrame();
-//				ghK = createAddFrame();
-				//geventAttachSource(&gl, gwinKeyboardGetEventSource(*ghK), GLISTEN_KEYTRANSITIONS|GLISTEN_KEYUP);
 				break;
 			}
 			case GEVENT_KEYBOARD: {	
 				GEventKeyboard * pk = (GEventKeyboard *)pe;
-				fprintf(stderr, "%d\n", pk->bytecount);
 				if (pk->bytecount) {
 					for(uint32_t i = 0; i< pk->bytecount; i++) {
 						fprintf(stderr, "%d\n", pk->c[i]);
 					}
 				}
-				fflush(stdout);
-				fflush(stderr);
 				break;
 			}
 			case GEVENT_GWIN_CLOSE: {
-				fprintf(stderr, "\n\nHello\n");
-				fflush(stdout);
-				fflush(stderr);
-				hideVirtualKeyboard();
-				fprintf(stderr, "Bye\n\n\n");
-				fflush(stdout);
-				fflush(stderr);
-				hideAddFrame();
 				gwinShow(ghTabset);
+				hideVirtualKeyboard();
+				hideAddFrame();
+				break;
 			}
 			case GEVENT_GWIN_SLIDER: {
-				setSliderPosition(((GEventGWinSlider *)pe)->position);;
+				setSliderPosition(((GEventGWinSlider *)pe)->position);
+				break;
 			}
 		}
 

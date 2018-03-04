@@ -9,10 +9,12 @@
 
 void showAddFrame() {
 	gwinShow(ghFrame1);
+    showKeyBoard();
 }
 
 void hideAddFrame() {
 	gwinHide(ghFrame1);
+    hideKeyBoard();
 }
 
 void createAddFrame() {
@@ -28,10 +30,9 @@ void createAddFrame() {
     wi.g.width =  gdispGetWidth();
     wi.g.height =  gdispGetHeight();
     wi.g.y = 0;
-    wi.g.x = 0;//((480 - width) / 2);;
+    wi.g.x = 0;
     wi.text = "Add Can Message";
-    ghFrame1 = gwinFrameCreate(0, &wi, GWIN_FRAME_CLOSE_BTN);
-
+    ghFrame1 = gwinContainerCreate(0, &wi, GWIN_CONTAINER_BORDER);
 
 	gwinWidgetClearInit(&wi);
 
@@ -91,9 +92,19 @@ void createAddFrame() {
     wi.g.parent = ghFrame1;
 	wi.text = "0 Byte";
  
+    gwinWidgetClearInit(&wi);
+    wi.g.show = TRUE;
+    wi.g.width = 40;
+    wi.g.height = 40;
+    wi.g.parent = ghFrame1;
+    wi.g.x = 400;
+    wi.g.y = 20;
+    wi.text = "< BACK";
+    ghBackButton = gwinButtonCreate(NULL, &wi);
+
 	// Create the actual label
     ghLabel2 = gwinLabelCreate(NULL, &wi);
-    showVirtualKeyboard();
+    createKeyBoard(HEX_KEYBOARD);
    // return &ghFrame1;
 }
 
@@ -122,13 +133,13 @@ void setSliderPosition(int pos) {
     for(int i=0; i<pos; i++){
         gwinWidgetClearInit(&wi);
         wi.g.show = TRUE;
-        wi.g.x = 50 + i*40;
+        wi.g.x = 10+i*55;
         wi.g.y = 0;
-        wi.g.width = 25;
+        wi.g.width = 40;
         wi.g.height = 25;
         wi.g.parent = ghTexteditContainer;
         wi.text = "";
-        ghDataTextEdits[i] = gwinTexteditCreate(0, &wi, 100);
+        ghDataTextEdits[i] = gwinTexteditCreate(0, &wi, 2);
     }
 }
 

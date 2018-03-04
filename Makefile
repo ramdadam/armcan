@@ -32,21 +32,20 @@ CMSIS			= ./res/Drivers/CMSIS
 # Set these for your project
 #
 
-ARCH     = arm-none-eabi-
+ARCH     = /c/Program\ Files\ \(x86\)/GNU\ Tools\ ARM\ Embedded/6\ 2017-q2-update/bin/arm-none-eabi-
 SRCFLAGS = -ggdb -O1
 CFLAGS   = -fdata-sections -ffunction-sections -Wfatal-errors
 CXXFLAGS = -fno-rtti -Wfatal-errors
 ASFLAGS  = -fdata-sections -ffunction-sections
 LDFLAGS  = -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections
 
-SRC	 = Src/gwin_table.c
-SRC	 += Src/View/main_view.c
+SRC	 = Src/VirtualKeyBoard/vkeyboard.cpp
+SRC	 += Src/View/main_view.cpp
 SRC	 += Src/View/add_can_message.cpp
 SRC	 += Src/View/can_view.cpp
 SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
-SRC      += Src/emhashmap.c \
-Src/main.c \
+SRC      += Src/main.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c \

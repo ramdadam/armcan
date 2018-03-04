@@ -13,18 +13,6 @@ void mainThread(void* param)
 	return 0;
 }
 
-GListener	gl;
-extern gfxQueueASync*  eventQueue;
-
-void eventThread(void* params) {
-	geventListenerInit(&gl);
-	gwinAttachListener(&gl);
-	GEvent *pe = 0;
-	while(1) {
-		pe = geventEventWait(&gl, TIME_INFINITE);
-		gfxQueueASyncPut(eventQueue, (gfxQueueASyncItem*)pe);
-	}
-}
 
 void main()
 {
@@ -32,6 +20,5 @@ void main()
 
     gfxThreadCreate(0, 512, NORMAL_PRIORITY, mainThread, 0);
 
-    gfxThreadCreate(0, 512, NORMAL_PRIORITY, eventThread, 0);
 	return 0;
 }

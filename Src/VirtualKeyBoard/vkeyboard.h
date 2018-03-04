@@ -33,5 +33,8 @@ enum AC_KEYBOARD_TYPE {
 };
 
 
+void showKeyBoard();
+void hideKeyBoard();
+
 void createKeyBoard(AC_KEYBOARD_TYPE);
 void deleteKeyBoard();
