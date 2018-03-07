@@ -35,7 +35,8 @@ SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
 SRC      += Src/main_desktop.c
 OBJS     =
-DEFS     =
+DEFS     = GDISP_SCREEN_HEIGHT=280
+DEFS     += GDISP_SCREEN_WIDTH=480
 LIBS     =
 INCPATH  = Inc
 INCPATH += Src/VirtualKeyBoard

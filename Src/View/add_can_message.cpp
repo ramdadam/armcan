@@ -25,7 +25,7 @@ void createAddFrame() {
     const uint16_t width = 400;
     const uint16_t height = 160;
 
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
+    gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
     // Apply the frame parameters    
     wi.g.width =  gdispGetWidth();
     wi.g.height =  gdispGetHeight();
@@ -40,8 +40,8 @@ void createAddFrame() {
 	wi.g.show = TRUE;
 	wi.g.x = 50;
 	wi.g.y = 10;
-	wi.g.width = 45;
-	wi.g.height = 15;
+	wi.g.width = 0;
+	wi.g.height = 0;
     wi.g.parent = ghFrame1;
 	wi.text = "ID (hex)";
  
@@ -91,10 +91,11 @@ void createAddFrame() {
 	wi.g.height = 15;
     wi.g.parent = ghFrame1;
 	wi.text = "0 Byte";
+    ghLabel2 = gwinLabelCreate(NULL, &wi);
  
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
-    wi.g.width = 40;
+    wi.g.width = 80;
     wi.g.height = 40;
     wi.g.parent = ghFrame1;
     wi.g.x = 400;
@@ -103,7 +104,6 @@ void createAddFrame() {
     ghBackButton = gwinButtonCreate(NULL, &wi);
 
 	// Create the actual label
-    ghLabel2 = gwinLabelCreate(NULL, &wi);
     createKeyBoard(HEX_KEYBOARD);
    // return &ghFrame1;
 }
