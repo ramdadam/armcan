@@ -9,11 +9,11 @@
  * Set 4 = Symbols
  */
 
-static const GVSpecialKey Hex1SKeys[] = { { "\010", "\b", 0, 0 } };
+static const GVSpecialKey Hex1SKeys[] = {{ "\010", "\b", 0, 0 } };
 
 static const char Hex1Set1Row0[] = "123ABC";
 static const char Hex1Set1Row1[] = "456DEF";
-static const char Hex1Set0Row3[] = "7890";
+static const char Hex1Set0Row3[] = "7890\003\001";
 
 static const char *Hex1Set0[] = { Hex1Set1Row0, Hex1Set1Row1, Hex1Set0Row3, 0
 		, 0 };
