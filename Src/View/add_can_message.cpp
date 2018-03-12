@@ -8,18 +8,19 @@
 #include "../armcan/ugfx/src/gwin/gwin_class.h"
 #include "../armcan/ugfx/src/gwin/gwin_container.h"
 GHandle ghBackButton;
+GHandle ghAcceptButton;
 void showAddFrame()
 {
     gwinShow(ghFrame1);
     showKeyBoard();
-    firstStart=1;
+    byteOrderLabelVisible = 1;
 }
 
 void hideAddFrame()
 {
     gwinHide(ghFrame1);
     hideKeyBoard();
-    firstStart=0;
+    byteOrderLabelVisible = 0;
 }
 
 void createAddFrame()
@@ -59,7 +60,7 @@ void createAddFrame()
     wi.g.height = 35;
     wi.g.parent = ghFrame1;
     wi.text = "";
-    ghTextedit1 = gwinTexteditCreate(0, &wi, 11);
+    ghIDTextEdit = gwinTexteditCreate(0, &wi, 11);
 
     // Apply the checkbox parameters
     wi.g.x = 32;
@@ -97,7 +98,7 @@ void createAddFrame()
     wi.text = "0 Byte";
     ghLabel2 = gwinLabelCreate(NULL, &wi);
 
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));    
+    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
     wi.g.width = 25;
@@ -108,7 +109,7 @@ void createAddFrame()
     wi.text = "X";
     ghBackButton = gwinButtonCreate(NULL, &wi);
     createKeyBoard(HEX_KEYBOARD);
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));    
+    gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
@@ -132,21 +133,21 @@ void createAddFrame()
     wi.g.show = TRUE;
     wi.g.parent = ghFrame1;
     ghTexteditContainer = gwinContainerCreate(0, &wi, 0);
- 
+
     //MSB and LSB Label
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));    
-	wi.customDraw = 0;
-	wi.customParam = 0;
-	wi.customStyle = 0;
-	wi.g.show = FALSE;
-	wi.g.y = 160;
-	wi.g.x = 15;
-	wi.g.width = 0;
-	wi.g.height = 0;
-	wi.text = "MSB";
-	ghMSBLabel = gwinLabelCreate(NULL, &wi);
-	wi.text = "LSB";
-	ghLSBLabel = gwinLabelCreate(NULL, &wi);
+    gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
+    wi.customDraw = 0;
+    wi.customParam = 0;
+    wi.customStyle = 0;
+    wi.g.show = FALSE;
+    wi.g.y = 160;
+    wi.g.x = 15;
+    wi.g.width = 0;
+    wi.g.height = 0;
+    wi.text = "MSB";
+    ghMSBLabel = gwinLabelCreate(NULL, &wi);
+    wi.text = "LSB";
+    ghLSBLabel = gwinLabelCreate(NULL, &wi);
 
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans14"));
     for (int i = 0; i < 8; i++)
@@ -170,39 +171,59 @@ void setSliderPosition(int pos)
     snprintf(buffer, sizeof(buffer), "%d Byte", pos);
     gwinSetText(ghLabel2, buffer, TRUE);
 
-    fprintf(stderr, "pos: %d\n", pos);
-    fflush(stderr);
-    fflush(stdout);
     for (int i = 0; i < 8; i++)
     {
-    fprintf(stderr, "i: %d\n", i);
-    fflush(stderr);
-    fflush(stdout);
-        if(i==0 && pos > 1) {
-            // gdispDrawString( 10 + i * 55 , 145, "MSB", gdispOpenFont("DejaVuSans12"), Black);
-            // gwinMove(ghMSBLabel, 20+i*55, 155);
-        } else if(i==pos-1 && pos > 1) {
-            gwinMove(ghLSBLabel, 15+i*58, 160);
+        if (i == pos - 1 && pos > 1)
+        {
+            gwinMove(ghLSBLabel, 15 + i * 58, 160);
         }
         if (i >= pos)
         {
+            gwinSetText(ghDataTextEdits[i], 0, 1);
             gwinHide(ghDataTextEdits[i]);
+            gwinSetFocus(ghCheckbox1);
         }
         else
         {
             gwinShow(ghDataTextEdits[i]);
+            if(pos == 1) {
+                gwinSetFocus(ghCheckbox1);
+            } else {
+                ghDataTextEdits[0];
+            }
         }
     }
-    if(firstStart == 1 && pos > 1) {
+    if (byteOrderLabelVisible == 1 && pos > 1)
+    {
         gwinShow(ghLSBLabel);
         gwinShow(ghMSBLabel);
-        firstStart = 0;
+        byteOrderLabelVisible = 0;
     }
-    if(pos <= 1) {
+    if (pos <= 1)
+    {
         gwinHide(ghLSBLabel);
         gwinHide(ghMSBLabel);
-        firstStart = 1;
+        byteOrderLabelVisible = 1;
     }
+}
+
+can_gui_form_data getFormData() {
+    can_gui_form_data formData;
+    const char* idStr = gwinGetText(ghIDTextEdit);
+    formData.id = strtoul(idStr, NULL, 16);
+    
+    formData.dlc = gwinSliderGetPosition(ghSlider1);
+    formData.isRemote = gwinCheckboxIsChecked(ghCheckbox1);
+    for(uint8_t i = 0; i<formData.dlc; i++) {
+        const char* textStr = gwinGetText(ghDataTextEdits[i]);
+        formData.data_b[formData.dlc-i] = strtoul(textStr, NULL, 16);   
+        // fprintf(stderr, "i: %d\n", i);
+        // fprintf(stderr, "int: %d\n", formData.data_b[i]);
+        // fprintf(stderr, "string: %s\n", textStr);
+        // fflush(stderr);
+        // fflush(stdout);
+    }
+    return formData;
 }
 
 void showVirtualKeyboard()

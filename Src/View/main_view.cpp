@@ -3,6 +3,7 @@
 
 #include "gfx.h"
 #include "gwin_table.h"
+#include "can_gui_package.h"
 #include <stdio.h>
 #include "tx_can_view.h"
 #include "rx_can_view.h"
@@ -15,6 +16,7 @@ GHandle *table_tx;
 extern GHandle ghAddButton;
 //add_can_message back/close button
 extern GHandle ghBackButton;
+extern GHandle ghAcceptButton;
 
 void createTable(void)
 {
@@ -31,7 +33,6 @@ void createTable(void)
 
 void createTabset(void)
 {
-
 	GWidgetInit wi;
 	gwinWidgetClearInit(&wi);
 	wi.g.show = TRUE;
@@ -75,15 +76,18 @@ extern "C" void initMainPage(void)
 		case GEVENT_GWIN_BUTTON:
 		{
 			GWindowObject *target = ((GEventGWinButton *)pe)->gwin;
-				fprintf(stderr, "%d\n", target);
-				fprintf(stderr, "%d\n\n", ghBackButton);
-				fflush(stderr);
-				fflush(stdout);
 			if (target == ghBackButton)
 			{
 				gwinShow(ghTabset);
 				hideAddFrame();
-			} else {
+			}
+			else if (target == ghAcceptButton)
+			{
+				// can_gui_package* package = convertCANFormDataToGuiPackage(getFormData());
+				// addCanMessageToRXView(package);
+			}
+			else
+			{
 				gwinHide(ghTabset);
 				showAddFrame();
 			}

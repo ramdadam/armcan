@@ -1,8 +1,10 @@
 #ifndef ADDCANMESSAGE_H_
 #define ADDCANMESSAGE_H_
+#include "can_gui_package.h"
+
 static GHandle      ghFrame1;
 static GHandle		ghKeyboard;
-static GHandle		ghTextedit1;
+static GHandle		ghIDTextEdit;
 static GHandle		ghLabel1;
 static GHandle		ghLabel2;
 static GHandle		ghCheckbox1;
@@ -13,17 +15,20 @@ static uint16_t     lastPos=0;
 static GHandle		ghTexteditContainer = NULL;
 static GHandle      ghDataTextEdits[8] = {NULL};
 extern GHandle      ghBackButton;
-static GHandle      ghAcceptButton;
-static bool_t       firstStart=0;
+extern GHandle      ghAcceptButton;
+static bool_t       byteOrderLabelVisible=0;
+
 
 void showAddFrame();
 void hideAddFrame();
 
 void setSliderPosition(int pos);
 void createAddFrame();
+can_gui_form_data getFormData();
 
 void showVirtualKeyboard();
 void hideVirtualKeyboard();
+
 
 
 #endif

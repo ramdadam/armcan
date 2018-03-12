@@ -38,11 +38,13 @@ SRC	 += Src/View/add_can_message.cpp
 SRC	 += Src/View/can_view.cpp
 SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
+SRC	 += Src/emhashmap.c
 SRC      += Src/main_desktop.c
 OBJS     =
 DEFS     =
 LIBS     =
 INCPATH  = Inc
+INCPATH  += Src/common
 INCPATH += Src/VirtualKeyBoard
 LIBPATH  =
 

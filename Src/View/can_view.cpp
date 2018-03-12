@@ -29,19 +29,18 @@ GHandle* createBaseTableWidget(char** header, uint32_t** colWidths, uint32_t col
         gwinSetDefaultFont(titleFont);
         gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
         gwinSetDefaultBgColor(Gray_80);
-        char        item[20] = "Item Nr.: 1";
 
         table_view = gwinListCreate(NULL, &wi, FALSE);
         gwinListSetScroll(table_view, scrollBehaviour);
 
-        for(int i=0; i<30; i++) {
-            gwinListAddItem(table_view, item, TRUE);
-
-        }
         titleFont = gdispOpenFont("DejaVuSans12");
 
         gwinSetDefaultBgColor(oldDefaultColor);
         return &table_view;
+}
+
+void addRow(char* item) {
+    gwinListAddItem(table_view, item, TRUE);
 }
 
 void deleteTableWidget() {

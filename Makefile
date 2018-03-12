@@ -31,8 +31,7 @@ CMSIS			= ./res/Drivers/CMSIS
 ##############################################################################################
 # Set these for your project
 #
-
-ARCH     = /c/Program\ Files\ \(x86\)/GNU\ Tools\ ARM\ Embedded/6\ 2017-q2-update/bin/arm-none-eabi-
+ARCH     = /opt/gcc-arm-none-eabi-7-2017-q4-major-linux/bin/arm-none-eabi-
 SRCFLAGS = -ggdb -O1
 CFLAGS   = -fdata-sections -ffunction-sections -Wfatal-errors
 CXXFLAGS = -fno-rtti -Wfatal-errors
@@ -45,6 +44,7 @@ SRC	 += Src/View/add_can_message.cpp
 SRC	 += Src/View/can_view.cpp
 SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
+SRC	 += Src/emhashmap.c
 SRC      += Src/main.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c \
@@ -73,6 +73,7 @@ DEFS     = GFX_OS_HEAP_SIZE=40960 STM32F746xx GFX_OS_NO_INIT
 #DEFS     = 
 LIBS     =
 INCPATH  = ./Inc
+INCPATH += Src/VirtualKeyBoard
 INCPATH += ./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include
 INCPATH += ./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 INCPATH += ./res/Drivers/CMSIS/Include
