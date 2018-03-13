@@ -83,8 +83,8 @@ extern "C" void initMainPage(void)
 			}
 			else if (target == ghAcceptButton)
 			{
-				// can_gui_package* package = convertCANFormDataToGuiPackage(getFormData());
-				// addCanMessageToRXView(package);
+				can_gui_package* package = convertCANFormDataToGuiPackage(&getFormData());
+				addCanMessageToRXView(package);
 			}
 			else
 			{
