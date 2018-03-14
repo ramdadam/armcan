@@ -31,12 +31,12 @@ CMSIS			= ./res/Drivers/CMSIS
 ##############################################################################################
 # Set these for your project
 #
-ARCH     = /opt/gcc-arm-none-eabi-7-2017-q4-major-linux/bin/arm-none-eabi-
+ARCH     = /opt/gcc-arm-none-eabi-7-2017-q4-major-linux/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-#/opt/gcc-arm-none-eabi-7-2017-q4-major-linux/bin/arm-none-eabi-
 SRCFLAGS = -ggdb -O1
 CFLAGS   = -fdata-sections -ffunction-sections -Wfatal-errors
-CXXFLAGS = -fno-rtti -Wfatal-errors
+CXXFLAGS = -fno-rtti -Wfatal-errors -lstdc++ 
 ASFLAGS  = -fdata-sections -ffunction-sections
-LDFLAGS  = -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections
+LDFLAGS  = -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections 
 
 SRC	 = Src/VirtualKeyBoard/vkeyboard.cpp
 SRC	 += Src/View/main_view.cpp
@@ -74,6 +74,7 @@ DEFS     = GFX_OS_HEAP_SIZE=40960 STM32F746xx GFX_OS_NO_INIT
 LIBS     =
 INCPATH  = ./Inc
 INCPATH += Src/VirtualKeyBoard
+INCPATH += Src/Common
 INCPATH += ./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include
 INCPATH += ./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 INCPATH += ./res/Drivers/CMSIS/Include

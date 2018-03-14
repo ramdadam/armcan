@@ -27,11 +27,11 @@ typedef struct
     };
 } can_gui_form_data;
 
-void convertCanGuiPackageToString(can_gui_package* package, char* string) {
+static void convertCanGuiPackageToString(can_gui_package* package, char* string) {
     
 }
 
-can_gui_package* convertCANFormDataToGuiPackage(can_gui_form_data* package)
+static can_gui_package* convertCANFormDataToGuiPackage(can_gui_form_data* package)
 {
     can_gui_package *guiPackage = (can_gui_package*)gfxAlloc(sizeof(can_gui_package));
     guiPackage->id = package->id;

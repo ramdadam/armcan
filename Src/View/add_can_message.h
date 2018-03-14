@@ -1,6 +1,5 @@
 #ifndef ADDCANMESSAGE_H_
 #define ADDCANMESSAGE_H_
-#include "can_gui_package.h"
 
 static GHandle      ghFrame1;
 static GHandle		ghKeyboard;

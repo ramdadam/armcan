@@ -9,6 +9,19 @@
 #include "rx_can_view.h"
 #include "add_can_message.h"
 
+#include <map>
+#include <iterator>
+void * operator new(std::size_t n)
+{
+  void * const p = gfxAlloc(n);
+  // handle p == 0
+  return p;
+}
+
+void operator delete(void * p) // or delete(void *, std::size_t)
+{
+  gfxFree(p);
+}
 GHandle ghTabset = 0;
 GHandle tabset_page_1;
 GHandle tabset_page_2;
@@ -57,10 +70,10 @@ extern "C" void initMainPage(void)
 	gdispClear(White);
 	createAddFrame();
 	createTabset();
-
+	std::map <int, int> gquiz1;
 	geventListenerInit(&gl);
 	gwinAttachListener(&gl);
-
+	gquiz1.insert(std::pair <int, int> (1, 40));
 	while (1)
 	{
 
@@ -83,8 +96,8 @@ extern "C" void initMainPage(void)
 			}
 			else if (target == ghAcceptButton)
 			{
-				can_gui_package* package = convertCANFormDataToGuiPackage(&getFormData());
-				addCanMessageToRXView(package);
+				// can_gui_package* package = convertCANFormDataToGuiPackage(&getFormData());
+				// addCanMessageToRXView(package);
 			}
 			else
 			{

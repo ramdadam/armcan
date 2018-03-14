@@ -1,4 +1,5 @@
 #include "gfx.h"
+#include "can_gui_package.h"
 #include "add_can_message.h"
 #include <stdio.h>
 #include <stdint.h>

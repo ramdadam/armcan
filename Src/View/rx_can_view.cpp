@@ -1,6 +1,7 @@
 #include "gfx.h"
 #include "can_view.h"
-
+#include "can_gui_package.h"
+#define RX_CAN_TABLE_COL_COUNT 4
 void createRxCanViewTable(GHandle *parent)
 {
     const uint8_t colCount = RX_CAN_TABLE_COL_COUNT;
@@ -18,28 +19,8 @@ void createRxCanViewTable(GHandle *parent)
     uint32_t *columnWidths[3] = {&col1, &col2, &col3};
 #endif
     createBaseTableWidget(header, columnWidths, colCount, parent);
-    initHashMap();
 }
 
-
-void addCanMessageToRXView(uint32_t id, can_gui_package *package)
-{
-    if (!emhashmap_contains(map, id))
-    {
-        emhashmap_put(&map, id, (void *)package);
-    }
-    
-}
-
-void deleteCANMessage(uint32_t id)
-{
-    if (!emhashmap_contains(map, id))
-    {
-        can_gui_package *package = (can_gui_package *)emhashmap_get(&map, id);
-        gfxFree(package);
-        emhashmap_remove(map, id);
-    }
-}
 
 void deleteRxCanViewTable()
 {

@@ -199,12 +199,12 @@ ifneq ($(OPT_VERBOSE_COMPILE),yes)
   ifneq ($(filter %.cpp,$(SRC) $(SRC_NOTHUMB) $(SRC_THUMB)),)
 	@echo .
 	@echo C++ Compiler Options..
-	@echo $(XCXX) -c $(CPPFLAGS) $(CXXFLAGS) $(SRCFLAGS) $(@:.o=.cpp) -o $(OBJDIR)/$@
+	@echo $(XCXX) -c $(CPPFLAGS)  $(SRCFLAGS) $(@:.o=.cpp) -o $(OBJDIR)/$@ $(CXXFLAGS)
   else
    ifneq ($(filter %.c++,$(SRC) $(SRC_NOTHUMB) $(SRC_THUMB)),)
 	@echo .
 	@echo C++ Compiler Options..
-	@echo $(XCXX) -c $(CPPFLAGS) $(CXXFLAGS) $(SRCFLAGS) $(@:.o=.c++) -o $(OBJDIR)/$@
+	@echo $(XCXX) -c $(CPPFLAGS)  $(SRCFLAGS) $(@:.o=.c++) -o $(OBJDIR)/$@ $(CXXFLAGS)
    endif
   endif
   ifneq ($(filter %.c,$(SRC) $(SRC_NOTHUMB) $(SRC_THUMB)),)
