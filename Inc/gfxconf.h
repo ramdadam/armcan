@@ -46,9 +46,11 @@
 #define GFX_OS_INIT_NO_WARNING			TRUE
 #define GWIN_BUTTON_LAZY_RELEASE        TRUE
 #define GFX_USE_GINPUT					TRUE
+#define GFX_EMULATE_MALLOC              TRUE
 /* GFX sub-systems to turn on */
 #define GFX_USE_GDISP                   TRUE
 #define GFX_USE_GEVENT					TRUE
+#define GQUEUE_NEED_GSYNC				TRUE
 /* Features for the GDISP sub-system. */
 #define GDISP_NEED_VALIDATION           FALSE
 #define GDISP_NEED_CLIP                 TRUE
@@ -72,8 +74,11 @@
 #define GDISP_NEED_TEXT					TRUE
 #define GWIN_NEED_LABEL					TRUE
 #define GWIN_NEED_BUTTON                TRUE
+#define GWIN_NEED_RADIO                 TRUE
 #define GWIN_NEED_TABSET			    TRUE
 #define GWIN_NEED_LIST					TRUE
+#define GWIN_NEED_IMAGE					TRUE
+#define GDISP_NEED_IMAGE					TRUE
 /* Builtin Fonts */
 #define GDISP_INCLUDE_FONT_SMALL        FALSE
 #define GDISP_INCLUDE_FONT_LARGER       FALSE
@@ -87,7 +92,13 @@
 #define GDISP_NEED_CONVEX_POLYGON		TRUE
 #define GDISP_NEED_MULTITHREAD			TRUE
 #define GWIN_NEED_WINDOWMANAGER			TRUE
+#define GFILE_NEED_MEMFS			TRUE
 #define GFX_USE_GTIMER					TRUE
 #define GFX_USE_GQUEUE					TRUE
+#define GFX_USE_GFILE                                TRUE
+
+#define GFILE_NEED_ROMFS                             TRUE
 #define GQUEUE_NEED_ASYNC				TRUE
+    #define GDISP_NEED_IMAGE_BMP                     TRUE
+        #define GDISP_NEED_IMAGE_BMP_24              TRUE
 #endif /* _GFXCONF_H */

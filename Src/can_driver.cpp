@@ -161,6 +161,7 @@
  //! CAN receive interrupt service routine
      extern "C" void CAN1_RX0_IRQHandler(void)
      {
+        //  portENTER_CRITICAL();
          ENTER_ISR;
  
          CAN_packet msg;
@@ -180,6 +181,7 @@
  //! CAN transmit interrupt service routine
      extern "C" void CAN1_TX_IRQHandler(void)
      {
+        //  portENTER_CRITICAL();
          ENTER_ISR;
  
          CAN_packet msg;

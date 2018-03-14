@@ -1,0 +1,111 @@
+From 80194245d1f9566a033f8181611254f9ed995d7e Mon Sep 17 00:00:00 2001
+From: Mohamad Ramadan <mohamedr90@gmail.com>
+Date: Mon, 19 Mar 2018 01:45:49 -0700
+Subject: [PATCH] wip
+
+---
+ Src/View/edit_can_message.cpp | 62 +++++++++++++++++++++++++++++++------------
+ Src/View/edit_can_message.h   |  1 +
+ 2 files changed, 46 insertions(+), 17 deletions(-)
+
+diff --git a/Src/View/edit_can_message.cpp b/Src/View/edit_can_message.cpp
+index 52cd685..04e23fe 100644
+--- a/Src/View/edit_can_message.cpp
++++ b/Src/View/edit_can_message.cpp
+@@ -1,4 +1,3 @@
+-#include "gfx.h"
+ #include "can_gui_package.h"
+ #include "edit_can_message.h"
+ 
+@@ -60,24 +59,12 @@ void editCanMessage(can_gui_package* package, uint8_t useAlloc = FALSE) {
+     wi.text = (const char*) idString;
+     ghEditIDLabel = gwinLabelCreate(NULL, &wi);
+ 
+-
+-    gwinWidgetClearInit(&wi);
+-    char* dlcString = (char*) gfxAlloc(sizeof(char)* 12);
+-    snprintf(dlcString, 12, "DLC: %d Byte", 8);
+-    wi.g.show = TRUE;
+-    wi.g.x = 35;
+-    wi.g.y = 35;
+-    wi.g.width = 0;
+-    wi.g.height = 0;
+-    wi.g.parent = ghFrame;
+-    wi.text = (const char*) dlcString;
+-    ghEditIDLabel = gwinLabelCreate(NULL, &wi);
+-    
+-    if(1) {
++   
++    if(0) {
+         gwinWidgetClearInit(&wi);
+-        wi.g.x = 32;
++        wi.g.x = 15;
+         wi.g.show = TRUE;
+-        wi.g.y = 50;
++        wi.g.y = 40;
+         wi.g.width = 180;
+         wi.g.height = 30;
+         wi.g.parent = ghFrame;
+@@ -87,6 +74,47 @@ void editCanMessage(can_gui_package* package, uint8_t useAlloc = FALSE) {
+         wi.customStyle = 0;
+         ghEditCheckbox = gwinCheckboxCreate(NULL, &wi);
+         gwinCheckboxCheck(ghEditCheckbox, 1);
++        gwinDisable(ghEditCheckbox);
++    } else {
++        gwinWidgetClearInit(&wi);
++        char* dlcString = (char*) gfxAlloc(sizeof(char)* 12);
++        snprintf(dlcString, 12, "DLC: %d Byte", 8);
++        wi.g.show = TRUE;
++        wi.g.x = 35;
++        wi.g.y = 35;
++        wi.g.width = 0;
++        wi.g.height = 0;
++        wi.g.parent = ghFrame;
++        wi.text = (const char*) dlcString;
++        ghEditIDLabel = gwinLabelCreate(NULL, &wi);
++        // DATA: 00:00:00:00:00:00:00:00
++        char* dataString = (char*) gfxAlloc(sizeof(char) * 30);
++        const char* dataDescription = "DATA: ";
++        const char* format = "%02X";
++        const char* formatDpp = "%02X:";
++        uint16_t pos = strlen(dataDescription);
++        
++        for(uint8_t i = 0; i<8; i++) { //package->dlc nicht 8
++            if(i==8-1) {
++                snprintf(&dataString[pos],4, format, 0xff);
++                pos += strlen(format);
++            } else {
++                snprintf(&dataString[pos],5,  formatDpp, 255);
++                pos += strlen(formatDpp);
++            }
++        }
++        gwinWidgetClearInit(&wi);
++        wi.g.show = TRUE;
++        wi.g.x = 35;
++        wi.g.y = 35;
++        wi.g.width = 0;
++        wi.g.height = 0;
++        wi.g.parent = ghFrame;
++        wi.text = (const char*) dataString;
++        ghEditDataValue = gwinLabelCreate(NULL, &wi);
++
++        
++
+     }
+ 
+ 
+diff --git a/Src/View/edit_can_message.h b/Src/View/edit_can_message.h
+index 9cf8459..40c7f88 100644
+--- a/Src/View/edit_can_message.h
++++ b/Src/View/edit_can_message.h
+@@ -5,6 +5,7 @@ static GHandle ghFrame;
+ static GHandle ghEditBackButton;
+ static GHandle ghEditAcceptButton;
+ static GHandle ghEditIDLabel;
++static GHandle ghEditDataValue;
+ static GHandle ghEditCheckbox;
+ void editCanMessage(can_gui_package* package, uint8_t useAlloc);
+ 
+-- 
+2.14.1
+

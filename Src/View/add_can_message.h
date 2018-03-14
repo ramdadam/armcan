@@ -1,6 +1,5 @@
 #ifndef ADDCANMESSAGE_H_
 #define ADDCANMESSAGE_H_
-#include "can_gui_package.h"
 
 static GHandle      ghFrame1;
 static GHandle		ghKeyboard;
@@ -24,7 +23,7 @@ void hideAddFrame();
 
 void setSliderPosition(int pos);
 void createAddFrame();
-can_gui_form_data getFormData();
+uint8_t getFormData(can_gui_form_data*);
 
 void showVirtualKeyboard();
 void hideVirtualKeyboard();

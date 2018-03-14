@@ -1,8 +1,6 @@
-
 #include "gfx.h"
-//#include "gwin_table.h"
 
-GHandle table_view = NULL;
+GHandle table_view;
 static font_t titleFont;
 
 #define Gray_40			HTML2COLOR(0x404040)
@@ -10,7 +8,7 @@ static font_t titleFont;
 #define Gray_A0			HTML2COLOR(0xA0A0A0)
 #define Gray_C0			HTML2COLOR(0xC0C0C0)
 
-GHandle* createBaseTableWidget(char** header, uint32_t** colWidths, uint32_t colCount, GHandle* parent, uint16_t width, uint16_t height) {
+GHandle createBaseTableWidget(GHandle* parent, uint16_t width, uint16_t height) {
         GWidgetInit wi;        
 		gwinWidgetClearInit(&wi);
 		wi.g.width = width;
@@ -25,7 +23,6 @@ GHandle* createBaseTableWidget(char** header, uint32_t** colWidths, uint32_t col
         color_t oldDefaultColor = gwinGetDefaultColor();
 
         enum scroll_t scrollBehaviour = scrollSmooth;
-
         gwinSetDefaultFont(titleFont);
         gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
         gwinSetDefaultBgColor(Gray_80);
@@ -36,7 +33,7 @@ GHandle* createBaseTableWidget(char** header, uint32_t** colWidths, uint32_t col
         titleFont = gdispOpenFont("DejaVuSans12");
 
         gwinSetDefaultBgColor(oldDefaultColor);
-        return &table_view;
+        return table_view;
 }
 
 void addRow(char* item) {
@@ -46,6 +43,5 @@ void addRow(char* item) {
 void deleteTableWidget() {
     if(table_view != NULL) {
         gwinDestroy(table_view);
-        //gwinTableDeleteAll(table_view);
     }
 }

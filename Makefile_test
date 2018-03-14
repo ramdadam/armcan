@@ -38,7 +38,10 @@ SRC	 += Src/View/add_can_message.cpp
 SRC	 += Src/View/can_view.cpp
 SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
+<<<<<<< Updated upstream
+=======
 SRC	 += Src/emhashmap.c
+>>>>>>> Stashed changes
 SRC      += test/common/test_common.c
 OBJS     =
 DEFS     =

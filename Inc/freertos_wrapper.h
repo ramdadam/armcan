@@ -300,74 +300,7 @@
  {
      vTaskResume(thatone.get_handle());
  }
- 
- /*! \brief RestrictedTask class
-  *
-  *  Create an unprivileged task with limited access rights.
-  *
-  *  A restricted task can only access it's automatic data.
-  *
-  *  Accessing global and static data is prohibited by the MPU.
-  *
-  *  Accessing COMMON data is allowed by default.
-  */
- class RestrictedTask: public Task
- {
- private:
-     //! task constructor helper function
-     void RestrictedTaskFromParameter(TaskParameters_t p, bool isSuspended)
-     {
-         if (p.puxStackBuffer == 0) // dynamically allocate stack memory if none given
-         {
-             p.puxStackBuffer = (StackType_t*) pvPortMallocAlignedMemory(
-                     p.usStackDepth * sizeof( portSTACK_TYPE),
-                     p.usStackDepth * sizeof( portSTACK_TYPE));
-             ASSERT(p.puxStackBuffer != 0);
-         }
- 
-         xTaskCreateRestricted(&p, &task_handle);
-         if(isSuspended) {
-             vTaskSuspend(task_handle);
-         }
-         ASSERT(task_handle != 0);
-     }
- public:
-     //! RestrictedTask constructor
-     //! \param p TaskParameters_t task parameters block
-     //!
-     //! If pointer to stack=0 new stack space will be allocated from FreeRTOs system memory pool
-     //!
-     //! Attention: Unprivileged tasks need aligned stack buffers !
-     RestrictedTask(TaskParameters_t p, bool isSuspended = false)
-     {
-         RestrictedTaskFromParameter(p, isSuspended);
-     }
-     //! RestrictedTask constructor (simple)
-     //! \param test_task code to be executed (TaskFunction_t)
-     //! \param name tasks name (for debugging)
-     //! \param stacksize size of stack in 32bit units
-     //! \param parameters generic pointer to data
-     //! \param priority tasks priority
-     RestrictedTask(TaskFunction_t test_task, char const * name = "RES",
-             uint16_t stack_size = configMINIMAL_STACK_SIZE, void * parameters =
-                     0, unsigned priority =
-             STANDARD_TASK_PRIORITY, MemoryRegion_t *xRegions = 0, bool isSuspended = false)
-     {
-         TaskParameters_t p =
-         { test_task, name, stack_size, parameters, priority, 0,
-             {
-                 { COMMON_BLOCK, COMMON_SIZE, portMPU_REGION_READ_WRITE },
-                 { 0, 0, 0 },
-                 { 0, 0, 0 }
-             }
-         };
-         if (xRegions != 0)
-             memcpy(p.xRegions, xRegions,
-                     sizeof(MemoryRegion_t) * portNUM_CONFIGURABLE_REGIONS);
-         RestrictedTaskFromParameter(p, isSuspended);
-     }
- };
- 
+
  //! helper function to compute a size that expressible as 2^n
  inline unsigned fit_size( unsigned wanted_size)
  {
@@ -377,59 +310,7 @@
      return tile_size;
  }
  
- // object factory for active objects
- template <class runner> class active_object
- {
-     typedef struct
-     {
-         void * task_info;
-         runner ** pp_instance;
-     }task_info_block;
- public:
-     active_object( void * data=0, unsigned stacksize=configMINIMAL_STACK_SIZE, UBaseType_t priority=STANDARD_TASK_PRIORITY, const char * const name = "ActObj")
-         : init_data( {data, &the_instance}),
-         the_instance(0),
-         task(
-                 {
-                     (TaskFunction_t) start,
-                     name,
-                     // max. possible stack fitting into the MPU page in 32bit word units
-                     (uint16_t)fit_size( stacksize*sizeof( portSTACK_TYPE) + sizeof(runner)),
-                     (void *)&init_data,
-                     priority | portPRIVILEGE_BIT,
-                     // align the stack to the bottom of our MPU page
-                     // the stack top is the bottom of our (*this) object
-                     0,
-                     {
-                             {COMMON_BLOCK,COMMON_SIZE,portMPU_REGION_READ_WRITE},
-                             {0,0,0},
-                             {0,0,0}
-                     }
-                 }
-             )
-     {};
-     inline runner & instance( void) const
-     {
-         return *the_instance;
-     }
- private:
-     // this method is run within the created task
-     // it creates the active object and execute it's run() method
-     static void start( task_info_block *data)
-     {
-         runner the_object( data->task_info); // create object
-         *(data->pp_instance) = &the_object;  // remember instance within active_object
-         drop_privileges();					 // go unprivileged
-         the_object.run(); 	 				 // go running
-         ASSERT( 0); 						 // run() should not return !!
-         suspend();  						 // just in case it does anyway ...
-     }
-     task_info_block init_data;
-     runner *the_instance;
-     RestrictedTask task;
- };
- 
- //! Delay task execution
+//! Delay task execution
  //! \param time delay time in ticks
  inline void delay(TickType_t time)
  {

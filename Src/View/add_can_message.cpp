@@ -1,14 +1,19 @@
+#include "notification_helper.h"
 #include "gfx.h"
+#include "can_gui_package.h"
 #include "add_can_message.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include "vkeyboard.h"
 
+#include <string.h>
 #include "../armcan/ugfx/src/gwin/gwin_class.h"
 #include "../armcan/ugfx/src/gwin/gwin_container.h"
+
 GHandle ghBackButton;
 GHandle ghAcceptButton;
+
 void showAddFrame()
 {
     gwinShow(ghFrame1);
@@ -60,7 +65,7 @@ void createAddFrame()
     wi.g.height = 35;
     wi.g.parent = ghFrame1;
     wi.text = "";
-    ghIDTextEdit = gwinTexteditCreate(0, &wi, 11);
+    ghIDTextEdit = gwinTexteditCreate(0, &wi, 3);
 
     // Apply the checkbox parameters
     wi.g.x = 32;
@@ -108,7 +113,6 @@ void createAddFrame()
     wi.g.y = 1;
     wi.text = "X";
     ghBackButton = gwinButtonCreate(NULL, &wi);
-    createKeyBoard(HEX_KEYBOARD);
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
 
     gwinWidgetClearInit(&wi);
@@ -156,7 +160,7 @@ void createAddFrame()
         wi.g.show = FALSE;
         wi.g.x = i * 58;
         wi.g.y = 0;
-        wi.g.width = 53;
+        wi.g.width = 55;
         wi.g.height = 35;
         wi.g.parent = ghTexteditContainer;
         wi.text = "";
@@ -207,23 +211,32 @@ void setSliderPosition(int pos)
     }
 }
 
-can_gui_form_data getFormData() {
-    can_gui_form_data formData;
+uint8_t getFormData(can_gui_form_data* formData) {
     const char* idStr = gwinGetText(ghIDTextEdit);
-    formData.id = strtoul(idStr, NULL, 16);
-    
-    formData.dlc = gwinSliderGetPosition(ghSlider1);
-    formData.isRemote = gwinCheckboxIsChecked(ghCheckbox1);
-    for(uint8_t i = 0; i<formData.dlc; i++) {
-        const char* textStr = gwinGetText(ghDataTextEdits[i]);
-        formData.data_b[formData.dlc-i] = strtoul(textStr, NULL, 16);   
-        // fprintf(stderr, "i: %d\n", i);
-        // fprintf(stderr, "int: %d\n", formData.data_b[i]);
-        // fprintf(stderr, "string: %s\n", textStr);
-        // fflush(stderr);
-        // fflush(stdout);
+    formData->id = strtoul(idStr, NULL, 16);
+    if(formData->id > 0x7FF) {
+        showMessage(" ID muss kleiner als 0x7FF sein ");
+        return 0;
     }
-    return formData;
+    formData->dlc = gwinSliderGetPosition(ghSlider1);
+    formData->isRemote = gwinCheckboxIsChecked(ghCheckbox1);
+
+    for(uint8_t i = 0; i<8; i++) {
+        const char* textStr = gwinGetText(ghDataTextEdits[i]);
+        if(strlen(textStr) == 0) {
+            formData->data.data_b[7-i] = 0;
+            continue;
+        }
+        if(i<formData->dlc) {
+            formData->data.data_b[7-i] = strtoul(textStr, NULL, 16);   
+        } else {
+            formData->data.data_b[7-i] = 0;            
+        }
+        gwinSetText(ghDataTextEdits[i], 0, FALSE);
+    }
+    setSliderPosition(0);
+    gwinSliderSetPosition(ghSlider1, 0);
+    return 1;
 }
 
 void showVirtualKeyboard()

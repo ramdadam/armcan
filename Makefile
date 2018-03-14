@@ -31,20 +31,24 @@ CMSIS			= ./res/Drivers/CMSIS
 ##############################################################################################
 # Set these for your project
 #
-ARCH     = /opt/gcc-arm-none-eabi-7-2017-q4-major-linux/bin/arm-none-eabi-
+ARCH     = /opt/gcc-arm-none-eabi-7-2017-q4-major-linux/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-
+#/opt/gcc-arm-none-eabi-6-2017-q2-update/bin/arm-none-eabi-
 SRCFLAGS = -ggdb -O1
 CFLAGS   = -fdata-sections -ffunction-sections -Wfatal-errors
-CXXFLAGS = -fno-rtti -Wfatal-errors
+CXXFLAGS = -fno-rtti -Wfatal-errors -lstdc++ 
 ASFLAGS  = -fdata-sections -ffunction-sections
-LDFLAGS  = -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections
+LDFLAGS  = -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections 
 
 SRC	 = Src/VirtualKeyBoard/vkeyboard.cpp
+SRC	 += Src/common/notification_helper.cpp
 SRC	 += Src/View/main_view.cpp
 SRC	 += Src/View/add_can_message.cpp
+SRC	 += Src/View/edit_can_message.cpp
 SRC	 += Src/View/can_view.cpp
 SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
-SRC	 += Src/emhashmap.c
+SRC	 += Src/common/can_gui_package.cpp
+SRC	 += Src/can_driver.cpp
 SRC      += Src/main.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c \
@@ -69,11 +73,13 @@ SRC      += Src/main.c \
 ./res/startup_stm32f746xx.s \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c  
 OBJS     =
-DEFS     = GFX_OS_HEAP_SIZE=40960 STM32F746xx GFX_OS_NO_INIT
+DEFS     = GFX_OS_HEAP_SIZE=40960 STM32F746xx GFX_OS_NO_INIT CAN_BITRATE_HZ=100000 CAN_INTERRUPT_PRIORITY=14
 #DEFS     = 
 LIBS     =
 INCPATH  = ./Inc
+INCPATH  += Inc/images
 INCPATH += Src/VirtualKeyBoard
+INCPATH += Src/Common
 INCPATH += ./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include
 INCPATH += ./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 INCPATH += ./res/Drivers/CMSIS/Include

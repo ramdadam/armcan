@@ -5,7 +5,9 @@
 #include <stdlib.h>
 
 static GHandle ghKeyboard = 0;
-void createKeyBoard(AC_KEYBOARD_TYPE keyBoardType) {
+void createKeyBoard(AC_KEYBOARD_TYPE keyBoardType)
+{
+	deleteKeyBoard();
 	GWidgetInit wi;
 	static font_t font;
 
@@ -22,25 +24,38 @@ void createKeyBoard(AC_KEYBOARD_TYPE keyBoardType) {
 
 	wi.g.show = FALSE;
 	static GVKeyTable keyboardLayout;
-	switch (keyBoardType) {
+	switch (keyBoardType)
+	{
 	case HEX_KEYBOARD:
+	{
 		keyboardLayout = VirtualKeyboardHexInput;
+		break;
+	}
+	case NUMERIC_KEYBOARD:
+	{
+		keyboardLayout = VirtualKeyboardNumInput;
+		break;
+	}
 	}
 	ghKeyboard = gwinKeyboardCreate(0, &wi);
 	gwinKeyboardSetLayout(ghKeyboard, &keyboardLayout);
 }
 
-void deleteKeyBoard() {
-	if(ghKeyboard != 0) {
+void deleteKeyBoard()
+{
+	if (ghKeyboard != 0)
+	{
 		gwinDestroy(ghKeyboard);
-		ghKeyboard=0;
+		ghKeyboard = 0;
 	}
 }
 
-void showKeyBoard() {
+void showKeyBoard()
+{
 	gwinShow(ghKeyboard);
 }
 
-void hideKeyBoard() {
+void hideKeyBoard()
+{
 	gwinHide(ghKeyboard);
 }
