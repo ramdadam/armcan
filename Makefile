@@ -44,7 +44,6 @@ SRC	 += Src/View/add_can_message.cpp
 SRC	 += Src/View/can_view.cpp
 SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
-SRC	 += Src/emhashmap.c
 SRC      += Src/main.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c \

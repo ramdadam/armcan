@@ -14,7 +14,7 @@ typedef struct
     uint64_t count = 0;
     uint32_t cycle = 0;
 } can_gui_package;
-
+typedef can_gui_package** can_gui_package_array;
 typedef struct
 {
     uint16_t id;

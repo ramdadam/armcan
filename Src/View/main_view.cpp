@@ -9,8 +9,6 @@
 #include "rx_can_view.h"
 #include "add_can_message.h"
 
-#include <map>
-#include <iterator>
 void * operator new(std::size_t n)
 {
   void * const p = gfxAlloc(n);
@@ -70,10 +68,8 @@ extern "C" void initMainPage(void)
 	gdispClear(White);
 	createAddFrame();
 	createTabset();
-	std::map <int, int> gquiz1;
 	geventListenerInit(&gl);
 	gwinAttachListener(&gl);
-	gquiz1.insert(std::pair <int, int> (1, 40));
 	while (1)
 	{
 
