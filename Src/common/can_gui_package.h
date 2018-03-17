@@ -14,7 +14,6 @@ typedef struct
     uint64_t count = 0;
     uint32_t cycle = 0;
 } can_gui_package;
-typedef can_gui_package** can_gui_package_array;
 
 typedef struct
 {
@@ -28,11 +27,11 @@ typedef struct
     };
 } can_gui_form_data;
 
-static void convertCanGuiPackageToString(can_gui_package* package, char* string) {
+void convertCanGuiPackageToString(can_gui_package* package, char* string) {
     
 }
 
-static can_gui_package* convertCANFormDataToGuiPackage(can_gui_form_data* package)
+can_gui_package* convertCANFormDataToGuiPackage(can_gui_form_data* package)
 {
     can_gui_package *guiPackage = (can_gui_package*)gfxAlloc(sizeof(can_gui_package));
     guiPackage->id = package->id;

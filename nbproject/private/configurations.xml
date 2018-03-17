@@ -1,0 +1,2252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name=".build">
+        <df name="dep">
+        </df>
+        <df name="obj">
+          <df name="GFXLIB">
+            <df name="src">
+              <df name="gos">
+              </df>
+            </df>
+          </df>
+          <df name="Src">
+            <df name="View">
+            </df>
+            <df name="VirtualKeyBoard">
+            </df>
+          </df>
+        </df>
+      </df>
+      <df name="Inc">
+        <in>FreeRTOSConfig.h</in>
+        <in>can_driver.h</in>
+        <in>emhashmap.h</in>
+        <in>freertos_wrapper.h</in>
+        <in>gfxconf.h</in>
+        <in>main.h</in>
+        <in>memory.h</in>
+        <in>my_assert.h</in>
+        <in>stm32f7xx_hal_conf.h</in>
+        <in>stm32f7xx_it.h</in>
+      </df>
+      <df name="res">
+        <df name="Drivers">
+          <df name="CMSIS">
+            <df name="Device">
+              <df name="ST">
+                <df name="STM32F7xx">
+                  <df name="Include">
+                    <in>stm32f722xx.h</in>
+                    <in>stm32f723xx.h</in>
+                    <in>stm32f732xx.h</in>
+                    <in>stm32f733xx.h</in>
+                    <in>stm32f745xx.h</in>
+                    <in>stm32f746xx.h</in>
+                    <in>stm32f756xx.h</in>
+                    <in>stm32f765xx.h</in>
+                    <in>stm32f767xx.h</in>
+                    <in>stm32f769xx.h</in>
+                    <in>stm32f777xx.h</in>
+                    <in>stm32f779xx.h</in>
+                    <in>stm32f7xx.h</in>
+                    <in>system_stm32f7xx.h</in>
+                  </df>
+                  <df name="Source">
+                    <df name="Templates">
+                      <df name="arm">
+                        <in>startup_stm32f722xx.s</in>
+                        <in>startup_stm32f723xx.s</in>
+                        <in>startup_stm32f732xx.s</in>
+                        <in>startup_stm32f733xx.s</in>
+                        <in>startup_stm32f745xx.s</in>
+                        <in>startup_stm32f746xx.s</in>
+                        <in>startup_stm32f756xx.s</in>
+                        <in>startup_stm32f765xx.s</in>
+                        <in>startup_stm32f767xx.s</in>
+                        <in>startup_stm32f769xx.s</in>
+                        <in>startup_stm32f777xx.s</in>
+                        <in>startup_stm32f779xx.s</in>
+                      </df>
+                      <df name="gcc">
+                        <in>startup_stm32f722xx.s</in>
+                        <in>startup_stm32f723xx.s</in>
+                        <in>startup_stm32f732xx.s</in>
+                        <in>startup_stm32f733xx.s</in>
+                        <in>startup_stm32f745xx.s</in>
+                        <in>startup_stm32f746xx.s</in>
+                        <in>startup_stm32f756xx.s</in>
+                        <in>startup_stm32f765xx.s</in>
+                        <in>startup_stm32f767xx.s</in>
+                        <in>startup_stm32f769xx.s</in>
+                        <in>startup_stm32f777xx.s</in>
+                        <in>startup_stm32f779xx.s</in>
+                      </df>
+                      <df name="iar">
+                        <df name="linker">
+                        </df>
+                        <in>startup_stm32f722xx.s</in>
+                        <in>startup_stm32f723xx.s</in>
+                        <in>startup_stm32f732xx.s</in>
+                        <in>startup_stm32f733xx.s</in>
+                        <in>startup_stm32f745xx.s</in>
+                        <in>startup_stm32f746xx.s</in>
+                        <in>startup_stm32f756xx.s</in>
+                        <in>startup_stm32f765xx.s</in>
+                        <in>startup_stm32f767xx.s</in>
+                        <in>startup_stm32f769xx.s</in>
+                        <in>startup_stm32f777xx.s</in>
+                        <in>startup_stm32f779xx.s</in>
+                      </df>
+                      <in>system_stm32f7xx.c</in>
+                    </df>
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="DSP_Lib">
+              <df name="Source">
+                <df name="BasicMathFunctions">
+                  <in>arm_abs_f32.c</in>
+                  <in>arm_abs_q15.c</in>
+                  <in>arm_abs_q31.c</in>
+                  <in>arm_abs_q7.c</in>
+                  <in>arm_add_f32.c</in>
+                  <in>arm_add_q15.c</in>
+                  <in>arm_add_q31.c</in>
+                  <in>arm_add_q7.c</in>
+                  <in>arm_dot_prod_f32.c</in>
+                  <in>arm_dot_prod_q15.c</in>
+                  <in>arm_dot_prod_q31.c</in>
+                  <in>arm_dot_prod_q7.c</in>
+                  <in>arm_mult_f32.c</in>
+                  <in>arm_mult_q15.c</in>
+                  <in>arm_mult_q31.c</in>
+                  <in>arm_mult_q7.c</in>
+                  <in>arm_negate_f32.c</in>
+                  <in>arm_negate_q15.c</in>
+                  <in>arm_negate_q31.c</in>
+                  <in>arm_negate_q7.c</in>
+                  <in>arm_offset_f32.c</in>
+                  <in>arm_offset_q15.c</in>
+                  <in>arm_offset_q31.c</in>
+                  <in>arm_offset_q7.c</in>
+                  <in>arm_scale_f32.c</in>
+                  <in>arm_scale_q15.c</in>
+                  <in>arm_scale_q31.c</in>
+                  <in>arm_scale_q7.c</in>
+                  <in>arm_shift_q15.c</in>
+                  <in>arm_shift_q31.c</in>
+                  <in>arm_shift_q7.c</in>
+                  <in>arm_sub_f32.c</in>
+                  <in>arm_sub_q15.c</in>
+                  <in>arm_sub_q31.c</in>
+                  <in>arm_sub_q7.c</in>
+                </df>
+                <df name="CommonTables">
+                  <in>arm_common_tables.c</in>
+                  <in>arm_const_structs.c</in>
+                </df>
+                <df name="ComplexMathFunctions">
+                  <in>arm_cmplx_conj_f32.c</in>
+                  <in>arm_cmplx_conj_q15.c</in>
+                  <in>arm_cmplx_conj_q31.c</in>
+                  <in>arm_cmplx_dot_prod_f32.c</in>
+                  <in>arm_cmplx_dot_prod_q15.c</in>
+                  <in>arm_cmplx_dot_prod_q31.c</in>
+                  <in>arm_cmplx_mag_f32.c</in>
+                  <in>arm_cmplx_mag_q15.c</in>
+                  <in>arm_cmplx_mag_q31.c</in>
+                  <in>arm_cmplx_mag_squared_f32.c</in>
+                  <in>arm_cmplx_mag_squared_q15.c</in>
+                  <in>arm_cmplx_mag_squared_q31.c</in>
+                  <in>arm_cmplx_mult_cmplx_f32.c</in>
+                  <in>arm_cmplx_mult_cmplx_q15.c</in>
+                  <in>arm_cmplx_mult_cmplx_q31.c</in>
+                  <in>arm_cmplx_mult_real_f32.c</in>
+                  <in>arm_cmplx_mult_real_q15.c</in>
+                  <in>arm_cmplx_mult_real_q31.c</in>
+                </df>
+                <df name="ControllerFunctions">
+                  <in>arm_pid_init_f32.c</in>
+                  <in>arm_pid_init_q15.c</in>
+                  <in>arm_pid_init_q31.c</in>
+                  <in>arm_pid_reset_f32.c</in>
+                  <in>arm_pid_reset_q15.c</in>
+                  <in>arm_pid_reset_q31.c</in>
+                  <in>arm_sin_cos_f32.c</in>
+                  <in>arm_sin_cos_q31.c</in>
+                </df>
+                <df name="FastMathFunctions">
+                  <in>arm_cos_f32.c</in>
+                  <in>arm_cos_q15.c</in>
+                  <in>arm_cos_q31.c</in>
+                  <in>arm_sin_f32.c</in>
+                  <in>arm_sin_q15.c</in>
+                  <in>arm_sin_q31.c</in>
+                  <in>arm_sqrt_q15.c</in>
+                  <in>arm_sqrt_q31.c</in>
+                </df>
+                <df name="FilteringFunctions">
+                  <in>arm_biquad_cascade_df1_32x64_init_q31.c</in>
+                  <in>arm_biquad_cascade_df1_32x64_q31.c</in>
+                  <in>arm_biquad_cascade_df1_f32.c</in>
+                  <in>arm_biquad_cascade_df1_fast_q15.c</in>
+                  <in>arm_biquad_cascade_df1_fast_q31.c</in>
+                  <in>arm_biquad_cascade_df1_init_f32.c</in>
+                  <in>arm_biquad_cascade_df1_init_q15.c</in>
+                  <in>arm_biquad_cascade_df1_init_q31.c</in>
+                  <in>arm_biquad_cascade_df1_q15.c</in>
+                  <in>arm_biquad_cascade_df1_q31.c</in>
+                  <in>arm_biquad_cascade_df2T_f32.c</in>
+                  <in>arm_biquad_cascade_df2T_f64.c</in>
+                  <in>arm_biquad_cascade_df2T_init_f32.c</in>
+                  <in>arm_biquad_cascade_df2T_init_f64.c</in>
+                  <in>arm_biquad_cascade_stereo_df2T_f32.c</in>
+                  <in>arm_biquad_cascade_stereo_df2T_init_f32.c</in>
+                  <in>arm_conv_f32.c</in>
+                  <in>arm_conv_fast_opt_q15.c</in>
+                  <in>arm_conv_fast_q15.c</in>
+                  <in>arm_conv_fast_q31.c</in>
+                  <in>arm_conv_opt_q15.c</in>
+                  <in>arm_conv_opt_q7.c</in>
+                  <in>arm_conv_partial_f32.c</in>
+                  <in>arm_conv_partial_fast_opt_q15.c</in>
+                  <in>arm_conv_partial_fast_q15.c</in>
+                  <in>arm_conv_partial_fast_q31.c</in>
+                  <in>arm_conv_partial_opt_q15.c</in>
+                  <in>arm_conv_partial_opt_q7.c</in>
+                  <in>arm_conv_partial_q15.c</in>
+                  <in>arm_conv_partial_q31.c</in>
+                  <in>arm_conv_partial_q7.c</in>
+                  <in>arm_conv_q15.c</in>
+                  <in>arm_conv_q31.c</in>
+                  <in>arm_conv_q7.c</in>
+                  <in>arm_correlate_f32.c</in>
+                  <in>arm_correlate_fast_opt_q15.c</in>
+                  <in>arm_correlate_fast_q15.c</in>
+                  <in>arm_correlate_fast_q31.c</in>
+                  <in>arm_correlate_opt_q15.c</in>
+                  <in>arm_correlate_opt_q7.c</in>
+                  <in>arm_correlate_q15.c</in>
+                  <in>arm_correlate_q31.c</in>
+                  <in>arm_correlate_q7.c</in>
+                  <in>arm_fir_decimate_f32.c</in>
+                  <in>arm_fir_decimate_fast_q15.c</in>
+                  <in>arm_fir_decimate_fast_q31.c</in>
+                  <in>arm_fir_decimate_init_f32.c</in>
+                  <in>arm_fir_decimate_init_q15.c</in>
+                  <in>arm_fir_decimate_init_q31.c</in>
+                  <in>arm_fir_decimate_q15.c</in>
+                  <in>arm_fir_decimate_q31.c</in>
+                  <in>arm_fir_f32.c</in>
+                  <in>arm_fir_fast_q15.c</in>
+                  <in>arm_fir_fast_q31.c</in>
+                  <in>arm_fir_init_f32.c</in>
+                  <in>arm_fir_init_q15.c</in>
+                  <in>arm_fir_init_q31.c</in>
+                  <in>arm_fir_init_q7.c</in>
+                  <in>arm_fir_interpolate_f32.c</in>
+                  <in>arm_fir_interpolate_init_f32.c</in>
+                  <in>arm_fir_interpolate_init_q15.c</in>
+                  <in>arm_fir_interpolate_init_q31.c</in>
+                  <in>arm_fir_interpolate_q15.c</in>
+                  <in>arm_fir_interpolate_q31.c</in>
+                  <in>arm_fir_lattice_f32.c</in>
+                  <in>arm_fir_lattice_init_f32.c</in>
+                  <in>arm_fir_lattice_init_q15.c</in>
+                  <in>arm_fir_lattice_init_q31.c</in>
+                  <in>arm_fir_lattice_q15.c</in>
+                  <in>arm_fir_lattice_q31.c</in>
+                  <in>arm_fir_q15.c</in>
+                  <in>arm_fir_q31.c</in>
+                  <in>arm_fir_q7.c</in>
+                  <in>arm_fir_sparse_f32.c</in>
+                  <in>arm_fir_sparse_init_f32.c</in>
+                  <in>arm_fir_sparse_init_q15.c</in>
+                  <in>arm_fir_sparse_init_q31.c</in>
+                  <in>arm_fir_sparse_init_q7.c</in>
+                  <in>arm_fir_sparse_q15.c</in>
+                  <in>arm_fir_sparse_q31.c</in>
+                  <in>arm_fir_sparse_q7.c</in>
+                  <in>arm_iir_lattice_f32.c</in>
+                  <in>arm_iir_lattice_init_f32.c</in>
+                  <in>arm_iir_lattice_init_q15.c</in>
+                  <in>arm_iir_lattice_init_q31.c</in>
+                  <in>arm_iir_lattice_q15.c</in>
+                  <in>arm_iir_lattice_q31.c</in>
+                  <in>arm_lms_f32.c</in>
+                  <in>arm_lms_init_f32.c</in>
+                  <in>arm_lms_init_q15.c</in>
+                  <in>arm_lms_init_q31.c</in>
+                  <in>arm_lms_norm_f32.c</in>
+                  <in>arm_lms_norm_init_f32.c</in>
+                  <in>arm_lms_norm_init_q15.c</in>
+                  <in>arm_lms_norm_init_q31.c</in>
+                  <in>arm_lms_norm_q15.c</in>
+                  <in>arm_lms_norm_q31.c</in>
+                  <in>arm_lms_q15.c</in>
+                  <in>arm_lms_q31.c</in>
+                </df>
+                <df name="MatrixFunctions">
+                  <in>arm_mat_add_f32.c</in>
+                  <in>arm_mat_add_q15.c</in>
+                  <in>arm_mat_add_q31.c</in>
+                  <in>arm_mat_cmplx_mult_f32.c</in>
+                  <in>arm_mat_cmplx_mult_q15.c</in>
+                  <in>arm_mat_cmplx_mult_q31.c</in>
+                  <in>arm_mat_init_f32.c</in>
+                  <in>arm_mat_init_q15.c</in>
+                  <in>arm_mat_init_q31.c</in>
+                  <in>arm_mat_inverse_f32.c</in>
+                  <in>arm_mat_inverse_f64.c</in>
+                  <in>arm_mat_mult_f32.c</in>
+                  <in>arm_mat_mult_fast_q15.c</in>
+                  <in>arm_mat_mult_fast_q31.c</in>
+                  <in>arm_mat_mult_q15.c</in>
+                  <in>arm_mat_mult_q31.c</in>
+                  <in>arm_mat_scale_f32.c</in>
+                  <in>arm_mat_scale_q15.c</in>
+                  <in>arm_mat_scale_q31.c</in>
+                  <in>arm_mat_sub_f32.c</in>
+                  <in>arm_mat_sub_q15.c</in>
+                  <in>arm_mat_sub_q31.c</in>
+                  <in>arm_mat_trans_f32.c</in>
+                  <in>arm_mat_trans_q15.c</in>
+                  <in>arm_mat_trans_q31.c</in>
+                </df>
+                <df name="StatisticsFunctions">
+                  <in>arm_max_f32.c</in>
+                  <in>arm_max_q15.c</in>
+                  <in>arm_max_q31.c</in>
+                  <in>arm_max_q7.c</in>
+                  <in>arm_mean_f32.c</in>
+                  <in>arm_mean_q15.c</in>
+                  <in>arm_mean_q31.c</in>
+                  <in>arm_mean_q7.c</in>
+                  <in>arm_min_f32.c</in>
+                  <in>arm_min_q15.c</in>
+                  <in>arm_min_q31.c</in>
+                  <in>arm_min_q7.c</in>
+                  <in>arm_power_f32.c</in>
+                  <in>arm_power_q15.c</in>
+                  <in>arm_power_q31.c</in>
+                  <in>arm_power_q7.c</in>
+                  <in>arm_rms_f32.c</in>
+                  <in>arm_rms_q15.c</in>
+                  <in>arm_rms_q31.c</in>
+                  <in>arm_std_f32.c</in>
+                  <in>arm_std_q15.c</in>
+                  <in>arm_std_q31.c</in>
+                  <in>arm_var_f32.c</in>
+                  <in>arm_var_q15.c</in>
+                  <in>arm_var_q31.c</in>
+                </df>
+                <df name="SupportFunctions">
+                  <in>arm_copy_f32.c</in>
+                  <in>arm_copy_q15.c</in>
+                  <in>arm_copy_q31.c</in>
+                  <in>arm_copy_q7.c</in>
+                  <in>arm_fill_f32.c</in>
+                  <in>arm_fill_q15.c</in>
+                  <in>arm_fill_q31.c</in>
+                  <in>arm_fill_q7.c</in>
+                  <in>arm_float_to_q15.c</in>
+                  <in>arm_float_to_q31.c</in>
+                  <in>arm_float_to_q7.c</in>
+                  <in>arm_q15_to_float.c</in>
+                  <in>arm_q15_to_q31.c</in>
+                  <in>arm_q15_to_q7.c</in>
+                  <in>arm_q31_to_float.c</in>
+                  <in>arm_q31_to_q15.c</in>
+                  <in>arm_q31_to_q7.c</in>
+                  <in>arm_q7_to_float.c</in>
+                  <in>arm_q7_to_q15.c</in>
+                  <in>arm_q7_to_q31.c</in>
+                </df>
+                <df name="TransformFunctions">
+                  <in>arm_bitreversal.c</in>
+                  <in>arm_cfft_f32.c</in>
+                  <in>arm_cfft_q15.c</in>
+                  <in>arm_cfft_q31.c</in>
+                  <in>arm_cfft_radix2_f32.c</in>
+                  <in>arm_cfft_radix2_init_f32.c</in>
+                  <in>arm_cfft_radix2_init_q15.c</in>
+                  <in>arm_cfft_radix2_init_q31.c</in>
+                  <in>arm_cfft_radix2_q15.c</in>
+                  <in>arm_cfft_radix2_q31.c</in>
+                  <in>arm_cfft_radix4_f32.c</in>
+                  <in>arm_cfft_radix4_init_f32.c</in>
+                  <in>arm_cfft_radix4_init_q15.c</in>
+                  <in>arm_cfft_radix4_init_q31.c</in>
+                  <in>arm_cfft_radix4_q15.c</in>
+                  <in>arm_cfft_radix4_q31.c</in>
+                  <in>arm_cfft_radix8_f32.c</in>
+                  <in>arm_dct4_f32.c</in>
+                  <in>arm_dct4_init_f32.c</in>
+                  <in>arm_dct4_init_q15.c</in>
+                  <in>arm_dct4_init_q31.c</in>
+                  <in>arm_dct4_q15.c</in>
+                  <in>arm_dct4_q31.c</in>
+                  <in>arm_rfft_f32.c</in>
+                  <in>arm_rfft_fast_f32.c</in>
+                  <in>arm_rfft_fast_init_f32.c</in>
+                  <in>arm_rfft_init_f32.c</in>
+                  <in>arm_rfft_init_q15.c</in>
+                  <in>arm_rfft_init_q31.c</in>
+                  <in>arm_rfft_q15.c</in>
+                  <in>arm_rfft_q31.c</in>
+                </df>
+              </df>
+            </df>
+            <df name="Include">
+              <in>arm_common_tables.h</in>
+              <in>arm_const_structs.h</in>
+              <in>arm_math.h</in>
+              <in>cmsis_armcc.h</in>
+              <in>cmsis_armcc_V6.h</in>
+              <in>cmsis_gcc.h</in>
+              <in>core_cm0.h</in>
+              <in>core_cm0plus.h</in>
+              <in>core_cm3.h</in>
+              <in>core_cm4.h</in>
+              <in>core_cm7.h</in>
+              <in>core_cmFunc.h</in>
+              <in>core_cmInstr.h</in>
+              <in>core_cmSimd.h</in>
+              <in>core_sc000.h</in>
+              <in>core_sc300.h</in>
+            </df>
+            <df name="Lib">
+              <df name="ARM">
+              </df>
+              <df name="GCC">
+              </df>
+            </df>
+            <df name="RTOS">
+              <df name="Template">
+                <in>cmsis_os.h</in>
+              </df>
+            </df>
+          </df>
+          <df name="STM32F7xx_HAL_Driver">
+            <df name="Inc">
+              <df name="Legacy">
+                <in>stm32_hal_legacy.h</in>
+              </df>
+              <in>stm32_assert_template.h</in>
+              <in>stm32f7xx_hal.h</in>
+              <in>stm32f7xx_hal_adc.h</in>
+              <in>stm32f7xx_hal_adc_ex.h</in>
+              <in>stm32f7xx_hal_can.h</in>
+              <in>stm32f7xx_hal_cec.h</in>
+              <in>stm32f7xx_hal_conf_template.h</in>
+              <in>stm32f7xx_hal_cortex.h</in>
+              <in>stm32f7xx_hal_crc.h</in>
+              <in>stm32f7xx_hal_crc_ex.h</in>
+              <in>stm32f7xx_hal_cryp.h</in>
+              <in>stm32f7xx_hal_cryp_ex.h</in>
+              <in>stm32f7xx_hal_dac.h</in>
+              <in>stm32f7xx_hal_dac_ex.h</in>
+              <in>stm32f7xx_hal_dcmi.h</in>
+              <in>stm32f7xx_hal_dcmi_ex.h</in>
+              <in>stm32f7xx_hal_def.h</in>
+              <in>stm32f7xx_hal_dfsdm.h</in>
+              <in>stm32f7xx_hal_dma.h</in>
+              <in>stm32f7xx_hal_dma2d.h</in>
+              <in>stm32f7xx_hal_dma_ex.h</in>
+              <in>stm32f7xx_hal_dsi.h</in>
+              <in>stm32f7xx_hal_eth.h</in>
+              <in>stm32f7xx_hal_flash.h</in>
+              <in>stm32f7xx_hal_flash_ex.h</in>
+              <in>stm32f7xx_hal_gpio.h</in>
+              <in>stm32f7xx_hal_gpio_ex.h</in>
+              <in>stm32f7xx_hal_hash.h</in>
+              <in>stm32f7xx_hal_hash_ex.h</in>
+              <in>stm32f7xx_hal_hcd.h</in>
+              <in>stm32f7xx_hal_i2c.h</in>
+              <in>stm32f7xx_hal_i2c_ex.h</in>
+              <in>stm32f7xx_hal_i2s.h</in>
+              <in>stm32f7xx_hal_irda.h</in>
+              <in>stm32f7xx_hal_irda_ex.h</in>
+              <in>stm32f7xx_hal_iwdg.h</in>
+              <in>stm32f7xx_hal_jpeg.h</in>
+              <in>stm32f7xx_hal_lptim.h</in>
+              <in>stm32f7xx_hal_ltdc.h</in>
+              <in>stm32f7xx_hal_ltdc_ex.h</in>
+              <in>stm32f7xx_hal_mdios.h</in>
+              <in>stm32f7xx_hal_mmc.h</in>
+              <in>stm32f7xx_hal_nand.h</in>
+              <in>stm32f7xx_hal_nor.h</in>
+              <in>stm32f7xx_hal_pcd.h</in>
+              <in>stm32f7xx_hal_pcd_ex.h</in>
+              <in>stm32f7xx_hal_pwr.h</in>
+              <in>stm32f7xx_hal_pwr_ex.h</in>
+              <in>stm32f7xx_hal_qspi.h</in>
+              <in>stm32f7xx_hal_rcc.h</in>
+              <in>stm32f7xx_hal_rcc_ex.h</in>
+              <in>stm32f7xx_hal_rng.h</in>
+              <in>stm32f7xx_hal_rtc.h</in>
+              <in>stm32f7xx_hal_rtc_ex.h</in>
+              <in>stm32f7xx_hal_sai.h</in>
+              <in>stm32f7xx_hal_sai_ex.h</in>
+              <in>stm32f7xx_hal_sd.h</in>
+              <in>stm32f7xx_hal_sdram.h</in>
+              <in>stm32f7xx_hal_smartcard.h</in>
+              <in>stm32f7xx_hal_smartcard_ex.h</in>
+              <in>stm32f7xx_hal_smbus.h</in>
+              <in>stm32f7xx_hal_spdifrx.h</in>
+              <in>stm32f7xx_hal_spi.h</in>
+              <in>stm32f7xx_hal_sram.h</in>
+              <in>stm32f7xx_hal_tim.h</in>
+              <in>stm32f7xx_hal_tim_ex.h</in>
+              <in>stm32f7xx_hal_uart.h</in>
+              <in>stm32f7xx_hal_uart_ex.h</in>
+              <in>stm32f7xx_hal_usart.h</in>
+              <in>stm32f7xx_hal_usart_ex.h</in>
+              <in>stm32f7xx_hal_wwdg.h</in>
+              <in>stm32f7xx_ll_adc.h</in>
+              <in>stm32f7xx_ll_bus.h</in>
+              <in>stm32f7xx_ll_cortex.h</in>
+              <in>stm32f7xx_ll_crc.h</in>
+              <in>stm32f7xx_ll_dac.h</in>
+              <in>stm32f7xx_ll_dma.h</in>
+              <in>stm32f7xx_ll_dma2d.h</in>
+              <in>stm32f7xx_ll_exti.h</in>
+              <in>stm32f7xx_ll_fmc.h</in>
+              <in>stm32f7xx_ll_gpio.h</in>
+              <in>stm32f7xx_ll_i2c.h</in>
+              <in>stm32f7xx_ll_iwdg.h</in>
+              <in>stm32f7xx_ll_lptim.h</in>
+              <in>stm32f7xx_ll_pwr.h</in>
+              <in>stm32f7xx_ll_rcc.h</in>
+              <in>stm32f7xx_ll_rng.h</in>
+              <in>stm32f7xx_ll_rtc.h</in>
+              <in>stm32f7xx_ll_sdmmc.h</in>
+              <in>stm32f7xx_ll_spi.h</in>
+              <in>stm32f7xx_ll_system.h</in>
+              <in>stm32f7xx_ll_tim.h</in>
+              <in>stm32f7xx_ll_usart.h</in>
+              <in>stm32f7xx_ll_usb.h</in>
+              <in>stm32f7xx_ll_utils.h</in>
+              <in>stm32f7xx_ll_wwdg.h</in>
+            </df>
+            <df name="Src">
+              <in>stm32f7xx_hal.c</in>
+              <in>stm32f7xx_hal_adc.c</in>
+              <in>stm32f7xx_hal_adc_ex.c</in>
+              <in>stm32f7xx_hal_can.c</in>
+              <in>stm32f7xx_hal_cec.c</in>
+              <in>stm32f7xx_hal_cortex.c</in>
+              <in>stm32f7xx_hal_crc.c</in>
+              <in>stm32f7xx_hal_crc_ex.c</in>
+              <in>stm32f7xx_hal_cryp.c</in>
+              <in>stm32f7xx_hal_cryp_ex.c</in>
+              <in>stm32f7xx_hal_dac.c</in>
+              <in>stm32f7xx_hal_dac_ex.c</in>
+              <in>stm32f7xx_hal_dcmi.c</in>
+              <in>stm32f7xx_hal_dcmi_ex.c</in>
+              <in>stm32f7xx_hal_dfsdm.c</in>
+              <in>stm32f7xx_hal_dma.c</in>
+              <in>stm32f7xx_hal_dma2d.c</in>
+              <in>stm32f7xx_hal_dma_ex.c</in>
+              <in>stm32f7xx_hal_dsi.c</in>
+              <in>stm32f7xx_hal_eth.c</in>
+              <in>stm32f7xx_hal_flash.c</in>
+              <in>stm32f7xx_hal_flash_ex.c</in>
+              <in>stm32f7xx_hal_gpio.c</in>
+              <in>stm32f7xx_hal_hash.c</in>
+              <in>stm32f7xx_hal_hash_ex.c</in>
+              <in>stm32f7xx_hal_hcd.c</in>
+              <in>stm32f7xx_hal_i2c.c</in>
+              <in>stm32f7xx_hal_i2c_ex.c</in>
+              <in>stm32f7xx_hal_i2s.c</in>
+              <in>stm32f7xx_hal_irda.c</in>
+              <in>stm32f7xx_hal_iwdg.c</in>
+              <in>stm32f7xx_hal_jpeg.c</in>
+              <in>stm32f7xx_hal_lptim.c</in>
+              <in>stm32f7xx_hal_ltdc.c</in>
+              <in>stm32f7xx_hal_ltdc_ex.c</in>
+              <in>stm32f7xx_hal_mdios.c</in>
+              <in>stm32f7xx_hal_mmc.c</in>
+              <in>stm32f7xx_hal_msp_template.c</in>
+              <in>stm32f7xx_hal_nand.c</in>
+              <in>stm32f7xx_hal_nor.c</in>
+              <in>stm32f7xx_hal_pcd.c</in>
+              <in>stm32f7xx_hal_pcd_ex.c</in>
+              <in>stm32f7xx_hal_pwr.c</in>
+              <in>stm32f7xx_hal_pwr_ex.c</in>
+              <in>stm32f7xx_hal_qspi.c</in>
+              <in>stm32f7xx_hal_rcc.c</in>
+              <in>stm32f7xx_hal_rcc_ex.c</in>
+              <in>stm32f7xx_hal_rng.c</in>
+              <in>stm32f7xx_hal_rtc.c</in>
+              <in>stm32f7xx_hal_rtc_ex.c</in>
+              <in>stm32f7xx_hal_sai.c</in>
+              <in>stm32f7xx_hal_sai_ex.c</in>
+              <in>stm32f7xx_hal_sd.c</in>
+              <in>stm32f7xx_hal_sdram.c</in>
+              <in>stm32f7xx_hal_smartcard.c</in>
+              <in>stm32f7xx_hal_smartcard_ex.c</in>
+              <in>stm32f7xx_hal_smbus.c</in>
+              <in>stm32f7xx_hal_spdifrx.c</in>
+              <in>stm32f7xx_hal_spi.c</in>
+              <in>stm32f7xx_hal_sram.c</in>
+              <in>stm32f7xx_hal_tim.c</in>
+              <in>stm32f7xx_hal_tim_ex.c</in>
+              <in>stm32f7xx_hal_timebase_rtc_alarm_template.c</in>
+              <in>stm32f7xx_hal_timebase_rtc_wakeup_template.c</in>
+              <in>stm32f7xx_hal_timebase_tim_template.c</in>
+              <in>stm32f7xx_hal_uart.c</in>
+              <in>stm32f7xx_hal_usart.c</in>
+              <in>stm32f7xx_hal_wwdg.c</in>
+              <in>stm32f7xx_ll_adc.c</in>
+              <in>stm32f7xx_ll_crc.c</in>
+              <in>stm32f7xx_ll_dac.c</in>
+              <in>stm32f7xx_ll_dma.c</in>
+              <in>stm32f7xx_ll_dma2d.c</in>
+              <in>stm32f7xx_ll_exti.c</in>
+              <in>stm32f7xx_ll_fmc.c</in>
+              <in>stm32f7xx_ll_gpio.c</in>
+              <in>stm32f7xx_ll_i2c.c</in>
+              <in>stm32f7xx_ll_lptim.c</in>
+              <in>stm32f7xx_ll_pwr.c</in>
+              <in>stm32f7xx_ll_rcc.c</in>
+              <in>stm32f7xx_ll_rng.c</in>
+              <in>stm32f7xx_ll_rtc.c</in>
+              <in>stm32f7xx_ll_sdmmc.c</in>
+              <in>stm32f7xx_ll_spi.c</in>
+              <in>stm32f7xx_ll_tim.c</in>
+              <in>stm32f7xx_ll_usart.c</in>
+              <in>stm32f7xx_ll_usb.c</in>
+              <in>stm32f7xx_ll_utils.c</in>
+            </df>
+          </df>
+        </df>
+        <df name="Inc">
+          <in>FreeRTOSConfig.h</in>
+          <in>main.h</in>
+          <in>stm32f7xx_hal_conf.h</in>
+          <in>stm32f7xx_it.h</in>
+        </df>
+        <df name="Middlewares">
+          <df name="Third_Party">
+            <df name="FreeRTOS">
+              <df name="Source">
+                <df name="CMSIS_RTOS">
+                  <in>cmsis_os.c</in>
+                  <in>cmsis_os.h</in>
+                </df>
+                <df name="include">
+                  <in>FreeRTOS.h</in>
+                  <in>FreeRTOSConfig_template.h</in>
+                  <in>StackMacros.h</in>
+                  <in>croutine.h</in>
+                  <in>deprecated_definitions.h</in>
+                  <in>event_groups.h</in>
+                  <in>list.h</in>
+                  <in>mpu_prototypes.h</in>
+                  <in>mpu_wrappers.h</in>
+                  <in>portable.h</in>
+                  <in>projdefs.h</in>
+                  <in>queue.h</in>
+                  <in>semphr.h</in>
+                  <in>task.h</in>
+                  <in>timers.h</in>
+                </df>
+                <df name="portable">
+                  <df name="GCC">
+                    <df name="ARM_CM7">
+                      <df name="r0p1">
+                        <in>port.c</in>
+                        <in>portmacro.h</in>
+                      </df>
+                    </df>
+                  </df>
+                  <df name="MemMang">
+                    <df name="Neuer Ordner">
+                      <in>heap_1.c</in>
+                      <in>heap_2.c</in>
+                      <in>heap_3.c</in>
+                      <in>heap_5.c</in>
+                    </df>
+                    <in>heap_4.c</in>
+                  </df>
+                </df>
+                <in>croutine.c</in>
+                <in>event_groups.c</in>
+                <in>list.c</in>
+                <in>queue.c</in>
+                <in>tasks.c</in>
+                <in>timers.c</in>
+              </df>
+            </df>
+          </df>
+        </df>
+        <df name="Src">
+          <in>freertos.c</in>
+          <in>main.c</in>
+          <in>stm32f7xx_hal_msp.c</in>
+          <in>stm32f7xx_it.c</in>
+          <in>system_stm32f7xx.c</in>
+        </df>
+        <in>startup_stm32f746xx.s</in>
+      </df>
+      <df name="Src">
+        <df name="Controller">
+          <in>ViewState.cpp</in>
+        </df>
+        <df name="View">
+          <in>add_can_message.cpp</in>
+          <in>add_can_message.h</in>
+          <in>can_view.cpp</in>
+          <in>can_view.h</in>
+          <in>main_view.cpp</in>
+          <in>main_view.cpp.c</in>
+          <in>rx_can_view.cpp</in>
+          <in>rx_can_view.h</in>
+          <in>tx_can_view.cpp</in>
+          <in>tx_can_view.h</in>
+        </df>
+        <df name="VirtualKeyBoard">
+          <in>vkeyboard.cpp</in>
+          <in>vkeyboard.h</in>
+        </df>
+        <in>can_driver.cpp</in>
+        <in>emhashmap.c</in>
+        <in>freertos.c</in>
+        <in>main.c</in>
+        <in>main_desktop.c</in>
+        <in>stm32f7xx_hal_msp.c</in>
+        <in>stm32f7xx_it.c</in>
+        <in>system_stm32f7xx.c</in>
+      </df>
+      <df name="ugfx">
+        <df name="3rdparty">
+          <df name="fatfs-0.13">
+            <df name="documents">
+              <df name="doc">
+              </df>
+              <df name="res">
+                <in>app1.c</in>
+                <in>app2.c</in>
+                <in>app3.c</in>
+                <in>app4.c</in>
+              </df>
+            </df>
+            <df name="source">
+              <in>diskio.c</in>
+              <in>diskio.h</in>
+              <in>ff.c</in>
+              <in>ff.h</in>
+              <in>ffconf.h</in>
+              <in>ffsystem.c</in>
+              <in>ffunicode.c</in>
+              <in>integer.h</in>
+            </df>
+          </df>
+          <df name="freetype-2.6.1">
+          </df>
+          <df name="petitfs-0.03">
+            <df name="doc">
+              <df name="img">
+              </df>
+              <df name="pf">
+              </df>
+            </df>
+            <df name="src">
+              <in>diskio.c</in>
+              <in>diskio.h</in>
+              <in>integer.h</in>
+              <in>pff.c</in>
+              <in>pff.h</in>
+              <in>pffconf.h</in>
+            </df>
+          </df>
+          <df name="tinygl-0.4-ugfx">
+            <df name="BeOS">
+              <in>GLView.cpp</in>
+              <in>GLView.h</in>
+            </df>
+            <df name="examples">
+              <in>gears.c</in>
+              <in>glu.c</in>
+              <in>glu.h</in>
+              <in>mech.c</in>
+              <in>nanox.c</in>
+              <in>spin.c</in>
+              <in>texobj.c</in>
+              <in>ui.h</in>
+              <in>x11.c</in>
+            </df>
+            <df name="include">
+              <df name="GL">
+                <in>gl.h</in>
+                <in>glx.h</in>
+                <in>nglx.h</in>
+                <in>oscontext.h</in>
+              </df>
+              <in>GLView.h</in>
+            </df>
+            <df name="src">
+              <in>api.c</in>
+              <in>arrays.c</in>
+              <in>clear.c</in>
+              <in>clip.c</in>
+              <in>error.c</in>
+              <in>get.c</in>
+              <in>glx.c</in>
+              <in>image_util.c</in>
+              <in>init.c</in>
+              <in>light.c</in>
+              <in>list.c</in>
+              <in>matrix.c</in>
+              <in>memory.c</in>
+              <in>misc.c</in>
+              <in>msghandling.c</in>
+              <in>msghandling.h</in>
+              <in>nglx.c</in>
+              <in>opinfo.h</in>
+              <in>oscontext.c</in>
+              <in>select.c</in>
+              <in>specbuf.c</in>
+              <in>specbuf.h</in>
+              <in>texture.c</in>
+              <in>vertex.c</in>
+              <in>zbuffer.c</in>
+              <in>zbuffer.h</in>
+              <in>zdither.c</in>
+              <in>zfeatures.h</in>
+              <in>zgl.h</in>
+              <in>zline.c</in>
+              <in>zline.h</in>
+              <in>zmath.c</in>
+              <in>zmath.h</in>
+              <in>ztriangle.c</in>
+              <in>ztriangle.h</in>
+            </df>
+          </df>
+          <df name="yaffs2">
+          </df>
+        </df>
+        <df name="boards">
+          <df name="addons">
+            <df name="gdisp">
+              <in>board_ED060SC4_example.h</in>
+              <in>board_HX8347D_stm32f4discovery.h</in>
+              <in>board_ILI9320_olimex_pic32mx_lcd.h</in>
+              <in>board_ILI9325_hy_stm32_100p.h</in>
+              <in>board_ILI9341_spi.h</in>
+              <in>board_ILI9481_firebullstm32f103.h</in>
+              <in>board_ILI9488_stm32f4cube_hal.h</in>
+              <in>board_S6D1121_olimex_e407.h</in>
+              <in>board_SPFD54124B_stm32f3.h</in>
+              <in>board_SSD1289_stm32f4discovery.h</in>
+              <in>board_SSD1306_chibios_16.1.3_stm32f4.h</in>
+              <in>board_SSD1306_i2c.h</in>
+              <in>board_SSD1331_tinyscreen_arduino.cpp</in>
+              <in>board_SSD1331_tinyscreen_arduino.h</in>
+              <in>board_SSD1351_teensy.cpp</in>
+              <in>board_SSD1351_teensy.h</in>
+              <in>board_SSD1963_fsmc.h</in>
+              <in>board_SSD1963_gpio.h</in>
+              <in>board_UC8173_nordic_nrf52_sdk11.h</in>
+            </df>
+            <df name="ginput">
+              <df name="touch">
+                <df name="ADS7843">
+                  <in>ginput_lld_mouse_board_olimex_stm32_e407.h</in>
+                  <in>ginput_lld_mouse_board_st_stm32f4_discovery.h</in>
+                  <in>stm32f4cube_hal.h</in>
+                </df>
+                <df name="MCU">
+                  <in>ginput_lld_mouse_board_olimex_pic32mx_lcd.h</in>
+                </df>
+              </df>
+            </df>
+          </df>
+          <df name="base">
+            <df name="Altera-MAX10-Neek">
+              <in>board_alteraframereader.h</in>
+              <in>gmouse_lld_FT5316_board.h</in>
+            </df>
+            <df name="ArduinoTinyScreen">
+              <df name="gfx">
+                <in>board_SSD1331.cpp</in>
+                <in>board_SSD1331.h</in>
+                <in>driver_SSD1331.c</in>
+                <in>gdisp_lld_config.h</in>
+                <in>gfx.c</in>
+                <in>gfx.h</in>
+                <in>gfxconf.h</in>
+              </df>
+            </df>
+            <df name="eCos-Synthetic-Framebuffer">
+              <df name="example">
+              </df>
+              <in>board_framebuffer.h</in>
+            </df>
+            <df name="Embest-STM32-DMSTF4BB">
+              <df name="example_chibios_2.x">
+                <in>board.c</in>
+                <in>board.h</in>
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+                <in>mcuconf.h</in>
+              </df>
+              <df name="example_chibios_3.x">
+                <in>board.c</in>
+                <in>board.h</in>
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+                <in>mcuconf.h</in>
+              </df>
+              <in>board_SSD2119.h</in>
+              <in>gmouse_lld_STMPE811_board.h</in>
+            </df>
+            <df name="FireBull-STM32F103-FB">
+              <df name="chibios_board">
+                <in>board.c</in>
+                <in>board.h</in>
+              </df>
+              <in>board_SSD1289.h</in>
+              <in>gmouse_lld_ADS7843_board.h</in>
+            </df>
+            <df name="HY-MiniSTM32V">
+              <df name="chibios_board">
+                <in>board.c</in>
+                <in>board.h</in>
+              </df>
+              <in>board_SSD1289.h</in>
+              <in>gmouse_lld_ADS7843_board.h</in>
+            </df>
+            <df name="Linux-Framebuffer">
+              <df name="example">
+              </df>
+              <in>board_framebuffer.h</in>
+            </df>
+            <df name="Linux-Framebuffer-Touch">
+              <in>gmouse_lld_linux_event_board.h</in>
+            </df>
+            <df name="Linux-SDL">
+              <df name="example">
+              </df>
+            </df>
+            <df name="Linux-X">
+              <df name="example">
+              </df>
+            </df>
+            <df name="Marlin">
+              <df name="chibios_board">
+                <in>board.c</in>
+                <in>board.h</in>
+              </df>
+              <in>board_RA8875.h</in>
+              <in>gmouse_lld_FT5x06_board.h</in>
+            </df>
+            <df name="Mikromedia-Plus-STM32-M4">
+              <df name="ChibiOS_Board">
+                <df name="cfg">
+                </df>
+                <in>board.c</in>
+                <in>board.h</in>
+                <in>flash_memory.c</in>
+                <in>flash_memory.h</in>
+              </df>
+              <df name="example_chibios_2.x">
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+                <in>mcuconf.h</in>
+              </df>
+              <df name="example_chibios_3.x">
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+                <in>mcuconf.h</in>
+              </df>
+              <in>board_SSD1963.h</in>
+              <in>gaudio_play_board.h</in>
+              <in>gmouse_lld_STMPE610_board.h</in>
+            </df>
+            <df name="Mikromedia-STM32-M4-ILI9341">
+              <df name="ChibiOS_Board">
+                <df name="cfg">
+                </df>
+                <in>board.c</in>
+                <in>board.h</in>
+                <in>flash_memory.c</in>
+                <in>flash_memory.h</in>
+              </df>
+              <df name="example_chibios_2.x">
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+                <in>mcuconf.h</in>
+              </df>
+              <df name="example_chibios_3.x">
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+                <in>mcuconf.h</in>
+              </df>
+              <in>board_ILI9341.h</in>
+              <in>gaudio_play_board.h</in>
+              <in>gmouse_lld_MCU_board.h</in>
+            </df>
+            <df name="Olimex-SAM7EX256-GE12">
+              <in>board_Nokia6610GE12.h</in>
+            </df>
+            <df name="Olimex-SAM7EX256-GE8">
+              <df name="example">
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+                <in>mcuconf.h</in>
+              </df>
+              <in>board_Nokia6610GE8.h</in>
+              <in>board_SSD1306_i2c.h</in>
+              <in>board_SSD1306_spi.h</in>
+              <in>board_SSD1331.h</in>
+              <in>board_TLS8204.h</in>
+              <in>board_uext.h</in>
+              <in>gadc_lld_board.h</in>
+              <in>gaudio_play_board.h</in>
+              <in>gaudio_record_board.h</in>
+              <in>ginput_lld_dial_board.h</in>
+              <in>ginput_lld_toggle_board.h</in>
+            </df>
+            <df name="Olimex-STM32-LCD">
+              <df name="chibios_board">
+                <in>board.c</in>
+                <in>board.h</in>
+              </df>
+              <in>board_ILI9320.h</in>
+              <in>gmouse_lld_MCU_board.h</in>
+            </df>
+            <df name="OSX">
+              <df name="example">
+              </df>
+            </df>
+            <df name="RaspberryPi">
+              <df name="example-FreeRTOS">
+                <in>FreeRTOSConfig.h</in>
+              </df>
+              <df name="FreeRTOS">
+                <in>bcm2835_intc.h</in>
+                <in>freertos_main.c</in>
+                <in>gpio.c</in>
+                <in>gpio.h</in>
+                <in>interrupts.c</in>
+                <in>interrupts.h</in>
+                <in>mmio.h</in>
+                <in>startup.s</in>
+                <in>uart.c</in>
+                <in>uart.h</in>
+              </df>
+              <in>board_framebuffer.h</in>
+              <in>rpi_mailbox.c</in>
+              <in>rpi_mailbox.h</in>
+            </df>
+            <df name="STM32F429i-Discovery">
+              <df name="chibios">
+                <in>board_STM32LTDC.h</in>
+                <in>gmouse_lld_STMPE811_board.h</in>
+                <in>ili9341.h</in>
+                <in>stm32f429i_discovery_sdram.c</in>
+                <in>stm32f429i_discovery_sdram.h</in>
+                <in>stm32f4xx_fmc.c</in>
+                <in>stm32f4xx_fmc.h</in>
+              </df>
+              <df name="example_chibios_2.x">
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+                <in>mcuconf.h</in>
+              </df>
+              <df name="example_chibios_3.x">
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+                <in>mcuconf.h</in>
+              </df>
+            </df>
+            <df name="STM32F439i-Eval">
+              <df name="CubeHal">
+                <in>board_STM32LTDC.h</in>
+                <in>gmouse_lld_EXC7200_board.h</in>
+                <in>stm324x9i_eval_sdram.c</in>
+                <in>stm324x9i_eval_sdram.h</in>
+                <in>stm32f439i_raw32_interrupts.c</in>
+                <in>stm32f439i_raw32_startup.s</in>
+                <in>stm32f439i_raw32_system.c</in>
+                <in>stm32f439i_raw32_ugfx.c</in>
+              </df>
+            </df>
+            <df name="STM32F469i-Discovery">
+              <df name="CubeHAL">
+                <in>board_STM32LTDC.h</in>
+                <in>ft6x06.h</in>
+                <in>gmouse_lld_FT6x06_board.h</in>
+              </df>
+              <in>otm8009a.c</in>
+              <in>otm8009a.h</in>
+              <in>startup_stm32f469xx.s</in>
+              <in>stm32f469i_discovery_sdram.c</in>
+              <in>stm32f469i_discovery_sdram.h</in>
+              <in>stm32f469i_raw32_it.c</in>
+              <in>stm32f469i_raw32_it.h</in>
+              <in>stm32f469i_raw32_system.c</in>
+              <in>stm32f469i_raw32_ugfx.c</in>
+            </df>
+            <df name="STM32F746-Discovery">
+              <df name="example_chibios3">
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+                <in>mcuconf.h</in>
+                <in>stm32f7xx_hal_conf.h</in>
+              </df>
+              <df name="example_raw32">
+                <in>stm32f7xx_hal_conf.h</in>
+              </df>
+              <in>board_STM32LTDC.h</in>
+              <in>gmouse_lld_FT5336_board.h</in>
+              <in>stm32f746g_discovery_sdram.c</in>
+              <in>stm32f746g_discovery_sdram.h</in>
+              <in>stm32f746g_raw32_interrupts.c</in>
+              <in>stm32f746g_raw32_startup.s</in>
+              <in>stm32f746g_raw32_system.c</in>
+              <in>stm32f746g_raw32_ugfx.c</in>
+              <in>stm32f7_i2c.c</in>
+              <in>stm32f7_i2c.h</in>
+            </df>
+            <df name="Win32">
+              <df name="example">
+                <in>chconf.h</in>
+                <in>halconf.h</in>
+              </df>
+            </df>
+          </df>
+        </df>
+        <df name="demos">
+          <df name="3rdparty">
+            <df name="bubbles">
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+            </df>
+            <df name="notepad-2">
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+              <in>notepadApp.c</in>
+              <in>notepadApp.h</in>
+              <in>notepadCore.c</in>
+              <in>notepadCore.h</in>
+              <in>notepadUIDefines.h</in>
+              <in>toolbarIcons.h</in>
+            </df>
+          </df>
+          <df name="applications">
+            <df name="combo">
+              <df name="rsc">
+              </df>
+              <in>bounce.c</in>
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+              <in>mandelbrot.c</in>
+              <in>romfs_files.h</in>
+              <in>romfs_img_ugfx.h</in>
+              <in>romfs_img_yesno.h</in>
+              <in>tasks.h</in>
+            </df>
+            <df name="mandelbrot">
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+            </df>
+            <df name="notepad">
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+            </df>
+          </df>
+          <df name="benchmarks">
+            <in>gfxconf.h</in>
+            <in>main.c</in>
+          </df>
+          <df name="games">
+            <df name="justget10">
+              <df name="resources">
+                <df name="original">
+                </df>
+                <df name="romfs">
+                  <in>romfs_1.h</in>
+                  <in>romfs_10.h</in>
+                  <in>romfs_11.h</in>
+                  <in>romfs_12.h</in>
+                  <in>romfs_13.h</in>
+                  <in>romfs_14.h</in>
+                  <in>romfs_15.h</in>
+                  <in>romfs_16.h</in>
+                  <in>romfs_17.h</in>
+                  <in>romfs_18.h</in>
+                  <in>romfs_19.h</in>
+                  <in>romfs_2.h</in>
+                  <in>romfs_20.h</in>
+                  <in>romfs_3.h</in>
+                  <in>romfs_4.h</in>
+                  <in>romfs_5.h</in>
+                  <in>romfs_6.h</in>
+                  <in>romfs_7.h</in>
+                  <in>romfs_8.h</in>
+                  <in>romfs_9.h</in>
+                  <in>romfs_a1.h</in>
+                  <in>romfs_a2.h</in>
+                  <in>romfs_a3.h</in>
+                  <in>romfs_a4.h</in>
+                  <in>romfs_background.h</in>
+                  <in>romfs_splash.h</in>
+                  <in>romfs_splashclr.h</in>
+                  <in>romfs_splashtxt.h</in>
+                </df>
+              </df>
+              <in>gfxconf.h</in>
+              <in>jg10.c</in>
+              <in>jg10.h</in>
+              <in>main.c</in>
+              <in>romfs_files.h</in>
+            </df>
+            <df name="minesweeper">
+              <df name="resources">
+                <df name="original">
+                </df>
+                <df name="romfs">
+                  <in>romfs_1.h</in>
+                  <in>romfs_2.h</in>
+                  <in>romfs_3.h</in>
+                  <in>romfs_4.h</in>
+                  <in>romfs_5.h</in>
+                  <in>romfs_6.h</in>
+                  <in>romfs_7.h</in>
+                  <in>romfs_8.h</in>
+                  <in>romfs_closed.h</in>
+                  <in>romfs_empty.h</in>
+                  <in>romfs_explode.h</in>
+                  <in>romfs_flag.h</in>
+                  <in>romfs_mine.h</in>
+                  <in>romfs_plainflag.h</in>
+                  <in>romfs_plainmine.h</in>
+                  <in>romfs_splash.h</in>
+                  <in>romfs_splashclr.h</in>
+                  <in>romfs_splashtxt.h</in>
+                  <in>romfs_wrong.h</in>
+                  <in>userfonts.h</in>
+                </df>
+              </df>
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+              <in>mines.c</in>
+              <in>mines.h</in>
+              <in>romfs_files.h</in>
+            </df>
+            <df name="tetris">
+              <df name="Example_Makefiles">
+                <df name="linux">
+                </df>
+                <df name="stm32f4">
+                  <in>board_SSD1289.h</in>
+                  <in>chconf.h</in>
+                  <in>ginput_lld_mouse_board.h</in>
+                  <in>gmouse_lld_ADS7843_board.h</in>
+                  <in>halconf.h</in>
+                  <in>mcuconf.h</in>
+                </df>
+                <df name="stm32f4_chibios_3.x">
+                  <in>board_SSD1289.h</in>
+                  <in>chconf.h</in>
+                  <in>ginput_lld_mouse_board.h</in>
+                  <in>gmouse_lld_ADS7843_board.h</in>
+                  <in>halconf.h</in>
+                  <in>mcuconf.h</in>
+                </df>
+                <df name="win32">
+                </df>
+              </df>
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+              <in>tetris.c</in>
+              <in>tetris.h</in>
+            </df>
+          </df>
+          <df name="modules">
+            <df name="gadc">
+              <in>gfxconf.h</in>
+              <in>gwinosc.c</in>
+              <in>gwinosc.h</in>
+              <in>main.c</in>
+            </df>
+            <df name="gaudio">
+              <df name="oscilloscope">
+                <in>gfxconf.h</in>
+                <in>gwinosc.c</in>
+                <in>gwinosc.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="play-vs1053">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+                <in>romfs_allwrong.h</in>
+                <in>romfs_files.h</in>
+              </df>
+              <df name="play-wave">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+                <in>romfs_allwrong.h</in>
+                <in>romfs_files.h</in>
+              </df>
+            </df>
+            <df name="gdisp">
+              <df name="arcsectors">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="basics">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="circles">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="fonts">
+                <in>font_Apple12.h</in>
+                <in>font_FreePixel10.h</in>
+                <in>font_GeosansLight11.h</in>
+                <in>font_GeosansLight11_aa.h</in>
+                <in>font_babyblue11_aa.h</in>
+                <in>font_hellovetica11.h</in>
+                <in>font_hellovetica11_aa.h</in>
+                <in>font_pf_ronda_seven11_aa.h</in>
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+                <in>userfonts.h</in>
+              </df>
+              <df name="fonts_cyrillic">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+                <in>userfonts.h</in>
+              </df>
+              <df name="images">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+                <in>romfs_files.h</in>
+                <in>romfs_testpal8.h</in>
+              </df>
+              <df name="images_animated">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+                <in>romfs_files.h</in>
+                <in>romfs_testanim.h</in>
+              </df>
+              <df name="images_palettes">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+                <in>romfs_files.h</in>
+                <in>romfs_icon_home.h</in>
+              </df>
+              <df name="multiple_displays">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="pixmap">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="polygons">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="streaming">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="thickarcs">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+            </df>
+            <df name="gfile">
+              <df name="fatfs">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+            </df>
+            <df name="ginput">
+              <df name="keyboard">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+            </df>
+            <df name="gos">
+              <df name="threads">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="threads_advanced">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+            </df>
+            <df name="gtimer">
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+            </df>
+            <df name="gtrans">
+              <df name="basic">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+                <in>userfonts.h</in>
+              </df>
+            </df>
+            <df name="gwin">
+              <df name="basic">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="button">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="checkbox">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="console">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="container">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="container_nested">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="frame">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="gl3d-gears">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="gl3d-spin">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="graph">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="imagebox">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+                <in>romfs_files.h</in>
+                <in>ugfx_logo_banner.h</in>
+              </df>
+              <df name="keyboard">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="label">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="list">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="progressbar">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="radio">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="slider">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="tabset">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="textedit">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="textedit_virtual_keyboard">
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+              </df>
+              <df name="widgets">
+                <df name="rsc">
+                </df>
+                <in>gfxconf.h</in>
+                <in>main.c</in>
+                <in>romfs_files.h</in>
+                <in>romfs_img_ugfx.h</in>
+                <in>romfs_img_yesno.h</in>
+              </df>
+            </df>
+          </df>
+          <df name="tools">
+            <df name="touch_calibration_grabber">
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+            </df>
+            <df name="touch_driver_test">
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+            </df>
+            <df name="touch_raw_readings">
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+            </df>
+            <df name="uGFXnetDisplay">
+              <in>gfxconf.h</in>
+              <in>main.c</in>
+            </df>
+          </df>
+        </df>
+        <df name="docs">
+          <df name="rsc">
+          </df>
+          <df name="src">
+          </df>
+        </df>
+        <df name="drivers">
+          <df name="gadc">
+            <df name="AT91SAM7">
+              <in>gadc_lld_AT91SAM7.c</in>
+              <in>gadc_lld_board_template.h</in>
+              <in>gadc_lld_config.h</in>
+            </df>
+          </df>
+          <df name="gaudio">
+            <df name="gadc">
+              <in>gaudio_record_board_template.h</in>
+              <in>gaudio_record_config.h</in>
+              <in>gaudio_record_gadc.c</in>
+            </df>
+            <df name="pwm">
+              <in>gaudio_play_board_template.h</in>
+              <in>gaudio_play_config.h</in>
+              <in>gaudio_play_pwm.c</in>
+            </df>
+            <df name="vs1053">
+              <in>gaudio_play_board_template.h</in>
+              <in>gaudio_play_config.h</in>
+              <in>gaudio_play_vs1053.c</in>
+              <in>vs1053.h</in>
+            </df>
+            <df name="Win32">
+              <in>gaudio_play_Win32.c</in>
+              <in>gaudio_play_config.h</in>
+              <in>gaudio_record_Win32.c</in>
+              <in>gaudio_record_config.h</in>
+            </df>
+          </df>
+          <df name="gdisp">
+            <df name="AlteraFramereader">
+              <in>board_alteraframereader_template.h</in>
+              <in>gdisp_lld_alteraframereader.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="ED060SC4">
+              <in>board_ED060SC4_example.h</in>
+              <in>board_ED060SC4_template.h</in>
+              <in>ed060sc4.h</in>
+              <in>gdisp_lld_ED060SC4.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="Fb24bpp">
+              <in>board_fb24bpp_template.h</in>
+              <in>gdisp_lld_config.h</in>
+              <in>gdisp_lld_fb24bpp.c</in>
+            </df>
+            <df name="framebuffer">
+              <in>board_framebuffer_template.h</in>
+              <in>gdisp_lld_config.h</in>
+              <in>gdisp_lld_framebuffer.c</in>
+            </df>
+            <df name="HX8347D">
+              <in>HX8347D.h</in>
+              <in>board_HX8347D_template.h</in>
+              <in>gdisp_lld_HX8347D.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="ILI9225">
+              <in>gdisp_lld_config.h</in>
+              <in>gdisp_lld_ili9225.c</in>
+              <in>ili9225.h</in>
+            </df>
+            <df name="ILI9320">
+              <in>board_ILI9320_template.h</in>
+              <in>gdisp_lld_ILI9320.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="ILI9325">
+              <in>board_ILI9325_template.h</in>
+              <in>gdisp_lld_ILI9325.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="ILI9341">
+              <in>ILI9341.h</in>
+              <in>board_ILI9341_template.h</in>
+              <in>gdisp_lld_ILI9341.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="ILI9342">
+              <in>ILI9342.h</in>
+              <in>gdisp_lld_ILI9342.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="ILI93xx">
+              <in>board_ILI93xx_template.h</in>
+              <in>gdisp_lld_ILI93xx.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="ILI9481">
+              <in>board_ILI9481_template.h</in>
+              <in>gdisp_lld_ILI9481.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="ILI9488">
+              <in>board_ILI9488_template.h</in>
+              <in>gdisp_lld_ILI9488.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="KS0108">
+              <in>board_KS0108_example.h</in>
+              <in>gdisp_lld_KS0108.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="LGDP4532">
+              <in>board_LGDP4532_template.h</in>
+              <in>gdisp_lld_LGDP4532.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="Nokia6610GE12">
+              <in>GE12.h</in>
+              <in>board_Nokia6610GE12_template.h</in>
+              <in>gdisp_lld_Nokia6610GE12.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="Nokia6610GE8">
+              <in>GE8.h</in>
+              <in>board_Nokia6610GE8_template.h</in>
+              <in>gdisp_lld_Nokia6610GE8.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="PCD8544">
+              <in>PCD8544.h</in>
+              <in>board_PCD8544_template.h</in>
+              <in>gdisp_lld_PCD8544.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="PCF8812">
+              <in>PCF8812.h</in>
+              <in>board_PCF8812_template.h</in>
+              <in>gdisp_lld_PCF8812.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="QImage">
+              <in>gdisp_lld_config.h</in>
+              <in>gdisp_lld_driver.c</in>
+              <in>gdisp_lld_qimage.cpp</in>
+              <in>gdisp_lld_qimage.h</in>
+            </df>
+            <df name="R61505U">
+              <in>board_R61505U_template.h</in>
+              <in>gdisp_lld_R61505U.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="RA6963">
+              <in>board_RA6963.h</in>
+              <in>gdisp_lld_RA6963.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="RA8875">
+              <in>board_RA8875_template.h</in>
+              <in>gdisp_lld_RA8875.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="S6D1121">
+              <in>board_S6D1121_template.h</in>
+              <in>gdisp_lld_S6D1121.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="SPFD54124B">
+              <in>board_SPFD54124B_template.h</in>
+              <in>gdisp_lld_SPFD54124B.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="SSD1289">
+              <in>board_SSD1289_template.h</in>
+              <in>gdisp_lld_SSD1289.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="SSD1306">
+              <in>SSD1306.h</in>
+              <in>board_SSD1306_template.h</in>
+              <in>gdisp_lld_SSD1306.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="SSD1322">
+              <in>SSD1322.h</in>
+              <in>board_SSD1322_template.h</in>
+              <in>gdisp_lld_SSD1322.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="SSD1331">
+              <in>SSD1331.h</in>
+              <in>board_SSD1331_template.h</in>
+              <in>gdisp_lld_SSD1331.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="SSD1351">
+              <in>SSD1351.h</in>
+              <in>board_SSD1351_template.h</in>
+              <in>gdisp_lld_SSD1351.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="SSD1848">
+              <in>board_ssd1848_template.h</in>
+              <in>gdisp_lld_SSD1848.c</in>
+              <in>gdisp_lld_config.h</in>
+              <in>ssd1848.h</in>
+            </df>
+            <df name="SSD1963">
+              <in>board_SSD1963_template.h</in>
+              <in>gdisp_lld_SSD1963.c</in>
+              <in>gdisp_lld_config.h</in>
+              <in>ssd1963.h</in>
+            </df>
+            <df name="SSD2119">
+              <in>board_SSD2119_template.h</in>
+              <in>gdisp_lld_SSD2119.c</in>
+              <in>gdisp_lld_config.h</in>
+              <in>ssd2119.h</in>
+            </df>
+            <df name="ST7565">
+              <in>board_ST7565_template.h</in>
+              <in>gdisp_lld_ST7565.c</in>
+              <in>gdisp_lld_config.h</in>
+              <in>st7565.h</in>
+            </df>
+            <df name="ST7735">
+              <in>gdisp_lld_ST7735.c</in>
+              <in>gdisp_lld_config.h</in>
+              <in>st7735.h</in>
+            </df>
+            <df name="STM32LTDC">
+              <in>board_STM32LTDC_template.h</in>
+              <in>gdisp_lld_STM32LTDC.c</in>
+              <in>gdisp_lld_config.h</in>
+              <in>stm32_dma2d.h</in>
+              <in>stm32_ltdc.h</in>
+            </df>
+            <df name="TestStub">
+              <in>gdisp_lld_TestStub.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="TLS8204">
+              <in>TLS8204.h</in>
+              <in>board_TLS8204_template.h</in>
+              <in>gdisp_lld_TLS8204.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="UC1601s">
+              <in>UC1601s.h</in>
+              <in>board_UC1601s_template.h</in>
+              <in>gdisp_lld_UC1601s.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="UC1610">
+              <in>UC1610.h</in>
+              <in>board_UC1610_template.h</in>
+              <in>gdisp_lld_UC1610.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="UC8173">
+              <in>UC8173.h</in>
+              <in>UC8173_waveform_examples.h</in>
+              <in>board_UC8173_template.h</in>
+              <in>gdisp_lld_UC8173.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+          </df>
+          <df name="ginput">
+            <df name="dial">
+              <df name="GADC">
+                <in>ginput_lld_dial_GADC.c</in>
+                <in>ginput_lld_dial_board_template.h</in>
+                <in>ginput_lld_dial_config.h</in>
+              </df>
+            </df>
+            <df name="toggle">
+              <df name="Pal">
+                <in>ginput_lld_toggle_Pal.c</in>
+                <in>ginput_lld_toggle_board_template.h</in>
+                <in>ginput_lld_toggle_config.h</in>
+              </df>
+            </df>
+            <df name="touch">
+              <df name="ADS7843">
+                <in>gmouse_lld_ADS7843.c</in>
+                <in>gmouse_lld_ADS7843_board_template.h</in>
+              </df>
+              <df name="EXC7200">
+                <in>gmouse_lld_EXC7200.c</in>
+                <in>gmouse_lld_EXC7200_board_template.h</in>
+              </df>
+              <df name="FT5336">
+                <in>ft5336.h</in>
+                <in>gmouse_lld_FT5336.c</in>
+                <in>gmouse_lld_FT5336_board_template.h</in>
+              </df>
+              <df name="FT5x06">
+                <in>ft5x06.h</in>
+                <in>gmouse_lld_FT5x06.c</in>
+                <in>gmouse_lld_FT5x06_board_template.h</in>
+              </df>
+              <df name="FT6x06">
+                <in>ft6x06.h</in>
+                <in>gmouse_lld_FT6x06.c</in>
+                <in>gmouse_lld_FT6x06_board_template.h</in>
+              </df>
+              <df name="Linux-Event">
+                <in>gmouse_lld_linux_event.c</in>
+                <in>gmouse_lld_linux_event_board_template.h</in>
+              </df>
+              <df name="MAX11802">
+                <in>gmouse_lld_MAX11802.c</in>
+                <in>gmouse_lld_MAX11802_board_template.h</in>
+                <in>max11802.h</in>
+              </df>
+              <df name="MCU">
+                <in>gmouse_lld_MCU.c</in>
+                <in>gmouse_lld_MCU_board_template.h</in>
+              </df>
+              <df name="QWidget">
+                <df name="example">
+                  <in>mywidget.cpp</in>
+                  <in>mywidget.h</in>
+                </df>
+                <in>gmouse_lld_QWidget.c</in>
+              </df>
+              <df name="STMPE610">
+                <in>gmouse_lld_STMPE610.c</in>
+                <in>gmouse_lld_STMPE610_board_template.h</in>
+                <in>stmpe610.h</in>
+              </df>
+              <df name="STMPE811">
+                <in>gmouse_lld_STMPE811.c</in>
+                <in>gmouse_lld_STMPE811_board_template.h</in>
+                <in>stmpe811.h</in>
+              </df>
+              <df name="TSC2046">
+              </df>
+              <df name="UH7843">
+              </df>
+              <df name="XPT2046">
+              </df>
+            </df>
+          </df>
+          <df name="multiple">
+            <df name="SDL">
+              <in>gdisp_lld_SDL.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+            <df name="uGFXnet">
+              <in>gdisp_lld_config.h</in>
+              <in>gdisp_lld_uGFXnet.c</in>
+              <in>ginput_lld_mouse_config.h</in>
+              <in>uGFXnetProtocol.h</in>
+            </df>
+            <df name="uGFXnetESP8266">
+              <in>gdisp_lld_config.h</in>
+              <in>gdisp_lld_uGFXnetESP8266.cpp</in>
+              <in>ginput_lld_mouse_config.h</in>
+              <in>uGFXnetProtocol.h</in>
+            </df>
+            <df name="Win32">
+              <in>gdisp_lld_Win32.c</in>
+              <in>gdisp_lld_config.h</in>
+              <in>ginput_lld_toggle_config.h</in>
+            </df>
+            <df name="X">
+              <in>gdisp_lld_X.c</in>
+              <in>gdisp_lld_config.h</in>
+            </df>
+          </df>
+        </df>
+        <df name="src">
+          <df name="gadc">
+            <in>gadc.c</in>
+            <in>gadc.h</in>
+            <in>gadc_driver.h</in>
+            <in>gadc_mk.c</in>
+            <in>gadc_options.h</in>
+            <in>gadc_rules.h</in>
+          </df>
+          <df name="gaudio">
+            <in>gaudio.c</in>
+            <in>gaudio.h</in>
+            <in>gaudio_driver_play.h</in>
+            <in>gaudio_driver_record.h</in>
+            <in>gaudio_mk.c</in>
+            <in>gaudio_options.h</in>
+            <in>gaudio_rules.h</in>
+          </df>
+          <df name="gdisp">
+            <df name="fonts">
+              <in>DejaVuSans10.c</in>
+              <in>DejaVuSans12.c</in>
+              <in>DejaVuSans12_aa.c</in>
+              <in>DejaVuSans16.c</in>
+              <in>DejaVuSans16_aa.c</in>
+              <in>DejaVuSans20.c</in>
+              <in>DejaVuSans20_aa.c</in>
+              <in>DejaVuSans24.c</in>
+              <in>DejaVuSans24_aa.c</in>
+              <in>DejaVuSans32.c</in>
+              <in>DejaVuSans32_aa.c</in>
+              <in>DejaVuSansBold12.c</in>
+              <in>DejaVuSansBold12_aa.c</in>
+              <in>LargeNumbers.c</in>
+              <in>UI1.c</in>
+              <in>UI2.c</in>
+              <in>fixed_10x20.c</in>
+              <in>fixed_5x8.c</in>
+              <in>fixed_7x14.c</in>
+              <in>fonts.h</in>
+            </df>
+            <df name="mcufont">
+              <in>mcufont.h</in>
+              <in>mf_bwfont.c</in>
+              <in>mf_bwfont.h</in>
+              <in>mf_config.h</in>
+              <in>mf_encoding.c</in>
+              <in>mf_encoding.h</in>
+              <in>mf_font.c</in>
+              <in>mf_font.h</in>
+              <in>mf_justify.c</in>
+              <in>mf_justify.h</in>
+              <in>mf_kerning.c</in>
+              <in>mf_kerning.h</in>
+              <in>mf_rlefont.c</in>
+              <in>mf_rlefont.h</in>
+              <in>mf_scaledfont.c</in>
+              <in>mf_scaledfont.h</in>
+              <in>mf_wordwrap.c</in>
+              <in>mf_wordwrap.h</in>
+            </df>
+            <in>gdisp.c</in>
+            <in>gdisp.h</in>
+            <in>gdisp_colors.h</in>
+            <in>gdisp_driver.h</in>
+            <in>gdisp_fonts.c</in>
+            <in>gdisp_image.c</in>
+            <in>gdisp_image.h</in>
+            <in>gdisp_image_bmp.c</in>
+            <in>gdisp_image_gif.c</in>
+            <in>gdisp_image_jpg.c</in>
+            <in>gdisp_image_native.c</in>
+            <in>gdisp_image_png.c</in>
+            <in>gdisp_image_support.h</in>
+            <in>gdisp_mk.c</in>
+            <in>gdisp_options.h</in>
+            <in>gdisp_pixmap.c</in>
+            <in>gdisp_pixmap.h</in>
+            <in>gdisp_rules.h</in>
+          </df>
+          <df name="gdriver">
+            <in>gdriver.c</in>
+            <in>gdriver.h</in>
+            <in>gdriver_mk.c</in>
+            <in>gdriver_options.h</in>
+            <in>gdriver_rules.h</in>
+          </df>
+          <df name="gevent">
+            <in>gevent.c</in>
+            <in>gevent.h</in>
+            <in>gevent_mk.c</in>
+            <in>gevent_options.h</in>
+            <in>gevent_rules.h</in>
+          </df>
+          <df name="gfile">
+            <in>gfile.c</in>
+            <in>gfile.h</in>
+            <in>gfile_fatfs_diskio_chibios.c</in>
+            <in>gfile_fatfs_wrapper.c</in>
+            <in>gfile_fatfs_wrapper.h</in>
+            <in>gfile_fs.h</in>
+            <in>gfile_fs_chibios.c</in>
+            <in>gfile_fs_fatfs.c</in>
+            <in>gfile_fs_mem.c</in>
+            <in>gfile_fs_native.c</in>
+            <in>gfile_fs_petitfs.c</in>
+            <in>gfile_fs_ram.c</in>
+            <in>gfile_fs_rom.c</in>
+            <in>gfile_fs_strings.c</in>
+            <in>gfile_mk.c</in>
+            <in>gfile_options.h</in>
+            <in>gfile_petitfs_diskio_chibios.c</in>
+            <in>gfile_petitfs_wrapper.c</in>
+            <in>gfile_petitfs_wrapper.h</in>
+            <in>gfile_printg.c</in>
+            <in>gfile_rules.h</in>
+            <in>gfile_scang.c</in>
+            <in>gfile_stdio.c</in>
+          </df>
+          <df name="ginput">
+            <in>ginput.c</in>
+            <in>ginput.h</in>
+            <in>ginput_dial.c</in>
+            <in>ginput_dial.h</in>
+            <in>ginput_driver_dial.h</in>
+            <in>ginput_driver_keyboard.h</in>
+            <in>ginput_driver_mouse.h</in>
+            <in>ginput_driver_toggle.h</in>
+            <in>ginput_keyboard.c</in>
+            <in>ginput_keyboard.h</in>
+            <in>ginput_keyboard_microcode.c</in>
+            <in>ginput_keyboard_microcode.h</in>
+            <in>ginput_mk.c</in>
+            <in>ginput_mouse.c</in>
+            <in>ginput_mouse.h</in>
+            <in>ginput_options.h</in>
+            <in>ginput_rules.h</in>
+            <in>ginput_toggle.c</in>
+            <in>ginput_toggle.h</in>
+          </df>
+          <df name="gmisc">
+            <in>gmisc.c</in>
+            <in>gmisc.h</in>
+            <in>gmisc_arrayops.c</in>
+            <in>gmisc_hittest.c</in>
+            <in>gmisc_matrix2d.c</in>
+            <in>gmisc_mk.c</in>
+            <in>gmisc_options.h</in>
+            <in>gmisc_rules.h</in>
+            <in>gmisc_trig.c</in>
+          </df>
+          <df name="gos">
+            <in>gos.h</in>
+            <in>gos_arduino.c</in>
+            <in>gos_arduino.h</in>
+            <in>gos_chibios.c</in>
+            <in>gos_chibios.h</in>
+            <in>gos_cmsis.c</in>
+            <in>gos_cmsis.h</in>
+            <in>gos_cmsis2.c</in>
+            <in>gos_cmsis2.h</in>
+            <in>gos_ecos.c</in>
+            <in>gos_ecos.h</in>
+            <in>gos_freertos.c</in>
+            <in>gos_freertos.h</in>
+            <in>gos_keil.h</in>
+            <in>gos_linux.c</in>
+            <in>gos_linux.h</in>
+            <in>gos_mk.c</in>
+            <in>gos_nios.c</in>
+            <in>gos_nios.h</in>
+            <in>gos_options.h</in>
+            <in>gos_osx.c</in>
+            <in>gos_osx.h</in>
+            <in>gos_qt.cpp</in>
+            <in>gos_qt.h</in>
+            <in>gos_raw32.c</in>
+            <in>gos_raw32.h</in>
+            <in>gos_rawrtos.c</in>
+            <in>gos_rawrtos.h</in>
+            <in>gos_rtx5.h</in>
+            <in>gos_rules.h</in>
+            <in>gos_win32.c</in>
+            <in>gos_win32.h</in>
+            <in>gos_x_heap.c</in>
+            <in>gos_x_heap.h</in>
+            <in>gos_x_threads.c</in>
+            <in>gos_x_threads.h</in>
+            <in>gos_x_threads_cortexm01.h</in>
+            <in>gos_x_threads_cortexm347.h</in>
+            <in>gos_x_threads_cortexm47fp.h</in>
+            <in>gos_zephyr.c</in>
+            <in>gos_zephyr.h</in>
+          </df>
+          <df name="gqueue">
+            <in>gqueue.c</in>
+            <in>gqueue.h</in>
+            <in>gqueue_mk.c</in>
+            <in>gqueue_options.h</in>
+            <in>gqueue_rules.h</in>
+          </df>
+          <df name="gtimer">
+            <in>gtimer.c</in>
+            <in>gtimer.h</in>
+            <in>gtimer_mk.c</in>
+            <in>gtimer_options.h</in>
+            <in>gtimer_rules.h</in>
+          </df>
+          <df name="gtrans">
+            <in>gtrans.c</in>
+            <in>gtrans.h</in>
+            <in>gtrans_mk.c</in>
+            <in>gtrans_options.h</in>
+            <in>gtrans_rules.h</in>
+          </df>
+          <df name="gwin">
+            <in>gwin.c</in>
+            <in>gwin.h</in>
+            <in>gwin_button.c</in>
+            <in>gwin_button.h</in>
+            <in>gwin_checkbox.c</in>
+            <in>gwin_checkbox.h</in>
+            <in>gwin_class.h</in>
+            <in>gwin_console.c</in>
+            <in>gwin_console.h</in>
+            <in>gwin_container.c</in>
+            <in>gwin_container.h</in>
+            <in>gwin_frame.c</in>
+            <in>gwin_frame.h</in>
+            <in>gwin_gl3d.c</in>
+            <in>gwin_gl3d.h</in>
+            <in>gwin_graph.c</in>
+            <in>gwin_graph.h</in>
+            <in>gwin_image.c</in>
+            <in>gwin_image.h</in>
+            <in>gwin_keyboard.c</in>
+            <in>gwin_keyboard.h</in>
+            <in>gwin_keyboard_layout.c</in>
+            <in>gwin_keyboard_layout.h</in>
+            <in>gwin_label.c</in>
+            <in>gwin_label.h</in>
+            <in>gwin_list.c</in>
+            <in>gwin_list.h</in>
+            <in>gwin_mk.c</in>
+            <in>gwin_options.h</in>
+            <in>gwin_progressbar.c</in>
+            <in>gwin_progressbar.h</in>
+            <in>gwin_radio.c</in>
+            <in>gwin_radio.h</in>
+            <in>gwin_rules.h</in>
+            <in>gwin_slider.c</in>
+            <in>gwin_slider.h</in>
+            <in>gwin_tabset.c</in>
+            <in>gwin_tabset.h</in>
+            <in>gwin_textedit.c</in>
+            <in>gwin_textedit.h</in>
+            <in>gwin_widget.c</in>
+            <in>gwin_widget.h</in>
+            <in>gwin_wm.c</in>
+          </df>
+          <in>gfx.c</in>
+          <in>gfx_compilers.h</in>
+          <in>gfx_mk.c</in>
+        </df>
+        <df name="tools">
+          <df name="file2c">
+            <df name="binaries">
+              <df name="linux">
+              </df>
+              <df name="windows">
+              </df>
+            </df>
+            <df name="src">
+              <df name="VS 2012 Project">
+                <df name="file2c">
+                </df>
+              </df>
+              <in>file2c.c</in>
+            </df>
+          </df>
+          <df name="gmake_scripts">
+          </df>
+          <df name="mcufontencoder">
+            <df name="binaries">
+              <df name="freebsd">
+              </df>
+              <df name="linux">
+              </df>
+              <df name="windows">
+              </df>
+            </df>
+            <df name="src">
+              <in>bdf_import.cc</in>
+              <in>datafile.cc</in>
+              <in>encode_rlefont.cc</in>
+              <in>export_bwfont.cc</in>
+              <in>export_rlefont.cc</in>
+              <in>exporttools.cc</in>
+              <in>freetype_import.cc</in>
+              <in>importtools.cc</in>
+              <in>main.cc</in>
+              <in>optimize_rlefont.cc</in>
+            </df>
+          </df>
+        </df>
+        <in>ffconf.h</in>
+        <in>gfx.h</in>
+        <in>gfxconf.example.h</in>
+        <in>mf_bwfont.h</in>
+        <in>mf_rlefont.h</in>
+        <in>mf_scaledfont.h</in>
+        <in>pffconf.h</in>
+      </df>
+    </df>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>.</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>

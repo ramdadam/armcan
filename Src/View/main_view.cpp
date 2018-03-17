@@ -8,6 +8,7 @@
 #include "tx_can_view.h"
 #include "rx_can_view.h"
 #include "add_can_message.h"
+#include "edit_can_message.h"
 
 void * operator new(std::size_t n)
 {
@@ -20,6 +21,7 @@ void operator delete(void * p) // or delete(void *, std::size_t)
 {
   gfxFree(p);
 }
+
 GHandle ghTabset = 0;
 GHandle tabset_page_1;
 GHandle tabset_page_2;
@@ -28,6 +30,8 @@ extern GHandle ghAddButton;
 //add_can_message back/close button
 extern GHandle ghBackButton;
 extern GHandle ghAcceptButton;
+
+gfxQueueGSync canTransmitQueue;
 
 void createTable(void)
 {
@@ -53,8 +57,8 @@ void createTabset(void)
 	wi.g.x = 0;
 	wi.g.y = 0;
 	ghTabset = gwinTabsetCreate(0, &wi, GWIN_TABSET_BORDER);
-	tabset_page_1 = gwinTabsetAddTab(ghTabset, "Receive", 1);
-	tabset_page_2 = gwinTabsetAddTab(ghTabset, "Transmit", 1);
+	tabset_page_1 = gwinTabsetAddTab(ghTabset, "Transmit", 1);
+	tabset_page_2 = gwinTabsetAddTab(ghTabset, "Receive", 1);
 	createTable();
 }
 
@@ -68,8 +72,10 @@ extern "C" void initMainPage(void)
 	gdispClear(White);
 	createAddFrame();
 	createTabset();
+	editCanMessage(0, 0);
 	geventListenerInit(&gl);
 	gwinAttachListener(&gl);
+	gfxQueueGSyncInit(&canTransmitQueue);
 	while (1)
 	{
 
@@ -92,15 +98,18 @@ extern "C" void initMainPage(void)
 			}
 			else if (target == ghAcceptButton)
 			{
-				// can_gui_package* package = convertCANFormDataToGuiPackage(&getFormData());
-				// addCanMessageToRXView(package);
+				can_gui_form_data formData = getFormData();
+				can_gui_package* package = convertCANFormDataToGuiPackage(&formData);
+				gwinShow(ghTabset);
+				hideAddFrame();
+				break;
 			}
 			else
 			{
 				gwinHide(ghTabset);
 				showAddFrame();
+				break;
 			}
-			break;
 		}
 		case GEVENT_KEYBOARD:
 		{
@@ -109,7 +118,7 @@ extern "C" void initMainPage(void)
 			{
 				for (uint32_t i = 0; i < pk->bytecount; i++)
 				{
-					fprintf(stderr, "%d\n", pk->c[i]);
+					fprintf(stderr, "%#010x\n", pk->c[i]);
 				}
 			}
 			break;

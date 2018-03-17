@@ -46,9 +46,11 @@
 #define GFX_OS_INIT_NO_WARNING			TRUE
 #define GWIN_BUTTON_LAZY_RELEASE        TRUE
 #define GFX_USE_GINPUT					TRUE
+#define GFX_EMULATE_MALLOC              TRUE
 /* GFX sub-systems to turn on */
 #define GFX_USE_GDISP                   TRUE
 #define GFX_USE_GEVENT					TRUE
+#define GQUEUE_NEED_GSYNC				TRUE
 /* Features for the GDISP sub-system. */
 #define GDISP_NEED_VALIDATION           FALSE
 #define GDISP_NEED_CLIP                 TRUE

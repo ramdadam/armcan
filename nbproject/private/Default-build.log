@@ -1,0 +1,102 @@
+.
+C++ Compiler Options..
+arm-none-eabi-g++ -c -fno-rtti -Wfatal-errors -ggdb -O1 -mcpu=cortex-m7 -falign-functions=16 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -fomit-frame-pointer -Wall -Wextra -Wstrict-prototypes -fverbose-asm -MMD -MP -MF .build/dep/fakethumbfile.o.d -I. -I./Inc -I./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include -I./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I./res/Drivers/CMSIS/Include -I./ugfx -I./ugfx/3rdparty/tinygl-0.4-ugfx/include -I./ugfx/boards/base/STM32F746-Discovery -I./res/Drivers/STM32F7xx_HAL_Driver/Inc -I./ugfx/drivers/gdisp/STM32LTDC -I./res/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I./res/Middlewares/Third_Party/FreeRTOS/Source/include -DGFX_OS_HEAP_SIZE=40960 -DSTM32F746xx -DGFX_OS_NO_INIT -DGFX_USE_OS_FREERTOS=TRUE -DCORTEX_USE_FPU=TRUE -DUSE_FPU=hard -DTHUMB_PRESENT -DTHUMB_NO_INTERWORKING -mthumb -DTHUMB fakethumbfile.cpp -o .build/obj/fakethumbfile.o
+.
+C Compiler Options....
+arm-none-eabi-gcc -c -fdata-sections -ffunction-sections -Wfatal-errors -ggdb -O1 -mcpu=cortex-m7 -falign-functions=16 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -fomit-frame-pointer -Wall -Wextra -Wstrict-prototypes -fverbose-asm -MMD -MP -MF .build/dep/fakethumbfile.o.d -I. -I./Inc -I./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include -I./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I./res/Drivers/CMSIS/Include -I./ugfx -I./ugfx/3rdparty/tinygl-0.4-ugfx/include -I./ugfx/boards/base/STM32F746-Discovery -I./res/Drivers/STM32F7xx_HAL_Driver/Inc -I./ugfx/drivers/gdisp/STM32LTDC -I./res/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I./res/Middlewares/Third_Party/FreeRTOS/Source/include -DGFX_OS_HEAP_SIZE=40960 -DSTM32F746xx -DGFX_OS_NO_INIT -DGFX_USE_OS_FREERTOS=TRUE -DCORTEX_USE_FPU=TRUE -DUSE_FPU=hard -DTHUMB_PRESENT -DTHUMB_NO_INTERWORKING -mthumb -DTHUMB fakethumbfile.c -o .build/obj/fakethumbfile.o
+.
+Assembler Options.....
+arm-none-eabi-gcc -x assembler-with-cpp -c -fdata-sections -ffunction-sections -Wfatal-errors -ggdb -O1 -mcpu=cortex-m7 -falign-functions=16 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -fomit-frame-pointer -Wall -Wextra -Wstrict-prototypes -fverbose-asm -MMD -MP -MF .build/dep/fakethumbfile.o.d -I. -I./Inc -I./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include -I./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I./res/Drivers/CMSIS/Include -I./ugfx -I./ugfx/3rdparty/tinygl-0.4-ugfx/include -I./ugfx/boards/base/STM32F746-Discovery -I./res/Drivers/STM32F7xx_HAL_Driver/Inc -I./ugfx/drivers/gdisp/STM32LTDC -I./res/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I./res/Middlewares/Third_Party/FreeRTOS/Source/include -DGFX_OS_HEAP_SIZE=40960 -DSTM32F746xx -DGFX_OS_NO_INIT -DGFX_USE_OS_FREERTOS=TRUE -DCORTEX_USE_FPU=TRUE -DUSE_FPU=hard -DTHUMB_PRESENT -DTHUMB_NO_INTERWORKING -mthumb -DTHUMB fakethumbfile.s -o .build/obj/fakethumbfile.o
+.
+Linker Options........
+arm-none-eabi-gcc -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections -mcpu=cortex-m7 -falign-functions=16 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -nostartfiles -mthumb -T./res/STM32F746NGHx_FLASH.ld -lm .build/obj/fakethumbfile.o -o .build/armcan.elf
+.
+Compiling Src/gwin_table.c
+Src/gwin_table.c: In function '_drawHeader':
+Src/gwin_table.c:257:11: warning: type defaults to 'int' in declaration of 'columnWidth' [-Wimplicit-int]
+     const columnWidth = *gw2obj->columnWidths[j];
+           ^
+Src/gwin_table.c: In function 'TableMouseSelect':
+Src/gwin_table.c:314:15: warning: extra tokens at end of #endif directive [-Wendif-labels]
+         #endif;
+               ^
+In file included from ./ugfx/src/gos/gos.h:464:0,
+                 from ./ugfx/gfx.h:206,
+                 from Src/gwin_table.c:13:
+Src/gwin_table.c: In function 'TableDestroy':
+Src/gwin_table.c:33:17: warning: passing argument 1 of 'vPortFree' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ #define gh2obj  ((GTableObject *)gh)
+                 ^
+./ugfx/src/gos/gos_freertos.h:82:35: note: in definition of macro 'gfxFree'
+ #define gfxFree(ptr)    vPortFree(ptr)
+                                   ^
+Src/gwin_table.c:570:11: note: in expansion of macro 'gh2obj'
+   gfxFree(gh2obj->title);
+           ^
+In file included from ./res/Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:104:0,
+                 from ./ugfx/src/gos/gos_freertos.h:18,
+                 from ./ugfx/src/gos/gos.h:464,
+                 from ./ugfx/gfx.h:206,
+                 from Src/gwin_table.c:13:
+./res/Middlewares/Third_Party/FreeRTOS/Source/include/portable.h:172:26: note: expected 'void *' but argument is of type 'const char *'
+ PRIVILEGED_FUNCTION void vPortFree( void *pv );
+                          ^
+Src/gwin_table.c: In function 'gwinTableSetHeader':
+Src/gwin_table.c:857:19: warning: format '%d' expects argument of type 'int', but argument 3 has type 'uint32_t {aka long unsigned int}' [-Wformat=]
+   fprintf(stderr, "%d\n", *columnWidths[i]);
+                   ^
+Src/gwin_table.c:857:19: warning: format '%d' expects argument of type 'int', but argument 3 has type 'uint32_t {aka long unsigned int}' [-Wformat=]
+Src/gwin_table.c:863:58: warning: argument to 'sizeof' in 'memcpy' call is the same pointer type 'uint32_t * {aka long unsigned int *}' as the source; expected 'uint32_t {aka long unsigned int}' or an explicit length [-Wsizeof-pointer-memaccess]
+   memcpy(gh2obj->columnWidths[i], columnWidths[i], sizeof(uint32_t*));
+                                                          ^
+Src/gwin_table.c:33:17: warning: passing argument 1 of 'memcpy' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ #define gh2obj  ((GTableObject *)gh)
+                 ^
+Src/gwin_table.c:863:10: note: in expansion of macro 'gh2obj'
+   memcpy(gh2obj->columnWidths[i], columnWidths[i], sizeof(uint32_t*));
+          ^
+In file included from /usr/include/newlib/sys/unistd.h:8:0,
+                 from /usr/include/newlib/unistd.h:4,
+                 from Src/gwin_table.c:15:
+/usr/include/newlib/string.h:23:8: note: expected 'void * restrict' but argument is of type 'const uint32_t * {aka const long unsigned int *}'
+ _PTR   _EXFUN(memcpy,(_PTR __restrict, const _PTR __restrict, size_t));
+        ^
+Src/gwin_table.c: In function 'gwinTableDefaultDraw':
+Src/gwin_table.c:1466:13: warning: type defaults to 'int' in declaration of 'columnWidth' [-Wimplicit-int]
+       const columnWidth = *gw2obj->columnWidths[j];
+             ^
+Compiling Src/View/main_view.c
+Src/View/main_view.c: In function 'createTabset':
+Src/View/main_view.c:32:2: warning: implicit declaration of function 'createTable' [-Wimplicit-function-declaration]
+  createTable();
+  ^
+Src/View/main_view.c: At top level:
+Src/View/main_view.c:35:6: warning: conflicting types for 'createTable'
+ void createTable(void) {
+      ^
+Src/View/main_view.c:32:2: note: previous implicit declaration of 'createTable' was here
+  createTable();
+  ^
+Src/View/main_view.c: In function 'createTable':
+Src/View/main_view.c:59:43: warning: initialization makes pointer from integer without a cast [-Wint-conversion]
+  uint32_t **columnWidths = (uint32_t *[]){100,100,100};
+                                           ^
+Src/View/main_view.c:59:43: note: (near initialization for '(anonymous)[0]')
+Src/View/main_view.c:59:47: warning: initialization makes pointer from integer without a cast [-Wint-conversion]
+  uint32_t **columnWidths = (uint32_t *[]){100,100,100};
+                                               ^
+Src/View/main_view.c:59:47: note: (near initialization for '(anonymous)[1]')
+Src/View/main_view.c:59:51: warning: initialization makes pointer from integer without a cast [-Wint-conversion]
+  uint32_t **columnWidths = (uint32_t *[]){100,100,100};
+                                                   ^
+Src/View/main_view.c:59:51: note: (near initialization for '(anonymous)[2]')
+Src/View/main_view.c: In function 'initMainPage':
+Src/View/main_view.c:103:9: warning: 'return' with a value, in function returning void
+  return 0;
+         ^
+Compiling Src/View/add_can_message.cpp
+cc1plus: warning: command line option '-Wstrict-prototypes' is valid for C/ObjC but not for C++
+Src/View/add_can_message.cpp:5:23: fatal error: vkeyboard.h: No such file or directory
+compilation terminated.
+ugfx/tools/gmake_scripts/compiler_gcc.mk:258: recipe for target '.build/obj/Src/View/add_can_message.o' failed
+make: *** [.build/obj/Src/View/add_can_message.o] Error 1

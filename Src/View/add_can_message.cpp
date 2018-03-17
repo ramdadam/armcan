@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "vkeyboard.h"
 
+#include <string.h>
 #include "../armcan/ugfx/src/gwin/gwin_class.h"
 #include "../armcan/ugfx/src/gwin/gwin_container.h"
 GHandle ghBackButton;
@@ -157,7 +158,7 @@ void createAddFrame()
         wi.g.show = FALSE;
         wi.g.x = i * 58;
         wi.g.y = 0;
-        wi.g.width = 53;
+        wi.g.width = 55;
         wi.g.height = 35;
         wi.g.parent = ghTexteditContainer;
         wi.text = "";
@@ -215,15 +216,22 @@ can_gui_form_data getFormData() {
     
     formData.dlc = gwinSliderGetPosition(ghSlider1);
     formData.isRemote = gwinCheckboxIsChecked(ghCheckbox1);
-    for(uint8_t i = 0; i<formData.dlc; i++) {
+    
+    for(uint8_t i = 0; i<8; i++) {
         const char* textStr = gwinGetText(ghDataTextEdits[i]);
-        formData.data_b[formData.dlc-i] = strtoul(textStr, NULL, 16);   
-        // fprintf(stderr, "i: %d\n", i);
-        // fprintf(stderr, "int: %d\n", formData.data_b[i]);
-        // fprintf(stderr, "string: %s\n", textStr);
-        // fflush(stderr);
-        // fflush(stdout);
+        if(strlen(textStr) == 0) {
+            formData.data_b[7-i] = 0;
+            continue;
+        }
+        if(i<formData.dlc) {
+            formData.data_b[7-i] = strtoul(textStr, NULL, 16);   
+        } else {
+            formData.data_b[7-i] = 0;            
+        }
+        gwinSetText(ghDataTextEdits[i], 0, FALSE);
     }
+    setSliderPosition(0);
+    gwinSliderSetPosition(ghSlider1, 0);
     return formData;
 }
 
