@@ -14,3 +14,24 @@ void deleteRxCanViewTable()
 {
     deleteTableWidget();
 }
+
+void putRxCanPackage(can_gui_package* package, uint8_t allowPackageDeletion = TRUE ) {
+    uint8_t found = FALSE;
+    for(uint16_t i = 0; i<rxCanContainerSize; i++) {
+        can_gui_package* temp = rxCanContainer[rxCanContainerSize];
+        if(temp && temp->id == package->id && temp->remote == package->remote) {
+            temp->count += 1;
+            if(allowPackageDeletion) {
+                gfxFree(package);
+            }
+            found = TRUE;
+            break;
+        }
+    }
+    if(!found){
+        if(rxCanContainerSize < RX_MAX_PACKAGES) {
+            rxCanContainer[rxCanContainerSize] = package;
+            package->count = 1;
+        }
+    }
+}

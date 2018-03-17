@@ -10,12 +10,12 @@
 #include "add_can_message.h"
 #include "edit_can_message.h"
 
-void * operator new(std::size_t n)
-{
-  void * const p = gfxAlloc(n);
-  // handle p == 0
-  return p;
-}
+// void * operator new(std::size_t n)
+// {
+//   void * const p = gfxAlloc(n);
+//   // handle p == 0
+//   return p;
+// }
 
 void operator delete(void * p) // or delete(void *, std::size_t)
 {
