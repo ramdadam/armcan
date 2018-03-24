@@ -279,4 +279,5 @@ void deleteEditForm()
 {
     gwinDestroy(ghFrame);
     ghFrame = 0;
+    deleteKeyBoard();
 }

@@ -31,8 +31,7 @@ CMSIS			= ./res/Drivers/CMSIS
 ##############################################################################################
 # Set these for your project
 #
-ARCH     = /opt/gcc-arm-none-eabi-7-2017-q4-major-linux/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-
-#/opt/gcc-arm-none-eabi-6-2017-q2-update/bin/arm-none-eabi-
+ARCH     = /opt/gcc-arm-none-eabi-6-2017-q2-update/bin/arm-none-eabi-
 SRCFLAGS = -ggdb -O1
 CFLAGS   = -fdata-sections -ffunction-sections -Wfatal-errors
 CXXFLAGS = -fno-rtti -Wfatal-errors -lstdc++ 
@@ -49,7 +48,7 @@ SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
 SRC	 += Src/common/can_gui_package.cpp
 SRC	 += Src/can_driver.cpp
-SRC      += Src/main.c \
+SRC      += Src/main.cpp \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c \
@@ -73,7 +72,7 @@ SRC      += Src/main.c \
 ./res/startup_stm32f746xx.s \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c  
 OBJS     =
-DEFS     = GFX_OS_HEAP_SIZE=40960 STM32F746xx GFX_OS_NO_INIT CAN_BITRATE_HZ=100000 CAN_INTERRUPT_PRIORITY=14
+DEFS     = GFX_OS_HEAP_SIZE=40960 STM32F746xx GFX_OS_NO_INIT CAN_INTERRUPT_PRIORITY=15 ENTER_ISR LEAVE_ISR
 #DEFS     = 
 LIBS     =
 INCPATH  = ./Inc

@@ -6,7 +6,7 @@
 
  #ifndef DRIVERS_CANDRIVER_H_
  #define DRIVERS_CANDRIVER_H_
-
+#define CAN_BITRATE_HZ 100000
  #include "freertos_wrapper.h"
  enum PACKET_TYPE {
      RECEIVE,
@@ -73,9 +73,10 @@
      }
  
      void setCANOperatingMode(bool sleep);
- private:
+
      //! CAN interface initialization
      void hardware_initialization(void);
+ private:
      //! internal function to copy CAN packet into the hardware
      bool send_packet(const CAN_packet &msg);
      Queue<CAN_packet> RX_queue; //!< receive queue

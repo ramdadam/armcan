@@ -82,7 +82,7 @@ void hideMainpage() {
 	gwinHide(ghTxEditButton);
 }
 
-extern "C" void initMainPage(void)
+void initMainPage(void)
 {
 	gfxInit();
 	GEvent *pe;
