@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "vkeyboard.h"
+#include "ImagePushButton.h"
 
 #include <string.h>
 #include "../armcan/ugfx/src/gwin/gwin_class.h"
@@ -14,18 +15,23 @@
 GHandle ghBackButton;
 GHandle ghAcceptButton;
 GHandle	ghAddIsRemote;
+gdispImage addImage;
+// gdispImage backImage;
 
 void showAddFrame()
 {
-    gwinShow(ghFrame1);
+    createAddFrame();
+    showVirtualKeyboard();
     showKeyBoard();
     byteOrderLabelVisible = 1;
 }
 
 void hideAddFrame()
 {
-    gwinHide(ghFrame1);
-    hideKeyBoard();
+    // gwinHide(ghFrame1);
+    hideVirtualKeyboard();
+    gwinDestroy(ghFrame1);
+    ghFrame1=0;    
     byteOrderLabelVisible = 0;
 }
 
@@ -34,7 +40,7 @@ void createAddFrame()
     GWidgetInit wi;
 
     gwinWidgetClearInit(&wi);
-    wi.g.show = FALSE;
+    wi.g.show = TRUE;
     const uint16_t width = 400;
     const uint16_t height = 160;
 
@@ -124,6 +130,7 @@ void createAddFrame()
     wi.g.x = 445;
     wi.g.y = 0;
     wi.text = "+";
+    // ghAcceptButton = createImagePushButton(&wi, &addImage, ADD_IMAGE);
     ghAcceptButton = gwinButtonCreate(NULL, &wi);
     createKeyBoard(HEX_KEYBOARD);
 

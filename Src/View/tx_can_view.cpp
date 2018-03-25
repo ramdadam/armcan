@@ -48,7 +48,7 @@ void createButtonGroup(GHandle *parent)
     wi.g.parent = *parent;	
     wi.g.y = 225;
     wi.text = 0;	
-    ghTxEditButton = createImagePushButton(&wi, &iconEdit, TIMER_IMAGE);
+    ghTxEditButton = createImagePushButton(&wi, &iconEdit, EDIT_IMAGE);
 }
 
 GHandle createTxCanViewTable(GHandle *parent)

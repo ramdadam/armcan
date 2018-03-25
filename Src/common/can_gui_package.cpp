@@ -4,6 +4,7 @@
 #include <string.h>
 #include "gfx.h"
 #include "can_gui_package.h"
+
 void buildStringInCanGuiPackage(can_gui_package *package)
 {
     for(uint16_t i = 0; i< 100;i++) {
@@ -12,9 +13,7 @@ void buildStringInCanGuiPackage(can_gui_package *package)
     // package->displayText = {0};
     char idString[30] = {0};
     snprintf(idString, 30, "0x%X ", package->id);
-    fprintf(stderr, "%x\n", package->id);
     strncat(package->displayText, idString, strlen(idString));
-    fprintf(stderr, "%s\n", package->displayText);
 
     if (package->isRemote)
     {
@@ -52,6 +51,13 @@ void buildStringInCanGuiPackage(can_gui_package *package)
         }
         strncat(package->displayText, dataString, strlen(dataString));
     }
+    char packageCount[10] = {0};
+    snprintf(packageCount, 10, "%d", package->count);
+    strncat(package->displayText, packageCount, strlen(packageCount));
+}
+
+void bumpPackageCounter(can_gui_package* package) {
+    buildStringInCanGuiPackage(package);
 }
 
 can_gui_package* convertCANFormDataToGuiPackage(can_gui_form_data* package)

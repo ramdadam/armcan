@@ -3,6 +3,7 @@
 
 typedef struct
 {
+    gfxQueueGSyncItem q_item;
     uint16_t id;
     uint8_t dlc;
     uint8_t isRemote;
@@ -11,7 +12,7 @@ typedef struct
         uint32_t data_w[2]; //!< data as two 32-bit words
         uint64_t data_l;    //!< data as 64-bit number
     } data;
-    uint64_t count = 0;
+    uint32_t count = 0;
     uint32_t cycle = 0;
     void* timer = 0;
     char displayText[100];
@@ -31,6 +32,7 @@ typedef struct
     } data;
 } can_gui_form_data;
 
+void bumpPackageCounter(can_gui_package* package);
 
 void buildStringInCanGuiPackage(can_gui_package *package);
 

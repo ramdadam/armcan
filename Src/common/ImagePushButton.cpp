@@ -28,6 +28,8 @@ void myButtonRendering(GWidgetObject* gw, void* param)
 
 GHandle createImagePushButton(GWidgetInit* wi, gdispImage* imageContainer, ImageID desiredImage) {
     switch(desiredImage) {
+        case ADD_IMAGE:
+        gdispImageOpenFile(imageContainer, "add.bmp");
         case EDIT_IMAGE:
         gdispImageOpenFile(imageContainer, "out.bmp");
         break;

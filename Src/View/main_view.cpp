@@ -46,7 +46,9 @@ extern GHandle ghEditBackButton;
 extern GHandle ghTxEditButton;
 extern GHandle ghAddIsRemote;
 
-gfxQueueGSync canTransmitQueue;
+gfxQueueGSync* canTransmitQueue = 0;
+gfxQueueGSync* canReceiveQueue = 0;
+
 
 void createTable(void)
 {
@@ -92,17 +94,16 @@ void hideMainpage() {
 void initMainPage(void)
 {
 	gfxInit();
-	GEvent *pe;
+	volatile GEvent *pe;
 	GListener gl;
 	gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
 	gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
 	gdispClear(White);
-	createAddFrame();
 	createTabset();
 	initNotifications();
 	geventListenerInit(&gl);
 	gwinAttachListener(&gl);
-	gfxQueueGSyncInit(&canTransmitQueue);
+	
 	while (1)
 	{
 		pe = geventEventWait(&gl, TIME_INFINITE);
@@ -123,6 +124,7 @@ void initMainPage(void)
 				showMainpage();
 				break;
 			}
+			//add can frame -> add button clicked
 			else if (target == ghAcceptButton)
 			{
 				can_gui_form_data formData;
@@ -160,6 +162,7 @@ void initMainPage(void)
 					immediateDeleteTimer((GTimer*)tempCanPackage->timer);
             		tempCanPackage->timer = 0;
 				}
+				
 				//TODO: delete can package and remove from tx view + sort array and redisplay all list items
 			}
 			else
@@ -182,13 +185,6 @@ void initMainPage(void)
 			}
 			break;
 		}
-		// case GEVENT_GWIN_CLOSE:
-		// {
-		// 	gwinShow(ghTabset);
-		// 	hideVirtualKeyboard();
-		// 	hideAddFrame();
-		// 	break;
-		// }
 		case GEVENT_GWIN_SLIDER:
 		{
 			setSliderPosition(((GEventGWinSlider *)pe)->position);

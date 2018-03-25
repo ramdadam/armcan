@@ -17,13 +17,15 @@ can_gui_package *currentPackage = 0;
 gdispImage saveImage;
 gdispImage backImage;
 
-extern gfxQueueGSync canTransmitQueue;
+extern gfxQueueGSync* canTransmitQueue;
 
 void sendCANPackageCallback(void *CANPackage)
 {
     if(CANPackage != 0) {
-        can_gui_package* package = (can_gui_package*) CANPackage;
-        //gfxQueueGSyncPut(&canTransmitQueue, package);
+    can_gui_package* package = (can_gui_package*) CANPackage;
+    package->count += 1;
+    bumpPackageCounter(package);
+    gfxQueueGSyncPut(canTransmitQueue,&package->q_item);
     }
 }
 
@@ -33,7 +35,7 @@ void editCanMessage(can_gui_package *package, uint8_t useAlloc = FALSE)
     currentPackage = package;
 
     gwinWidgetClearInit(&wi);
-    wi.g.show = 1;
+    wi.g.show = TRUE;
     const uint16_t width = 400;
     const uint16_t height = 160;
 
@@ -47,25 +49,25 @@ void editCanMessage(can_gui_package *package, uint8_t useAlloc = FALSE)
     // gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
-    wi.g.width = 50;
-    wi.g.height = 50;
+    wi.g.width = 25;
+    wi.g.height = 35;
     wi.g.parent = ghFrame;
     wi.g.x = 1;
     wi.g.y = 1;
-    // wi.text = "X";
-    ghEditBackButton = createImagePushButton(&wi, &backImage, BACK_IMAGE);
-    // gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
+    wi.text = "X";
+    ghEditBackButton = gwinButtonCreate(NULL, &wi);
+    gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
-    wi.g.width = 50;
-    wi.g.height = 50;
+    wi.g.width = 95;
+    wi.g.height = 35;
     wi.g.parent = ghFrame;
-    wi.g.x = 425;
+    wi.g.x = 385;
     wi.g.y = 0;
-    // wi.text = "Save";
-    ghEditAcceptButton = createImagePushButton(&wi, &saveImage, SAVE_IMAGE);
-
+    wi.text = "Save";
+    ghEditAcceptButton = gwinButtonCreate(NULL, &wi);
+    
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
     wi.g.x = 60;

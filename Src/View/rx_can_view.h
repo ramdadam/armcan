@@ -7,7 +7,7 @@ static can_gui_package_array rxCanContainer = 0;
 static uint32_t rxCanContainerSize = 0;
 void createRxCanViewTable(GHandle* parent);
 void deleteRxCanViewTable();
-int8_t putRxCanPackage(can_gui_package *package, uint8_t allowPackageDeletion);
+int8_t putRxCanPackage(can_gui_package *package);
 
 #endif
 

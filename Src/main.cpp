@@ -54,6 +54,8 @@
 #include "cmsis_os.h"
 #include "gfx.h"
 /* USER CODE BEGIN Includes */
+extern gfxQueueGSync* canTransmitQueue;
+extern gfxQueueGSync* canReceiveQueue;
 
 /* USER CODE END Includes */
 
@@ -63,7 +65,9 @@ CAN_HandleTypeDef hcan1;
 osThreadId defaultTaskHandle;
 
 /* USER CODE BEGIN PV */
-extern "C" void __attribute ((weak))_init(void){};
+extern "C" void __attribute ((weak)) _init(void) {
+}
+;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */
@@ -73,6 +77,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_CAN1_Init(void);
 void StartDefaultTask(void const * argument);
+void canTask(void * argument);
+void transmitThread(void* _);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -85,149 +91,197 @@ void StartDefaultTask(void const * argument);
 
 int main(void) {
 
-/* USER CODE BEGIN 1 */
+	/* USER CODE BEGIN 1 */
 
-/* USER CODE END 1 */
+	/* USER CODE END 1 */
 
-/* MCU Configuration----------------------------------------------------------*/
+	/* MCU Configuration----------------------------------------------------------*/
 
-/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-HAL_Init();
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-/* USER CODE BEGIN Init */
+	/* USER CODE BEGIN Init */
 
-/* USER CODE END Init */
+	/* USER CODE END Init */
 
-/* Configure the system clock */
-SystemClock_Config();
+	/* Configure the system clock */
+	SystemClock_Config();
 
-/* USER CODE BEGIN SysInit */
+	/* USER CODE BEGIN SysInit */
 
-/* USER CODE END SysInit */
+	/* USER CODE END SysInit */
 
-/* Initialize all configured peripherals */
-MX_GPIO_Init();
-MX_CAN1_Init();
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_CAN1_Init();
 
-/* USER CODE BEGIN 2 */
+	/* USER CODE BEGIN 2 */
 
-/* USER CODE END 2 */
+	/* USER CODE END 2 */
 
-/* USER CODE BEGIN RTOS_MUTEX */
-/* add mutexes, ... */
-/* USER CODE END RTOS_MUTEX */
+	/* USER CODE BEGIN RTOS_MUTEX */
+	/* add mutexes, ... */
+	/* USER CODE END RTOS_MUTEX */
 
-/* USER CODE BEGIN RTOS_SEMAPHORES */
-/* add semaphores, ... */
-/* USER CODE END RTOS_SEMAPHORES */
+	/* USER CODE BEGIN RTOS_SEMAPHORES */
+	/* add semaphores, ... */
+	/* USER CODE END RTOS_SEMAPHORES */
 
-/* USER CODE BEGIN RTOS_TIMERS */
-/* start timers, add new ones, ... */
-/* USER CODE END RTOS_TIMERS */
+	/* USER CODE BEGIN RTOS_TIMERS */
+	/* start timers, add new ones, ... */
+	/* USER CODE END RTOS_TIMERS */
 
-/* Create the thread(s) */
-/* definition and creation of defaultTask */
-osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024)
-;
-defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+	/* Create the thread(s) */
+	/* definition and creation of defaultTask */
 
-/* USER CODE BEGIN RTOS_THREADS */
-/* add threads, ... */
-/* USER CODE END RTOS_THREADS */
+	canTransmitQueue = (gfxQueueGSync*) gfxAlloc(sizeof(gfxQueueGSync));
+	canReceiveQueue = (gfxQueueGSync*) gfxAlloc(sizeof(gfxQueueGSync));
+	gfxQueueGSyncInit(canTransmitQueue);
+	gfxQueueGSyncInit(canReceiveQueue);
+	osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 3, 1024)
+	;
+	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+	//gfxThreadCreate(NULL, 128, NORMAL_PRIORITY, transmitThread, 0);
+	Task canTaskk(canTask);
+	/* USER CODE BEGIN RTOS_THREADS */
+	/* add threads, ... */
+	/* USER CODE END RTOS_THREADS */
 
-/* USER CODE BEGIN RTOS_QUEUES */
-/* add queues, ... */
-/* USER CODE END RTOS_QUEUES */
+	/* USER CODE BEGIN RTOS_QUEUES */
+	/* add queues, ... */
+	/* USER CODE END RTOS_QUEUES */
 
-/* Start scheduler */
-osKernelStart();
+	/* Start scheduler */
+	osKernelStart();
 
-/* We should never get here as control is now taken by the scheduler */
+	/* We should never get here as control is now taken by the scheduler */
 
-/* Infinite loop */
-/* USER CODE BEGIN WHILE */
-while (1) {
-	/* USER CODE END WHILE */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
+	while (1) {
+		/* USER CODE END WHILE */
 
-	/* USER CODE BEGIN 3 */
+		/* USER CODE BEGIN 3 */
 
-}
-/* USER CODE END 3 */
+	}
+	/* USER CODE END 3 */
 
 }
 /** System Clock Configuration
  */
 void SystemClock_Config(void) {
 
-RCC_OscInitTypeDef RCC_OscInitStruct;
-RCC_ClkInitTypeDef RCC_ClkInitStruct;
+	RCC_OscInitTypeDef RCC_OscInitStruct;
+	RCC_ClkInitTypeDef RCC_ClkInitStruct;
 
-/**Configure the main internal regulator output voltage
- */
-__HAL_RCC_PWR_CLK_ENABLE()
-;
+	/**Configure the main internal regulator output voltage
+	 */
+	__HAL_RCC_PWR_CLK_ENABLE()
+	;
 
-__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
+	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
 
-/**Initializes the CPU, AHB and APB busses clocks
- */
-RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-RCC_OscInitStruct.HSICalibrationValue = 16;
-RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-RCC_OscInitStruct.PLL.PLLM = 10;
-RCC_OscInitStruct.PLL.PLLN = 210;
-RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-RCC_OscInitStruct.PLL.PLLQ = 2;
-if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-	_Error_Handler(__FILE__, __LINE__);
-}
+	/**Initializes the CPU, AHB and APB busses clocks
+	 */
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+	RCC_OscInitStruct.HSICalibrationValue = 16;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+	RCC_OscInitStruct.PLL.PLLM = 10;
+	RCC_OscInitStruct.PLL.PLLN = 210;
+	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+	RCC_OscInitStruct.PLL.PLLQ = 2;
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+		_Error_Handler(__FILE__, __LINE__);
+	}
 
-/**Initializes the CPU, AHB and APB busses clocks
- */
-RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-		| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+	/**Initializes the CPU, AHB and APB busses clocks
+	 */
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
-	_Error_Handler(__FILE__, __LINE__);
-}
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
+		_Error_Handler(__FILE__, __LINE__);
+	}
 
-/**Configure the Systick interrupt time
- */
-HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
+	/**Configure the Systick interrupt time
+	 */
+	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
 
-/**Configure the Systick
- */
-HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+	/**Configure the Systick
+	 */
+	HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
-/* SysTick_IRQn interrupt configuration */
-HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+	/* SysTick_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
 }
 
 /* CAN1 init function */
 static void MX_CAN1_Init(void) {
-//CAN_driver.hardware_initialization();
-//  hcan1.Instance = CAN1;
-//  hcan1.Init.Prescaler = 16;
-//  hcan1.Init.Mode = CAN_MODE_NORMAL;
-//  hcan1.Init.SJW = CAN_SJW_1TQ;
-//  hcan1.Init.BS1 = CAN_BS1_1TQ;
-//  hcan1.Init.BS2 = CAN_BS2_1TQ;
-//  hcan1.Init.TTCM = DISABLE;
-//  hcan1.Init.ABOM = DISABLE;
-//  hcan1.Init.AWUM = DISABLE;
-//  hcan1.Init.NART = DISABLE;
-//  hcan1.Init.RFLM = DISABLE;
-//  hcan1.Init.TXFP = DISABLE;
-//  if (HAL_CAN_Init(&hcan1) != HAL_OK)
-//  {
-//    _Error_Handler(__FILE__, __LINE__);
-//  }
+	hcan1.Instance = CAN1;
+	hcan1.Init.Prescaler = 50;
+	hcan1.Init.Mode = CAN_MODE_NORMAL;
+	hcan1.Init.SJW = CAN_SJW_1TQ;
+	hcan1.Init.BS1 = CAN_BS1_1TQ;
+	hcan1.Init.BS2 = CAN_BS2_1TQ;
+	hcan1.Init.TTCM = DISABLE;
+	hcan1.Init.ABOM = DISABLE;
+	hcan1.Init.AWUM = DISABLE;
+	hcan1.Init.NART = DISABLE;
+	hcan1.Init.RFLM = DISABLE;
+	hcan1.Init.TXFP = DISABLE;
+	if (HAL_CAN_Init(&hcan1) != HAL_OK) {
+		_Error_Handler(__FILE__, __LINE__);
+	}
+	GPIO_InitTypeDef GPIO_InitStruct;
+	if (hcan1.Instance == CAN1) {
+		/* USER CODE BEGIN CAN1_MspInit 0 */
+
+		/* USER CODE END CAN1_MspInit 0 */
+		/* Peripheral clock enable */
+		__HAL_RCC_CAN1_CLK_ENABLE()
+		;
+
+		/**CAN1 GPIO Configuration
+		 PB8     ------> CAN1_RX
+		 PB9     ------> CAN1_TX
+		 */
+		GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+		GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+		GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
+		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+		/* USER CODE BEGIN CAN1_MspInit 1 */
+
+		/* USER CODE END CAN1_MspInit 1 */
+	}
+
+	CAN_FilterConfTypeDef sFilterConfig;
+	wipe(sFilterConfig);
+
+	sFilterConfig.FilterNumber = 0;
+	sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+	sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+	sFilterConfig.FilterIdHigh = 0x0000;
+	sFilterConfig.FilterIdLow = 0x0000;
+	sFilterConfig.FilterMaskIdHigh = 0x0000;
+	sFilterConfig.FilterMaskIdLow = 0x0000;
+	sFilterConfig.FilterFIFOAssignment = 0;
+	sFilterConfig.FilterActivation = ENABLE;
+	sFilterConfig.BankNumber = 0;
+
+	HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig);
+	if (HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK) {
+		ASSERT(0);
+	}
+	CAN_driver.hardware_initialization();
 
 }
 
@@ -237,7 +291,6 @@ static void MX_CAN1_Init(void) {
  PG14   ------> ETH_TXD1
  PE1   ------> FMC_NBL1
  PE0   ------> FMC_NBL0
- PB8   ------> I2C1_SCL
  PB5   ------> USB_OTG_HS_ULPI_D7
  PB4   ------> S_TIM3_CH1
  PD7   ------> SPDIFRX_IN0
@@ -246,7 +299,6 @@ static void MX_CAN1_Init(void) {
  PE5   ------> DCMI_D6
  PE6   ------> DCMI_D7
  PG13   ------> ETH_TXD0
- PB9   ------> I2C1_SDA
  PB7   ------> USART1_RX
  PB6   ------> QUADSPI_BK1_NCS
  PG15   ------> FMC_SDNCAS
@@ -255,6 +307,7 @@ static void MX_CAN1_Init(void) {
  PD0   ------> FMC_D2_DA2
  PC11   ------> SDMMC1_D3
  PC10   ------> SDMMC1_D2
+ PA12   ------> USB_OTG_FS_DP
  PI4   ------> SAI2_MCLK_A
  PK7   ------> LTDC_DE
  PK6   ------> LTDC_B7
@@ -264,6 +317,7 @@ static void MX_CAN1_Init(void) {
  PJ14   ------> LTDC_B2
  PD3   ------> DCMI_D5
  PD1   ------> FMC_D3_DA3
+ PA11   ------> USB_OTG_FS_DM
  PF0   ------> FMC_A0
  PI5   ------> SAI2_SCK_A
  PI7   ------> SAI2_FS_A
@@ -374,543 +428,548 @@ static void MX_CAN1_Init(void) {
  */
 static void MX_GPIO_Init(void) {
 
-GPIO_InitTypeDef GPIO_InitStruct;
-
-/* GPIO Ports Clock Enable */
-__HAL_RCC_GPIOE_CLK_ENABLE()
-;
-__HAL_RCC_GPIOG_CLK_ENABLE()
-;
-__HAL_RCC_GPIOB_CLK_ENABLE()
-;
-__HAL_RCC_GPIOD_CLK_ENABLE()
-;
-__HAL_RCC_GPIOC_CLK_ENABLE()
-;
-__HAL_RCC_GPIOA_CLK_ENABLE()
-;
-__HAL_RCC_GPIOJ_CLK_ENABLE();
-__HAL_RCC_GPIOI_CLK_ENABLE()
-;
-__HAL_RCC_GPIOK_CLK_ENABLE();
-__HAL_RCC_GPIOF_CLK_ENABLE()
-;
-__HAL_RCC_GPIOH_CLK_ENABLE()
-;
-
-/*Configure GPIO pin Output Level */
-HAL_GPIO_WritePin(OTG_FS_PowerSwitchOn_GPIO_Port, OTG_FS_PowerSwitchOn_Pin,
-		GPIO_PIN_SET);
-
-/*Configure GPIO pin Output Level */
-HAL_GPIO_WritePin(GPIOI, ARDUINO_D7_Pin | ARDUINO_D8_Pin | LCD_DISP_Pin,
-		GPIO_PIN_RESET);
-
-/*Configure GPIO pin Output Level */
-HAL_GPIO_WritePin(LCD_BL_CTRL_GPIO_Port, LCD_BL_CTRL_Pin, GPIO_PIN_RESET);
-
-/*Configure GPIO pin Output Level */
-HAL_GPIO_WritePin(DCMI_PWR_EN_GPIO_Port, DCMI_PWR_EN_Pin, GPIO_PIN_RESET);
-
-/*Configure GPIO pin Output Level */
-HAL_GPIO_WritePin(GPIOG, ARDUINO_D4_Pin | ARDUINO_D2_Pin | EXT_RST_Pin,
-		GPIO_PIN_RESET);
-
-/*Configure GPIO pin : LCD_B0_Pin */
-GPIO_InitStruct.Pin = LCD_B0_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF14_LTDC;
-HAL_GPIO_Init(LCD_B0_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : OTG_HS_OverCurrent_Pin */
-GPIO_InitStruct.Pin = OTG_HS_OverCurrent_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(OTG_HS_OverCurrent_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : QSPI_D2_Pin */
-GPIO_InitStruct.Pin = QSPI_D2_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
-HAL_GPIO_Init(QSPI_D2_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : RMII_TXD1_Pin RMII_TXD0_Pin RMII_TX_EN_Pin */
-GPIO_InitStruct.Pin = RMII_TXD1_Pin | RMII_TXD0_Pin | RMII_TX_EN_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
-HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-/*Configure GPIO pins : FMC_NBL1_Pin FMC_NBL0_Pin FMC_D5_Pin FMC_D6_Pin
- FMC_D8_Pin FMC_D11_Pin FMC_D4_Pin FMC_D7_Pin
- FMC_D9_Pin FMC_D12_Pin FMC_D10_Pin */
-GPIO_InitStruct.Pin = FMC_NBL1_Pin | FMC_NBL0_Pin | FMC_D5_Pin | FMC_D6_Pin
-		| FMC_D8_Pin | FMC_D11_Pin | FMC_D4_Pin | FMC_D7_Pin | FMC_D9_Pin
-		| FMC_D12_Pin | FMC_D10_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-/*Configure GPIO pins : ARDUINO_SCL_D15_Pin ARDUINO_SDA_D14_Pin */
-GPIO_InitStruct.Pin = ARDUINO_SCL_D15_Pin | ARDUINO_SDA_D14_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
-GPIO_InitStruct.Pull = GPIO_PULLUP;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
-HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-/*Configure GPIO pins : ULPI_D7_Pin ULPI_D6_Pin ULPI_D5_Pin ULPI_D3_Pin
- ULPI_D2_Pin ULPI_D1_Pin ULPI_D4_Pin */
-GPIO_InitStruct.Pin = ULPI_D7_Pin | ULPI_D6_Pin | ULPI_D5_Pin | ULPI_D3_Pin
-		| ULPI_D2_Pin | ULPI_D1_Pin | ULPI_D4_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF10_OTG_HS;
-HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-/*Configure GPIO pin : ARDUINO_PWM_D3_Pin */
-GPIO_InitStruct.Pin = ARDUINO_PWM_D3_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
-HAL_GPIO_Init(ARDUINO_PWM_D3_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : SPDIF_RX0_Pin */
-GPIO_InitStruct.Pin = SPDIF_RX0_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF8_SPDIFRX;
-HAL_GPIO_Init(SPDIF_RX0_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : SDMMC_CK_Pin SDMMC_D3_Pin SDMMC_D2_Pin PC9
- PC8 */
-GPIO_InitStruct.Pin = SDMMC_CK_Pin | SDMMC_D3_Pin | SDMMC_D2_Pin | GPIO_PIN_9
-		| GPIO_PIN_8;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF12_SDMMC1;
-HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-/*Configure GPIO pin : ARDUINO_PWM_D9_Pin */
-GPIO_InitStruct.Pin = ARDUINO_PWM_D9_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
-HAL_GPIO_Init(ARDUINO_PWM_D9_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : DCMI_D6_Pin DCMI_D7_Pin */
-GPIO_InitStruct.Pin = DCMI_D6_Pin | DCMI_D7_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
-HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-/*Configure GPIO pin : VCP_RX_Pin */
-GPIO_InitStruct.Pin = VCP_RX_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
-HAL_GPIO_Init(VCP_RX_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : QSPI_NCS_Pin */
-GPIO_InitStruct.Pin = QSPI_NCS_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
-HAL_GPIO_Init(QSPI_NCS_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : FMC_SDNCAS_Pin FMC_SDCLK_Pin FMC_A11_Pin FMC_A10_Pin
- FMC_BA1_Pin FMC_BA0_Pin */
-GPIO_InitStruct.Pin = FMC_SDNCAS_Pin | FMC_SDCLK_Pin | FMC_A11_Pin | FMC_A10_Pin
-		| FMC_BA1_Pin | FMC_BA0_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-/*Configure GPIO pins : LCD_B1_Pin LCD_B2_Pin LCD_B3_Pin LCD_G4_Pin
- LCD_G1_Pin LCD_G3_Pin LCD_G0_Pin LCD_G2_Pin
- LCD_R7_Pin LCD_R5_Pin LCD_R6_Pin LCD_R4_Pin
- LCD_R3_Pin LCD_R1_Pin LCD_R2_Pin */
-GPIO_InitStruct.Pin = LCD_B1_Pin | LCD_B2_Pin | LCD_B3_Pin | LCD_G4_Pin
-		| LCD_G1_Pin | LCD_G3_Pin | LCD_G0_Pin | LCD_G2_Pin | LCD_R7_Pin
-		| LCD_R5_Pin | LCD_R6_Pin | LCD_R4_Pin | LCD_R3_Pin | LCD_R1_Pin
-		| LCD_R2_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF14_LTDC;
-HAL_GPIO_Init(GPIOJ, &GPIO_InitStruct);
-
-/*Configure GPIO pin : OTG_FS_VBUS_Pin */
-GPIO_InitStruct.Pin = OTG_FS_VBUS_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(OTG_FS_VBUS_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : Audio_INT_Pin */
-GPIO_InitStruct.Pin = Audio_INT_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(Audio_INT_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : FMC_D2_Pin FMC_D3_Pin FMC_D1_Pin FMC_D15_Pin
- FMC_D0_Pin FMC_D14_Pin FMC_D13_Pin */
-GPIO_InitStruct.Pin = FMC_D2_Pin | FMC_D3_Pin | FMC_D1_Pin | FMC_D15_Pin
-		| FMC_D0_Pin | FMC_D14_Pin | FMC_D13_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-/*Configure GPIO pins : SAI2_MCLKA_Pin SAI2_SCKA_Pin SAI2_FSA_Pin SAI2_SDA_Pin */
-GPIO_InitStruct.Pin = SAI2_MCLKA_Pin | SAI2_SCKA_Pin | SAI2_FSA_Pin
-		| SAI2_SDA_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF10_SAI2;
-HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
-
-/*Configure GPIO pins : LCD_DE_Pin LCD_B7_Pin LCD_B6_Pin LCD_B5_Pin
- LCD_G6_Pin LCD_G7_Pin LCD_G5_Pin */
-GPIO_InitStruct.Pin = LCD_DE_Pin | LCD_B7_Pin | LCD_B6_Pin | LCD_B5_Pin
-		| LCD_G6_Pin | LCD_G7_Pin | LCD_G5_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF14_LTDC;
-HAL_GPIO_Init(GPIOK, &GPIO_InitStruct);
-
-/*Configure GPIO pin : LCD_B4_Pin */
-GPIO_InitStruct.Pin = LCD_B4_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF9_LTDC;
-HAL_GPIO_Init(LCD_B4_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : SAI2_SDB_Pin */
-GPIO_InitStruct.Pin = SAI2_SDB_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF10_SAI2;
-HAL_GPIO_Init(SAI2_SDB_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : OTG_FS_PowerSwitchOn_Pin */
-GPIO_InitStruct.Pin = OTG_FS_PowerSwitchOn_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(OTG_FS_PowerSwitchOn_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : DCMI_D5_Pin */
-GPIO_InitStruct.Pin = DCMI_D5_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
-HAL_GPIO_Init(DCMI_D5_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : ARDUINO_D7_Pin ARDUINO_D8_Pin LCD_DISP_Pin */
-GPIO_InitStruct.Pin = ARDUINO_D7_Pin | ARDUINO_D8_Pin | LCD_DISP_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
-
-/*Configure GPIO pin : uSD_Detect_Pin */
-GPIO_InitStruct.Pin = uSD_Detect_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(uSD_Detect_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : FMC_A0_Pin FMC_A1_Pin FMC_A2_Pin FMC_A3_Pin
- FMC_A4_Pin FMC_A5_Pin FMC_A6_Pin FMC_A9_Pin
- FMC_A7_Pin FMC_A8_Pin FMC_SDNRAS_Pin */
-GPIO_InitStruct.Pin = FMC_A0_Pin | FMC_A1_Pin | FMC_A2_Pin | FMC_A3_Pin
-		| FMC_A4_Pin | FMC_A5_Pin | FMC_A6_Pin | FMC_A9_Pin | FMC_A7_Pin
-		| FMC_A8_Pin | FMC_SDNRAS_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-/*Configure GPIO pins : LCD_HSYNC_Pin LCD_VSYNC_Pin LCD_R0_Pin LCD_CLK_Pin */
-GPIO_InitStruct.Pin = LCD_HSYNC_Pin | LCD_VSYNC_Pin | LCD_R0_Pin | LCD_CLK_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF14_LTDC;
-HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
-
-/*Configure GPIO pin : LCD_BL_CTRL_Pin */
-GPIO_InitStruct.Pin = LCD_BL_CTRL_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(LCD_BL_CTRL_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : DCMI_VSYNC_Pin */
-GPIO_InitStruct.Pin = DCMI_VSYNC_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
-HAL_GPIO_Init(DCMI_VSYNC_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : OTG_FS_OverCurrent_Pin */
-GPIO_InitStruct.Pin = OTG_FS_OverCurrent_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(OTG_FS_OverCurrent_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : SDMMC_D0_Pin */
-GPIO_InitStruct.Pin = SDMMC_D0_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF12_SDMMC1;
-HAL_GPIO_Init(SDMMC_D0_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : TP3_Pin NC2_Pin */
-GPIO_InitStruct.Pin = TP3_Pin | NC2_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-
-/*Configure GPIO pin : ARDUINO_SCK_D13_Pin */
-GPIO_InitStruct.Pin = ARDUINO_SCK_D13_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-HAL_GPIO_Init(ARDUINO_SCK_D13_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : OTG_FS_ID_Pin */
-GPIO_InitStruct.Pin = OTG_FS_ID_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF10_OTG_FS;
-HAL_GPIO_Init(OTG_FS_ID_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : DCMI_PWR_EN_Pin */
-GPIO_InitStruct.Pin = DCMI_PWR_EN_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(DCMI_PWR_EN_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : DCMI_D4_Pin DCMI_D3_Pin DCMI_D0_Pin DCMI_D2_Pin
- DCMI_D1_Pin */
-GPIO_InitStruct.Pin = DCMI_D4_Pin | DCMI_D3_Pin | DCMI_D0_Pin | DCMI_D2_Pin
-		| DCMI_D1_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
-HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-
-/*Configure GPIO pin : ARDUINO_PWM_CS_D10_Pin */
-GPIO_InitStruct.Pin = ARDUINO_PWM_CS_D10_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF2_TIM5;
-HAL_GPIO_Init(ARDUINO_PWM_CS_D10_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : VCP_TX_Pin */
-GPIO_InitStruct.Pin = VCP_TX_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
-HAL_GPIO_Init(VCP_TX_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : ARDUINO_PWM_D5_Pin */
-GPIO_InitStruct.Pin = ARDUINO_PWM_D5_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
-HAL_GPIO_Init(ARDUINO_PWM_D5_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pin : LCD_INT_Pin */
-GPIO_InitStruct.Pin = LCD_INT_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(LCD_INT_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : ARDUINO_RX_D0_Pin ARDUINO_TX_D1_Pin */
-GPIO_InitStruct.Pin = ARDUINO_RX_D0_Pin | ARDUINO_TX_D1_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
-HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-/*Configure GPIO pin : ULPI_NXT_Pin */
-GPIO_InitStruct.Pin = ULPI_NXT_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF10_OTG_HS;
-HAL_GPIO_Init(ULPI_NXT_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : FMC_SDNME_Pin FMC_SDNE0_Pin */
-GPIO_InitStruct.Pin = FMC_SDNME_Pin | FMC_SDNE0_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-
-/*Configure GPIO pins : ARDUINO_D4_Pin ARDUINO_D2_Pin EXT_RST_Pin */
-GPIO_InitStruct.Pin = ARDUINO_D4_Pin | ARDUINO_D2_Pin | EXT_RST_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-/*Configure GPIO pins : ARDUINO_A4_Pin ARDUINO_A5_Pin ARDUINO_A1_Pin ARDUINO_A2_Pin
- ARDUINO_A3_Pin */
-GPIO_InitStruct.Pin = ARDUINO_A4_Pin | ARDUINO_A5_Pin | ARDUINO_A1_Pin
-		| ARDUINO_A2_Pin | ARDUINO_A3_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-/*Configure GPIO pin : FMC_SDCKE0_Pin */
-GPIO_InitStruct.Pin = FMC_SDCKE0_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-HAL_GPIO_Init(FMC_SDCKE0_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : ULPI_STP_Pin ULPI_DIR_Pin */
-GPIO_InitStruct.Pin = ULPI_STP_Pin | ULPI_DIR_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF10_OTG_HS;
-HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-/*Configure GPIO pins : RMII_MDC_Pin RMII_RXD0_Pin RMII_RXD1_Pin */
-GPIO_InitStruct.Pin = RMII_MDC_Pin | RMII_RXD0_Pin | RMII_RXD1_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
-HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-/*Configure GPIO pin : PB2 */
-GPIO_InitStruct.Pin = GPIO_PIN_2;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
-HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-/*Configure GPIO pins : QSPI_D1_Pin QSPI_D3_Pin QSPI_D0_Pin */
-GPIO_InitStruct.Pin = QSPI_D1_Pin | QSPI_D3_Pin | QSPI_D0_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
-HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-/*Configure GPIO pin : RMII_RXER_Pin */
-GPIO_InitStruct.Pin = RMII_RXER_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(RMII_RXER_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : RMII_REF_CLK_Pin RMII_MDIO_Pin RMII_CRS_DV_Pin */
-GPIO_InitStruct.Pin = RMII_REF_CLK_Pin | RMII_MDIO_Pin | RMII_CRS_DV_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
-HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-/*Configure GPIO pin : ARDUINO_A0_Pin */
-GPIO_InitStruct.Pin = ARDUINO_A0_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-HAL_GPIO_Init(ARDUINO_A0_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : DCMI_HSYNC_Pin PA6 */
-GPIO_InitStruct.Pin = DCMI_HSYNC_Pin | GPIO_PIN_6;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
-HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-/*Configure GPIO pins : LCD_SCL_Pin LCD_SDA_Pin */
-GPIO_InitStruct.Pin = LCD_SCL_Pin | LCD_SDA_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
-GPIO_InitStruct.Pull = GPIO_PULLUP;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF4_I2C3;
-HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-
-/*Configure GPIO pins : ULPI_CLK_Pin ULPI_D0_Pin */
-GPIO_InitStruct.Pin = ULPI_CLK_Pin | ULPI_D0_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-GPIO_InitStruct.Alternate = GPIO_AF10_OTG_HS;
-HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-/*Configure GPIO pin : ARDUINO_PWM_D6_Pin */
-GPIO_InitStruct.Pin = ARDUINO_PWM_D6_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF9_TIM12;
-HAL_GPIO_Init(ARDUINO_PWM_D6_GPIO_Port, &GPIO_InitStruct);
-
-/*Configure GPIO pins : ARDUINO_MISO_D12_Pin ARDUINO_MOSI_PWM_D11_Pin */
-GPIO_InitStruct.Pin = ARDUINO_MISO_D12_Pin | ARDUINO_MOSI_PWM_D11_Pin;
-GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	GPIO_InitTypeDef GPIO_InitStruct;
+
+	/* GPIO Ports Clock Enable */
+	__HAL_RCC_GPIOE_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOG_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOB_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOD_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOC_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOA_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOJ_CLK_ENABLE();
+	__HAL_RCC_GPIOI_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOK_CLK_ENABLE();
+	__HAL_RCC_GPIOF_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOH_CLK_ENABLE()
+	;
+
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(OTG_FS_PowerSwitchOn_GPIO_Port, OTG_FS_PowerSwitchOn_Pin,
+			GPIO_PIN_SET);
+
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(GPIOI, ARDUINO_D7_Pin | ARDUINO_D8_Pin | LCD_DISP_Pin,
+			GPIO_PIN_RESET);
+
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(LCD_BL_CTRL_GPIO_Port, LCD_BL_CTRL_Pin, GPIO_PIN_RESET);
+
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(DCMI_PWR_EN_GPIO_Port, DCMI_PWR_EN_Pin, GPIO_PIN_RESET);
+
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(GPIOG, ARDUINO_D4_Pin | ARDUINO_D2_Pin | EXT_RST_Pin,
+			GPIO_PIN_RESET);
+
+	/*Configure GPIO pin : LCD_B0_Pin */
+	GPIO_InitStruct.Pin = LCD_B0_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF14_LTDC;
+	HAL_GPIO_Init(LCD_B0_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : OTG_HS_OverCurrent_Pin */
+	GPIO_InitStruct.Pin = OTG_HS_OverCurrent_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(OTG_HS_OverCurrent_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : QSPI_D2_Pin */
+	GPIO_InitStruct.Pin = QSPI_D2_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
+	HAL_GPIO_Init(QSPI_D2_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : RMII_TXD1_Pin RMII_TXD0_Pin RMII_TX_EN_Pin */
+	GPIO_InitStruct.Pin = RMII_TXD1_Pin | RMII_TXD0_Pin | RMII_TX_EN_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+	HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : FMC_NBL1_Pin FMC_NBL0_Pin FMC_D5_Pin FMC_D6_Pin
+	 FMC_D8_Pin FMC_D11_Pin FMC_D4_Pin FMC_D7_Pin
+	 FMC_D9_Pin FMC_D12_Pin FMC_D10_Pin */
+	GPIO_InitStruct.Pin = FMC_NBL1_Pin | FMC_NBL0_Pin | FMC_D5_Pin | FMC_D6_Pin
+			| FMC_D8_Pin | FMC_D11_Pin | FMC_D4_Pin | FMC_D7_Pin | FMC_D9_Pin
+			| FMC_D12_Pin | FMC_D10_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
+	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : ULPI_D7_Pin ULPI_D6_Pin ULPI_D5_Pin ULPI_D3_Pin
+	 ULPI_D2_Pin ULPI_D1_Pin ULPI_D4_Pin */
+	GPIO_InitStruct.Pin = ULPI_D7_Pin | ULPI_D6_Pin | ULPI_D5_Pin | ULPI_D3_Pin
+			| ULPI_D2_Pin | ULPI_D1_Pin | ULPI_D4_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF10_OTG_HS;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : ARDUINO_PWM_D3_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_PWM_D3_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
+	HAL_GPIO_Init(ARDUINO_PWM_D3_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : SPDIF_RX0_Pin */
+	GPIO_InitStruct.Pin = SPDIF_RX0_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF8_SPDIFRX;
+	HAL_GPIO_Init(SPDIF_RX0_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : SDMMC_CK_Pin SDMMC_D3_Pin SDMMC_D2_Pin PC9
+	 PC8 */
+	GPIO_InitStruct.Pin = SDMMC_CK_Pin | SDMMC_D3_Pin | SDMMC_D2_Pin
+			| GPIO_PIN_9 | GPIO_PIN_8;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF12_SDMMC1;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : ARDUINO_PWM_D9_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_PWM_D9_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
+	HAL_GPIO_Init(ARDUINO_PWM_D9_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : DCMI_D6_Pin DCMI_D7_Pin */
+	GPIO_InitStruct.Pin = DCMI_D6_Pin | DCMI_D7_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
+	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : VCP_RX_Pin */
+	GPIO_InitStruct.Pin = VCP_RX_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
+	HAL_GPIO_Init(VCP_RX_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : QSPI_NCS_Pin */
+	GPIO_InitStruct.Pin = QSPI_NCS_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
+	HAL_GPIO_Init(QSPI_NCS_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : FMC_SDNCAS_Pin FMC_SDCLK_Pin FMC_A11_Pin FMC_A10_Pin
+	 FMC_BA1_Pin FMC_BA0_Pin */
+	GPIO_InitStruct.Pin = FMC_SDNCAS_Pin | FMC_SDCLK_Pin | FMC_A11_Pin
+			| FMC_A10_Pin | FMC_BA1_Pin | FMC_BA0_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
+	HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : LCD_B1_Pin LCD_B2_Pin LCD_B3_Pin LCD_G4_Pin
+	 LCD_G1_Pin LCD_G3_Pin LCD_G0_Pin LCD_G2_Pin
+	 LCD_R7_Pin LCD_R5_Pin LCD_R6_Pin LCD_R4_Pin
+	 LCD_R3_Pin LCD_R1_Pin LCD_R2_Pin */
+	GPIO_InitStruct.Pin = LCD_B1_Pin | LCD_B2_Pin | LCD_B3_Pin | LCD_G4_Pin
+			| LCD_G1_Pin | LCD_G3_Pin | LCD_G0_Pin | LCD_G2_Pin | LCD_R7_Pin
+			| LCD_R5_Pin | LCD_R6_Pin | LCD_R4_Pin | LCD_R3_Pin | LCD_R1_Pin
+			| LCD_R2_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF14_LTDC;
+	HAL_GPIO_Init(GPIOJ, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : OTG_FS_VBUS_Pin */
+	GPIO_InitStruct.Pin = OTG_FS_VBUS_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(OTG_FS_VBUS_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : Audio_INT_Pin */
+	GPIO_InitStruct.Pin = Audio_INT_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(Audio_INT_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : FMC_D2_Pin FMC_D3_Pin FMC_D1_Pin FMC_D15_Pin
+	 FMC_D0_Pin FMC_D14_Pin FMC_D13_Pin */
+	GPIO_InitStruct.Pin = FMC_D2_Pin | FMC_D3_Pin | FMC_D1_Pin | FMC_D15_Pin
+			| FMC_D0_Pin | FMC_D14_Pin | FMC_D13_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : SAI2_MCLKA_Pin SAI2_SCKA_Pin SAI2_FSA_Pin SAI2_SDA_Pin */
+	GPIO_InitStruct.Pin = SAI2_MCLKA_Pin | SAI2_SCKA_Pin | SAI2_FSA_Pin
+			| SAI2_SDA_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF10_SAI2;
+	HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : LCD_DE_Pin LCD_B7_Pin LCD_B6_Pin LCD_B5_Pin
+	 LCD_G6_Pin LCD_G7_Pin LCD_G5_Pin */
+	GPIO_InitStruct.Pin = LCD_DE_Pin | LCD_B7_Pin | LCD_B6_Pin | LCD_B5_Pin
+			| LCD_G6_Pin | LCD_G7_Pin | LCD_G5_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF14_LTDC;
+	HAL_GPIO_Init(GPIOK, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : LCD_B4_Pin */
+	GPIO_InitStruct.Pin = LCD_B4_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF9_LTDC;
+	HAL_GPIO_Init(LCD_B4_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : SAI2_SDB_Pin */
+	GPIO_InitStruct.Pin = SAI2_SDB_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF10_SAI2;
+	HAL_GPIO_Init(SAI2_SDB_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : OTG_FS_PowerSwitchOn_Pin */
+	GPIO_InitStruct.Pin = OTG_FS_PowerSwitchOn_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(OTG_FS_PowerSwitchOn_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : DCMI_D5_Pin */
+	GPIO_InitStruct.Pin = DCMI_D5_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
+	HAL_GPIO_Init(DCMI_D5_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : ARDUINO_D7_Pin ARDUINO_D8_Pin LCD_DISP_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_D7_Pin | ARDUINO_D8_Pin | LCD_DISP_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : uSD_Detect_Pin */
+	GPIO_InitStruct.Pin = uSD_Detect_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(uSD_Detect_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : FMC_A0_Pin FMC_A1_Pin FMC_A2_Pin FMC_A3_Pin
+	 FMC_A4_Pin FMC_A5_Pin FMC_A6_Pin FMC_A9_Pin
+	 FMC_A7_Pin FMC_A8_Pin FMC_SDNRAS_Pin */
+	GPIO_InitStruct.Pin = FMC_A0_Pin | FMC_A1_Pin | FMC_A2_Pin | FMC_A3_Pin
+			| FMC_A4_Pin | FMC_A5_Pin | FMC_A6_Pin | FMC_A9_Pin | FMC_A7_Pin
+			| FMC_A8_Pin | FMC_SDNRAS_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
+	HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : LCD_HSYNC_Pin LCD_VSYNC_Pin LCD_R0_Pin LCD_CLK_Pin */
+	GPIO_InitStruct.Pin = LCD_HSYNC_Pin | LCD_VSYNC_Pin | LCD_R0_Pin
+			| LCD_CLK_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF14_LTDC;
+	HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : LCD_BL_CTRL_Pin */
+	GPIO_InitStruct.Pin = LCD_BL_CTRL_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(LCD_BL_CTRL_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : DCMI_VSYNC_Pin */
+	GPIO_InitStruct.Pin = DCMI_VSYNC_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
+	HAL_GPIO_Init(DCMI_VSYNC_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : OTG_FS_OverCurrent_Pin */
+	GPIO_InitStruct.Pin = OTG_FS_OverCurrent_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(OTG_FS_OverCurrent_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : SDMMC_D0_Pin */
+	GPIO_InitStruct.Pin = SDMMC_D0_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF12_SDMMC1;
+	HAL_GPIO_Init(SDMMC_D0_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : TP3_Pin NC2_Pin */
+	GPIO_InitStruct.Pin = TP3_Pin | NC2_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : ARDUINO_SCK_D13_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_SCK_D13_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+	HAL_GPIO_Init(ARDUINO_SCK_D13_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : DCMI_PWR_EN_Pin */
+	GPIO_InitStruct.Pin = DCMI_PWR_EN_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(DCMI_PWR_EN_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : DCMI_D4_Pin DCMI_D3_Pin DCMI_D0_Pin DCMI_D2_Pin
+	 DCMI_D1_Pin */
+	GPIO_InitStruct.Pin = DCMI_D4_Pin | DCMI_D3_Pin | DCMI_D0_Pin | DCMI_D2_Pin
+			| DCMI_D1_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
+	HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : ARDUINO_PWM_CS_D10_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_PWM_CS_D10_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF2_TIM5;
+	HAL_GPIO_Init(ARDUINO_PWM_CS_D10_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : VCP_TX_Pin */
+	GPIO_InitStruct.Pin = VCP_TX_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
+	HAL_GPIO_Init(VCP_TX_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : ARDUINO_PWM_D5_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_PWM_D5_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
+	HAL_GPIO_Init(ARDUINO_PWM_D5_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : LCD_INT_Pin */
+	GPIO_InitStruct.Pin = LCD_INT_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(LCD_INT_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : ARDUINO_RX_D0_Pin ARDUINO_TX_D1_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_RX_D0_Pin | ARDUINO_TX_D1_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : ULPI_NXT_Pin */
+	GPIO_InitStruct.Pin = ULPI_NXT_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF10_OTG_HS;
+	HAL_GPIO_Init(ULPI_NXT_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : FMC_SDNME_Pin FMC_SDNE0_Pin */
+	GPIO_InitStruct.Pin = FMC_SDNME_Pin | FMC_SDNE0_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
+	HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : ARDUINO_D4_Pin ARDUINO_D2_Pin EXT_RST_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_D4_Pin | ARDUINO_D2_Pin | EXT_RST_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : ARDUINO_A4_Pin ARDUINO_A5_Pin ARDUINO_A1_Pin ARDUINO_A2_Pin
+	 ARDUINO_A3_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_A4_Pin | ARDUINO_A5_Pin | ARDUINO_A1_Pin
+			| ARDUINO_A2_Pin | ARDUINO_A3_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : FMC_SDCKE0_Pin */
+	GPIO_InitStruct.Pin = FMC_SDCKE0_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
+	HAL_GPIO_Init(FMC_SDCKE0_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : ULPI_STP_Pin ULPI_DIR_Pin */
+	GPIO_InitStruct.Pin = ULPI_STP_Pin | ULPI_DIR_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF10_OTG_HS;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : RMII_MDC_Pin RMII_RXD0_Pin RMII_RXD1_Pin */
+	GPIO_InitStruct.Pin = RMII_MDC_Pin | RMII_RXD0_Pin | RMII_RXD1_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : PB2 */
+	GPIO_InitStruct.Pin = GPIO_PIN_2;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : QSPI_D1_Pin QSPI_D3_Pin QSPI_D0_Pin */
+	GPIO_InitStruct.Pin = QSPI_D1_Pin | QSPI_D3_Pin | QSPI_D0_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : RMII_RXER_Pin */
+	GPIO_InitStruct.Pin = RMII_RXER_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(RMII_RXER_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : RMII_REF_CLK_Pin RMII_MDIO_Pin RMII_CRS_DV_Pin */
+	GPIO_InitStruct.Pin = RMII_REF_CLK_Pin | RMII_MDIO_Pin | RMII_CRS_DV_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : ARDUINO_A0_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_A0_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(ARDUINO_A0_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : DCMI_HSYNC_Pin PA6 */
+	GPIO_InitStruct.Pin = DCMI_HSYNC_Pin | GPIO_PIN_6;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : LCD_SCL_Pin LCD_SDA_Pin */
+	GPIO_InitStruct.Pin = LCD_SCL_Pin | LCD_SDA_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF4_I2C3;
+	HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : ULPI_CLK_Pin ULPI_D0_Pin */
+	GPIO_InitStruct.Pin = ULPI_CLK_Pin | ULPI_D0_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF10_OTG_HS;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : ARDUINO_PWM_D6_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_PWM_D6_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF9_TIM12;
+	HAL_GPIO_Init(ARDUINO_PWM_D6_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pins : ARDUINO_MISO_D12_Pin ARDUINO_MOSI_PWM_D11_Pin */
+	GPIO_InitStruct.Pin = ARDUINO_MISO_D12_Pin | ARDUINO_MOSI_PWM_D11_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
 /* USER CODE BEGIN 4 */
-
+void transmitThread(void* _) {
+	while (1) {
+		vTaskDelay(10000);
+		//gfxQueueGSyncItem* package_queued = gfxQueueGSyncGet(canTransmitQueue, TIME_INFINITE);
+		//gfxQueueGSyncPut(canReceiveQueue, package_queued);
+	}
+}
 /* USER CODE END 4 */
 
 /* StartDefaultTask function */
 // extern void initMainPage(void);
 void StartDefaultTask(void const * argument) {
-initMainPage();
-/* USER CODE END 5 */
+	initMainPage();
+	/* USER CODE END 5 */
+}
+void canTask(void* argument) {
+//vTaskDelay(5000);
+	while (1) {
+		CAN_packet p;
+		p.id = 0x102;
+		CAN_driver.send(p);
+		CAN_packet d;
+		CAN_driver.receive(d);
+		volatile uint16_t temp = d.id;
+		vTaskDelay(200);
+	}
+
+	/* USER CODE END 5 */
 }
 
 /**
@@ -919,11 +978,11 @@ initMainPage();
  * @retval None
  */
 void _Error_Handler(char * file, int line) {
-/* USER CODE BEGIN Error_Handler_Debug */
-/* User can add his own implementation to report the HAL error return state */
-while (1) {
-}
-/* USER CODE END Error_Handler_Debug */
+	/* USER CODE BEGIN Error_Handler_Debug */
+	/* User can add his own implementation to report the HAL error return state */
+	while (1) {
+	}
+	/* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef USE_FULL_ASSERT
@@ -937,10 +996,10 @@ while (1) {
  */
 void assert_failed(uint8_t* file, uint32_t line)
 {
-/* USER CODE BEGIN 6 */
-/* User can add his own implementation to report the file name and line number,
- ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-/* USER CODE END 6 */
+	/* USER CODE BEGIN 6 */
+	/* User can add his own implementation to report the file name and line number,
+	 ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+	/* USER CODE END 6 */
 
 }
 
