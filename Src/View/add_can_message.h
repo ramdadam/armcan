@@ -6,7 +6,6 @@ static GHandle		ghKeyboard;
 static GHandle		ghIDTextEdit;
 static GHandle		ghLabel1;
 static GHandle		ghLabel2;
-static GHandle		ghCheckbox1;
 static GHandle		ghMSBLabel;
 static GHandle		ghLSBLabel;
 static GHandle		ghSlider1;
@@ -22,6 +21,9 @@ void showAddFrame();
 void hideAddFrame();
 
 void setSliderPosition(int pos);
+void hideSlider();
+void showSlider();
+
 void createAddFrame();
 uint8_t getFormData(can_gui_form_data*);
 

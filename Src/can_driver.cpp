@@ -26,6 +26,7 @@
      // Temporarily disable Transmit mailbox empty Interrupt
      CAN1->IER &= ~CAN_IT_TME; // to avoid race condition
  
+
      if (TX_queue.messages_waiting() == 0)
      {
          if (send_packet(packet) == true) // hardware FIFO available ?
@@ -95,8 +96,8 @@
  
          //Can configure Pin RX and TX
            GPIO_Init.Pin = GPIO_PIN_11;
-     //	  GPIO_Init.Mode = GPIO_MODE_AF_OD;
-     //	  GPIO_Init.Pull = GPIO_PULLUP;
+     	  GPIO_Init.Mode = GPIO_MODE_AF_OD;
+     	  GPIO_Init.Pull = GPIO_PULLUP;
            GPIO_Init.Speed = GPIO_SPEED_HIGH;
            GPIO_Init.Alternate = GPIO_AF9_CAN1;
            HAL_GPIO_Init ( GPIOA, &GPIO_Init);

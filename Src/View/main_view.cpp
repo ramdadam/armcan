@@ -1,13 +1,17 @@
 #ifndef __MAIN_VIEW_H
 #define __MAIN_VIEW_H
 
+#include "notification_helper.h"
+#include "main_view.h"
 #include "gfx.h"
+#ifdef CAN_HARDWARE_ENABLED
+#include "can_driver.h"
+#endif
 #include "gwin_table.h"
 #include "can_gui_package.h"
 #include <stdio.h>
 #include "tx_can_view.h"
 #include "rx_can_view.h"
-#include "notification_helper.h"
 #include "add_can_message.h"
 #include "edit_can_message.h"
 
@@ -27,7 +31,9 @@ GHandle ghTabset = 0;
 GHandle tabset_page_1;
 GHandle tabset_page_2;
 GHandle table_tx;
+
 extern GHandle ghAddButton;
+extern GHandle ghDeleteTXItemButton;
 //add_can_message back/close button
 extern GHandle ghBackButton;
 extern GHandle ghAcceptButton;
@@ -38,6 +44,7 @@ extern GHandle ghEditAcceptButton;
 extern GHandle ghEditBackButton;
 
 extern GHandle ghTxEditButton;
+extern GHandle ghAddIsRemote;
 
 gfxQueueGSync canTransmitQueue;
 
@@ -147,6 +154,14 @@ void initMainPage(void)
 				showMainpage();
 				break;
 			}
+			else if(target == ghDeleteTXItemButton) {				
+				can_gui_package* tempCanPackage = getTxSelectedCANPackage();
+				if(tempCanPackage->timer != 0) {
+					immediateDeleteTimer((GTimer*)tempCanPackage->timer);
+            		tempCanPackage->timer = 0;
+				}
+				//TODO: delete can package and remove from tx view + sort array and redisplay all list items
+			}
 			else
 			{
 				gwinHide(ghTabset);
@@ -184,6 +199,15 @@ void initMainPage(void)
 				showCyclicTextbox();
 			} else {
 				hideCyclicTextbox();
+			}
+			break;
+		}
+		case GEVENT_GWIN_CHECKBOX:{
+			if(gwinCheckboxIsChecked(ghAddIsRemote)) {
+				setSliderPosition(0);
+				hideSlider();
+			} else {
+				showSlider();
 			}
 			break;
 		}

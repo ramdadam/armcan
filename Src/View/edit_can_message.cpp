@@ -1,4 +1,5 @@
 #include "gfx.h"
+#include "ImagePushButton.h"
 #include "can_gui_package.h"
 #include "edit_can_message.h"
 #include <stdio.h>
@@ -13,6 +14,8 @@ GHandle ghEditRadioSelectOnce;
 GHandle ghEditAcceptButton;
 GHandle ghEditBackButton;
 can_gui_package *currentPackage = 0;
+gdispImage saveImage;
+gdispImage backImage;
 
 extern gfxQueueGSync canTransmitQueue;
 
@@ -20,7 +23,7 @@ void sendCANPackageCallback(void *CANPackage)
 {
     if(CANPackage != 0) {
         can_gui_package* package = (can_gui_package*) CANPackage;
-        // gfxQueueGSyncPut(&canTransmitQueue, package);
+        //gfxQueueGSyncPut(&canTransmitQueue, package);
     }
 }
 
@@ -41,31 +44,31 @@ void editCanMessage(can_gui_package *package, uint8_t useAlloc = FALSE)
     wi.g.x = 0;
     ghFrame = gwinContainerCreate(0, &wi, GWIN_CONTAINER_BORDER);
 
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
+    // gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
-    wi.g.width = 25;
-    wi.g.height = 35;
+    wi.g.width = 50;
+    wi.g.height = 50;
     wi.g.parent = ghFrame;
     wi.g.x = 1;
     wi.g.y = 1;
-    wi.text = "X";
-    ghEditBackButton = gwinButtonCreate(NULL, &wi);
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
+    // wi.text = "X";
+    ghEditBackButton = createImagePushButton(&wi, &backImage, BACK_IMAGE);
+    // gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
-    wi.g.width = 95;
-    wi.g.height = 35;
+    wi.g.width = 50;
+    wi.g.height = 50;
     wi.g.parent = ghFrame;
-    wi.g.x = 385;
+    wi.g.x = 425;
     wi.g.y = 0;
-    wi.text = "Save";
-    ghEditAcceptButton = gwinButtonCreate(NULL, &wi);
+    // wi.text = "Save";
+    ghEditAcceptButton = createImagePushButton(&wi, &saveImage, SAVE_IMAGE);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
-    wi.g.x = 35;
+    wi.g.x = 60;
     wi.g.y = 5;
     wi.g.width = 0;
     wi.g.height = 0;
@@ -79,7 +82,7 @@ void editCanMessage(can_gui_package *package, uint8_t useAlloc = FALSE)
     if (package->isRemote)
     {
         gwinWidgetClearInit(&wi);
-        wi.g.x = 15;
+        wi.g.x = 60;
         wi.g.show = TRUE;
         wi.g.y = 40;
         wi.g.width = 180;
@@ -99,7 +102,7 @@ void editCanMessage(can_gui_package *package, uint8_t useAlloc = FALSE)
         char *dlcString = (char *)gfxAlloc(sizeof(char) * 12);
         snprintf(dlcString, 12, "DLC: %d Byte", package->dlc);
         wi.g.show = TRUE;
-        wi.g.x = 35;
+        wi.g.x = 60;
         wi.g.y = 40;
         wi.g.width = 0;
         wi.g.height = 0;
@@ -137,7 +140,7 @@ void editCanMessage(can_gui_package *package, uint8_t useAlloc = FALSE)
 
         gwinWidgetClearInit(&wi);
         wi.g.show = TRUE;
-        wi.g.x = 35;
+        wi.g.x = 60;
         wi.g.y = 75;
         wi.g.width = 470;
         wi.g.height = 30;
@@ -150,7 +153,7 @@ void editCanMessage(can_gui_package *package, uint8_t useAlloc = FALSE)
     wi.customDraw = 0;
     wi.customParam = 0;
     wi.customStyle = 0;
-    wi.g.x = 35;
+    wi.g.x = 60;
     wi.g.y = 105;
     wi.g.width = 170;
     wi.g.height = 30;
@@ -163,7 +166,7 @@ void editCanMessage(can_gui_package *package, uint8_t useAlloc = FALSE)
     wi.customDraw = 0;
     wi.customParam = 0;
     wi.customStyle = 0;
-    wi.g.x = 210;
+    wi.g.x = 235;
     wi.g.y = 105;
     wi.g.width = 150;
     wi.g.height = 30;

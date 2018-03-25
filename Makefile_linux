@@ -32,6 +32,7 @@ ASFLAGS  =
 LDFLAGS  =
 
 SRC	 = Src/common/notification_helper.cpp
+SRC	 += Src/common/ImagePushButton.cpp
 SRC	 += Src/VirtualKeyBoard/vkeyboard.cpp
 SRC	 += Src/View/main_view.cpp
 SRC	 += Src/View/add_can_message.cpp
@@ -45,9 +46,9 @@ OBJS     =
 DEFS     =
 LIBS     =
 INCPATH  = Inc
+INCPATH  += Inc/common
 INCPATH  += Inc/images
-INCPATH  += Src/common
-INCPATH += Src/VirtualKeyBoard
+INCPATH  += Src/VirtualKeyBoard
 LIBPATH  =
 
 ##############################################################################################

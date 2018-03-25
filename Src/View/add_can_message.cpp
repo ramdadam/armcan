@@ -13,6 +13,7 @@
 
 GHandle ghBackButton;
 GHandle ghAcceptButton;
+GHandle	ghAddIsRemote;
 
 void showAddFrame()
 {
@@ -81,7 +82,7 @@ void createAddFrame()
     wi.customStyle = 0;
 
     // Create the actual checkbox
-    ghCheckbox1 = gwinCheckboxCreate(NULL, &wi);
+    ghAddIsRemote = gwinCheckboxCreate(NULL, &wi);
 
     gwinWidgetClearInit(&wi);
     wi.g.x = 15;
@@ -171,6 +172,7 @@ void createAddFrame()
 
 void setSliderPosition(int pos)
 {
+    gwinSliderSetPosition(ghSlider1, pos);
     char buffer[33];
     snprintf(buffer, sizeof(buffer), "%d Byte", pos);
     gwinSetText(ghLabel2, buffer, TRUE);
@@ -185,13 +187,13 @@ void setSliderPosition(int pos)
         {
             gwinSetText(ghDataTextEdits[i], 0, 1);
             gwinHide(ghDataTextEdits[i]);
-            gwinSetFocus(ghCheckbox1);
+            gwinSetFocus(ghAddIsRemote);
         }
         else
         {
             gwinShow(ghDataTextEdits[i]);
             if(pos == 1) {
-                gwinSetFocus(ghCheckbox1);
+                gwinSetFocus(ghAddIsRemote);
             } else {
                 ghDataTextEdits[0];
             }
@@ -219,7 +221,7 @@ uint8_t getFormData(can_gui_form_data* formData) {
         return 0;
     }
     formData->dlc = gwinSliderGetPosition(ghSlider1);
-    formData->isRemote = gwinCheckboxIsChecked(ghCheckbox1);
+    formData->isRemote = gwinCheckboxIsChecked(ghAddIsRemote);
 
     for(uint8_t i = 0; i<8; i++) {
         const char* textStr = gwinGetText(ghDataTextEdits[i]);
@@ -237,6 +239,16 @@ uint8_t getFormData(can_gui_form_data* formData) {
     setSliderPosition(0);
     gwinSliderSetPosition(ghSlider1, 0);
     return 1;
+}
+
+void hideSlider() {
+    gwinHide(ghSlider1);
+    gwinHide(ghLabel2);
+}
+
+void showSlider() {
+    gwinShow(ghSlider1);
+    gwinShow(ghLabel2);
 }
 
 void showVirtualKeyboard()

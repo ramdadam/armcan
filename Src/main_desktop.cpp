@@ -1,7 +1,7 @@
 #include "gfx.h"
-extern void initMainPage(void);
+#include "main_view.h"
 
-void mainThread(void* param)
+void* mainThread(void* param)
 {
 
 	/* Execute this until we shall be terminated */
@@ -10,11 +10,10 @@ void mainThread(void* param)
 	}
 
 	/* Don't return anything (or return something) */
-	return 0;
 }
 
 
-void main()
+int main()
 {
 	initMainPage();
 
