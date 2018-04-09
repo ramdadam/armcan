@@ -9,7 +9,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * Copyright (c) 2017 STMicroelectronics International N.V. 
+  * Copyright (c) 2018 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -61,8 +61,6 @@
 #define LCD_B0_GPIO_Port GPIOE
 #define OTG_HS_OverCurrent_Pin GPIO_PIN_3
 #define OTG_HS_OverCurrent_GPIO_Port GPIOE
-#define QSPI_D2_Pin GPIO_PIN_2
-#define QSPI_D2_GPIO_Port GPIOE
 #define RMII_TXD1_Pin GPIO_PIN_14
 #define RMII_TXD1_GPIO_Port GPIOG
 #define FMC_NBL1_Pin GPIO_PIN_1
@@ -227,8 +225,6 @@
 #define FMC_A4_GPIO_Port GPIOF
 #define FMC_SDNME_Pin GPIO_PIN_5
 #define FMC_SDNME_GPIO_Port GPIOH
-#define FMC_SDNE0_Pin GPIO_PIN_3
-#define FMC_SDNE0_GPIO_Port GPIOH
 #define LCD_G0_Pin GPIO_PIN_7
 #define LCD_G0_GPIO_Port GPIOJ
 #define LCD_G2_Pin GPIO_PIN_9
@@ -243,8 +239,6 @@
 #define ARDUINO_A5_GPIO_Port GPIOF
 #define FMC_A5_Pin GPIO_PIN_5
 #define FMC_A5_GPIO_Port GPIOF
-#define NC2_Pin GPIO_PIN_2
-#define NC2_GPIO_Port GPIOH
 #define LCD_R7_Pin GPIO_PIN_6
 #define LCD_R7_GPIO_Port GPIOJ
 #define FMC_D1_Pin GPIO_PIN_15
@@ -259,8 +253,6 @@
 #define ARDUINO_A2_GPIO_Port GPIOF
 #define ARDUINO_A3_Pin GPIO_PIN_8
 #define ARDUINO_A3_GPIO_Port GPIOF
-#define FMC_SDCKE0_Pin GPIO_PIN_3
-#define FMC_SDCKE0_GPIO_Port GPIOC
 #define FMC_D0_Pin GPIO_PIN_14
 #define FMC_D0_GPIO_Port GPIOD
 #define ULPI_D5_Pin GPIO_PIN_12
@@ -273,8 +265,6 @@
 #define ULPI_STP_GPIO_Port GPIOC
 #define RMII_MDC_Pin GPIO_PIN_1
 #define RMII_MDC_GPIO_Port GPIOC
-#define ULPI_DIR_Pin GPIO_PIN_2
-#define ULPI_DIR_GPIO_Port GPIOC
 #define FMC_A6_Pin GPIO_PIN_12
 #define FMC_A6_GPIO_Port GPIOF
 #define FMC_A11_Pin GPIO_PIN_1
@@ -295,8 +285,6 @@
 #define LCD_R6_GPIO_Port GPIOJ
 #define DCMI_D3_Pin GPIO_PIN_12
 #define DCMI_D3_GPIO_Port GPIOH
-#define RMII_REF_CLK_Pin GPIO_PIN_1
-#define RMII_REF_CLK_GPIO_Port GPIOA
 #define ARDUINO_A0_Pin GPIO_PIN_0
 #define ARDUINO_A0_GPIO_Port GPIOA
 #define DCMI_HSYNC_Pin GPIO_PIN_4
@@ -317,8 +305,6 @@
 #define FMC_BA1_GPIO_Port GPIOG
 #define FMC_BA0_Pin GPIO_PIN_4
 #define FMC_BA0_GPIO_Port GPIOG
-#define LCD_SCL_Pin GPIO_PIN_7
-#define LCD_SCL_GPIO_Port GPIOH
 #define DCMI_D0_Pin GPIO_PIN_9
 #define DCMI_D0_GPIO_Port GPIOH
 #define DCMI_D2_Pin GPIO_PIN_11
@@ -341,18 +327,12 @@
 #define FMC_D8_GPIO_Port GPIOE
 #define FMC_D11_Pin GPIO_PIN_14
 #define FMC_D11_GPIO_Port GPIOE
-#define ULPI_D3_Pin GPIO_PIN_10
-#define ULPI_D3_GPIO_Port GPIOB
-#define ARDUINO_PWM_D6_Pin GPIO_PIN_6
-#define ARDUINO_PWM_D6_GPIO_Port GPIOH
 #define LCD_SDA_Pin GPIO_PIN_8
 #define LCD_SDA_GPIO_Port GPIOH
 #define DCMI_D1_Pin GPIO_PIN_10
 #define DCMI_D1_GPIO_Port GPIOH
 #define ULPI_D0_Pin GPIO_PIN_3
 #define ULPI_D0_GPIO_Port GPIOA
-#define RMII_CRS_DV_Pin GPIO_PIN_7
-#define RMII_CRS_DV_GPIO_Port GPIOA
 #define ULPI_D2_Pin GPIO_PIN_1
 #define ULPI_D2_GPIO_Port GPIOB
 #define ULPI_D1_Pin GPIO_PIN_0
