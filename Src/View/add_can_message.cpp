@@ -220,13 +220,13 @@ can_gui_form_data getFormData() {
     for(uint8_t i = 0; i<8; i++) {
         const char* textStr = gwinGetText(ghDataTextEdits[i]);
         if(strlen(textStr) == 0) {
-            formData.data_b[7-i] = 0;
+            formData.data.data_b[7-i] = 0;
             continue;
         }
         if(i<formData.dlc) {
-            formData.data_b[7-i] = strtoul(textStr, NULL, 16);   
+            formData.data.data_b[7-i] = strtoul(textStr, NULL, 16);   
         } else {
-            formData.data_b[7-i] = 0;            
+            formData.data.data_b[7-i] = 0;            
         }
         gwinSetText(ghDataTextEdits[i], 0, FALSE);
     }

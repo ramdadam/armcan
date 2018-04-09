@@ -1,8 +1,8 @@
 /**
-  ******************************************************************************
-  * File Name          : stm32f7xx_hal_msp.c
-  * Description        : This file provides code for the MSP Initialization 
-  *                      and de-Initialization codes.
+ ******************************************************************************
+  * File Name          : ethernetif.h
+  * Description        : This file provides initialization code for LWIP
+  *                      middleWare.
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -46,109 +46,30 @@
   *
   ******************************************************************************
   */
-/* Includes ------------------------------------------------------------------*/
-#include "stm32f7xx_hal.h"
+  
 
-extern void _Error_Handler(char *, int);
+#ifndef __ETHERNETIF_H__
+#define __ETHERNETIF_H__
+
+#include "lwip/err.h"
+#include "lwip/netif.h"
+#include "cmsis_os.h"
+
+/* Within 'USER CODE' section, code will be kept by default at each generation */
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-/**
-  * Initializes the Global MSP.
-  */
-void HAL_MspInit(void)
-{
-  /* USER CODE BEGIN MspInit 0 */
 
-  /* USER CODE END MspInit 0 */
+/* Exported functions ------------------------------------------------------- */
+err_t ethernetif_init(struct netif *netif);
 
-  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
-  /* System interrupt init*/
-  /* MemoryManagement_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(MemoryManagement_IRQn, 0, 0);
-  /* BusFault_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(BusFault_IRQn, 0, 0);
-  /* UsageFault_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(UsageFault_IRQn, 0, 0);
-  /* SVCall_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SVCall_IRQn, 0, 0);
-  /* DebugMonitor_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DebugMonitor_IRQn, 0, 0);
-  /* PendSV_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(PendSV_IRQn, 15, 0);
-  /* SysTick_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
-
-  /* USER CODE BEGIN MspInit 1 */
-
-  /* USER CODE END MspInit 1 */
-}
-
-void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
-{
-
-  GPIO_InitTypeDef GPIO_InitStruct;
-  if(hcan->Instance==CAN1)
-  {
-  /* USER CODE BEGIN CAN1_MspInit 0 */
-
-  /* USER CODE END CAN1_MspInit 0 */
-    /* Peripheral clock enable */
-    __HAL_RCC_CAN1_CLK_ENABLE();
-  
-    /**CAN1 GPIO Configuration    
-    PA12     ------> CAN1_TX
-    PA11     ------> CAN1_RX 
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_11;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /* USER CODE BEGIN CAN1_MspInit 1 */
-
-  /* USER CODE END CAN1_MspInit 1 */
-  }
-
-}
-
-void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan)
-{
-
-  if(hcan->Instance==CAN1)
-  {
-  /* USER CODE BEGIN CAN1_MspDeInit 0 */
-
-  /* USER CODE END CAN1_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_CAN1_CLK_DISABLE();
-  
-    /**CAN1 GPIO Configuration    
-    PA12     ------> CAN1_TX
-    PA11     ------> CAN1_RX 
-    */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_12|GPIO_PIN_11);
-
-  /* USER CODE BEGIN CAN1_MspDeInit 1 */
-
-  /* USER CODE END CAN1_MspDeInit 1 */
-  }
-
-}
+void ethernetif_input( void const * argument );
+void ethernetif_update_config(struct netif *netif);
+void ethernetif_notify_conn_changed(struct netif *netif);
 
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
+#endif
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
