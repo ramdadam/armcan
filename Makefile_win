@@ -1,0 +1,53 @@
+# Possible Targets:	all clean Debug cleanDebug Release cleanRelease
+
+##############################################################################################
+# Settings
+#
+
+# General settings
+	# See $(GFXLIB)/tools/gmake_scripts/readme.txt for the list of variables
+	OPT_OS					= win32
+	OPT_LINK_OPTIMIZE		= no
+
+# uGFX settings
+	GFXLIB					= ./ugfx
+	GFXBOARD				= Win32
+	#GFXDEMO					= modules/gdisp/basics
+
+
+##############################################################################################
+# Set these for your project
+#
+
+ARCH     = i686-w64-mingw32-
+SRCFLAGS = -ggdb -O0
+CFLAGS   = -Wfatal-errors
+CXXFLAGS =
+ASFLAGS  =
+LDFLAGS  =
+
+SRC	 = Src/gwin_table.c
+SRC	 += Src/VirtualKeyBoard/vkeyboard.cpp
+SRC	 += Src/View/main_view.cpp
+SRC	 += Src/View/edit_can_message.cpp
+SRC	 += Src/View/add_can_message.cpp
+SRC	 += Src/View/can_view.cpp
+SRC	 += Src/View/tx_can_view.cpp
+SRC	 += Src/View/rx_can_view.cpp
+SRC      += Src/main_desktop.c
+OBJS     =
+DEFS     = GDISP_SCREEN_HEIGHT=280
+DEFS     += GDISP_SCREEN_WIDTH=480
+LIBS     =
+INCPATH  = Inc
+INCPATH += Src/VirtualKeyBoard
+LIBPATH  =
+
+##############################################################################################
+# These should be at the end
+#
+
+include $(GFXLIB)/tools/gmake_scripts/library_ugfx.mk
+include $(GFXLIB)/tools/gmake_scripts/os_$(OPT_OS).mk
+include $(GFXLIB)/tools/gmake_scripts/compiler_gcc.mk
+# *** EOF ***
