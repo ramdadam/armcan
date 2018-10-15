@@ -31,7 +31,7 @@ CMSIS			= ./res/Drivers/CMSIS
 ##############################################################################################
 # Set these for your project
 #
-ARCH     = /opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-
+ARCH     = /opt/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-
 SRCFLAGS = -ggdb -O1
 CFLAGS   = 
 CXXFLAGS = -fno-rtti
@@ -96,3 +96,6 @@ include $(GFXLIB)/tools/gmake_scripts/library_ugfx.mk
 include $(GFXLIB)/tools/gmake_scripts/os_$(OPT_OS).mk
 include $(GFXLIB)/tools/gmake_scripts/compiler_gcc.mk
 # *** EOF ***
+# -I./Inc -IInc/images -IInc/common -ISrc/VirtualKeyBoard -ISrc/Common -I./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include -I./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I./res/Drivers/CMSIS/Include -I./ugfx -I./ugfx/3rdparty/tinygl-0.4-ugfx/include -I./ugfx/boards/base/STM32F746-Discovery -I./res/Drivers/STM32F7xx_HAL_Driver/Inc -I./ugfx/drivers/gdisp/STM32LTDC -I./res/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I./res/Middlewares/Third_Party/FreeRTOS/Source/include
+# -I./Inc -IInc/images -IInc/common -ISrc/VirtualKeyBoard -ISrc/Common -I./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include -I./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I./res/Drivers/CMSIS/Include -I./ugfx -I./ugfx/3rdparty/tinygl-0.4-ugfx/include -I./ugfx/boards/base/STM32F746-Discovery -I./res/Drivers/STM32F7xx_HAL_Driver/Inc -I./ugfx/drivers/gdisp/STM32LTDC -I./res/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -I./res/Middlewares/Third_Party/FreeRTOS/Source/include
+# -DGFX_OS_HEAP_SIZE=40960 -DSTM32F746xx -DGFX_OS_NO_INIT -DCAN_INTERRUPT_PRIORITY=10 -DENTER_ISR -DLEAVE_ISR -DCAN_HARDWARE_ENABLED -DMAX_SEMAPHORE_COUNT=50 -DGFX_USE_OS_FREERTOS=TRUE -DCORTEX_USE_FPU=TRUE -DUSE_FPU=hard -DTHUMB_PRESENT -DTHUMB_NO_INTERWORKING -mthumb -DTHUMB fakethumbfile.c

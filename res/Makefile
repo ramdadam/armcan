@@ -95,7 +95,8 @@ PERIFLIB_SOURCES =
 #######################################
 # binaries
 #######################################
-BINPATH = /cygdrive/c/Program\ Files\ \(x86\)/GNU\ Tools\ ARM\ Embedded/6\ 2017-q1-update/bin
+BINPATH = /opt/gcc-arm-none-eabi-7-2017-q4-major/bin
+#/cygdrive/c/Program\ Files\ \(x86\)/GNU\ Tools\ ARM\ Embedded/6\ 2017-q1-update/bin
 PREFIX = arm-none-eabi-
 CC = $(BINPATH)/$(PREFIX)gcc
 AS = $(BINPATH)/$(PREFIX)gcc -x assembler-with-cpp
