@@ -48,21 +48,36 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "main_view.h"
-#include "can_driver.h"
+
 #include "stm32f7xx_hal.h"
 #include "cmsis_os.h"
+
 #include "gfx.h"
+#include "can_gui_package.h"
+#include "event_listener.h"
+#include "edit_can_message.h"
+#include "can_view.h"
+#include "rx_can_view.h"
+#include "tx_can_view.h"
+#include "add_can_message.h"
+#include "main_view.h"
+#include <stdio.h>
 /* USER CODE BEGIN Includes */
 extern gfxQueueGSync* canTransmitQueue;
 extern gfxQueueGSync* canReceiveQueue;
-
+void* operator new(size_t size) {
+	return gfxAlloc(size);
+}
+void operator delete(void* ptr, size_t size) {
+	gfxFree(ptr);
+}
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 
 
 osThreadId defaultTaskHandle;
+CAN_HandleTypeDef hcan;
 
 /* USER CODE BEGIN PV */
 extern "C" void __attribute ((weak)) _init(void) {
@@ -77,7 +92,6 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_CAN1_Init(void);
 void StartDefaultTask(void const * argument);
-void canTask(void * argument);
 void transmitThread(void* _);
 
 /* USER CODE BEGIN PFP */
@@ -88,7 +102,7 @@ void transmitThread(void* _);
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-
+CMainView cMainView;
 int main(void) {
 
 	/* USER CODE BEGIN 1 */
@@ -134,6 +148,8 @@ int main(void) {
 	/* Create the thread(s) */
 	/* definition and creation of defaultTask */
 
+	/* USER CODE BEGIN RTOS_THREADS */
+
 	canTransmitQueue = (gfxQueueGSync*) gfxAlloc(sizeof(gfxQueueGSync));
 	canReceiveQueue = (gfxQueueGSync*) gfxAlloc(sizeof(gfxQueueGSync));
 	gfxQueueGSyncInit(canTransmitQueue);
@@ -142,10 +158,7 @@ int main(void) {
 	osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 3, 1024);
 	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-	//gfxThreadCreate(NULL, 128, NORMAL_PRIORITY, transmitThread, 0);
-	Task canTaskk(canTask);
-	/* USER CODE BEGIN RTOS_THREADS */
-	/* add threads, ... */
+	gfxThreadCreate(NULL, 128, NORMAL_PRIORITY, transmitThread, 0);
 	/* USER CODE END RTOS_THREADS */
 
 	/* USER CODE BEGIN RTOS_QUEUES */
@@ -187,9 +200,10 @@ void SystemClock_Config(void) {
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
 	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
 	RCC_OscInitStruct.HSICalibrationValue = 16;
+
 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-	RCC_OscInitStruct.PLL.PLLM = 25;
+	RCC_OscInitStruct.PLL.PLLM = 16;
 	RCC_OscInitStruct.PLL.PLLN = 400;
 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
 	RCC_OscInitStruct.PLL.PLLQ = 8;
@@ -204,7 +218,7 @@ void SystemClock_Config(void) {
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
 
 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
 		_Error_Handler(__FILE__, __LINE__);
@@ -212,20 +226,100 @@ void SystemClock_Config(void) {
 
 	/**Configure the Systick interrupt time
 	 */
-//	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
+	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
 
 	/**Configure the Systick
 	 */
-//	HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+	HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
 	/* SysTick_IRQn interrupt configuration */
-//	HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+	HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
 }
 
 /* CAN1 init function */
 static void MX_CAN1_Init(void) {
-	//CAN_driver.hardware_initialization();
 
+    hcan.Instance = CAN1;
+    hcan.Init.Prescaler = 50;
+    hcan.Init.Mode = CAN_MODE_NORMAL;
+    hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
+    hcan.Init.TimeSeg1 = CAN_BS1_7TQ;
+    hcan.Init.TimeSeg2 = CAN_BS2_2TQ;
+    hcan.Init.TimeTriggeredMode = DISABLE;
+    hcan.Init.AutoBusOff = DISABLE;
+    hcan.Init.AutoWakeUp = DISABLE;
+    hcan.Init.AutoRetransmission = DISABLE;
+    hcan.Init.ReceiveFifoLocked = DISABLE;
+    hcan.Init.TransmitFifoPriority = DISABLE;
+    if (HAL_CAN_Init(&hcan) != HAL_OK)
+    {
+        _Error_Handler(__FILE__, __LINE__);
+    }
+
+    CAN_FilterTypeDef sFilterConfig;
+    sFilterConfig.FilterBank = 0;
+    sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+    sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+    sFilterConfig.FilterIdHigh = 0x0000;
+    sFilterConfig.FilterIdLow = 0x0000;
+    sFilterConfig.FilterMaskIdHigh = 0x0000;
+    sFilterConfig.FilterMaskIdLow = 0x0000;
+    sFilterConfig.FilterFIFOAssignment = 0;
+    sFilterConfig.FilterActivation = ENABLE;
+
+    if (HAL_CAN_ConfigFilter(&hcan, &sFilterConfig) != HAL_OK) {
+        _Error_Handler(__FILE__, __LINE__);
+
+    }
+    if (HAL_CAN_Start(&hcan) != HAL_OK)
+    {
+        _Error_Handler(__FILE__, __LINE__);
+    }
+    /* rx fifo0 message pending aktivieren*/
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK) {
+        /* Notification Error */
+        _Error_Handler(__FILE__, __LINE__);
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO1_MSG_PENDING) != HAL_OK) {
+        /* Notification Error */
+        _Error_Handler(__FILE__, __LINE__);
+    }
+}
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+    CAN_RxHeaderTypeDef   RxHeader;
+    uint8_t               RxData[8];
+    if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
+        /* Reception Error */
+        _Error_Handler(__FILE__, __LINE__);
+    }
+	can_gui_package* package = new can_gui_package();
+
+    package->id = RxHeader.StdId;
+    package->isRemote = RxHeader.RTR;
+    package->dlc = RxHeader.DLC;
+    for (int i = 0; i < 8; i++) {
+        package->data.data_b[i] = RxData[i];
+    }
+    gfxQueueGSyncPush(canTransmitQueue, &package->q_item);
+}
+
+void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+    CAN_RxHeaderTypeDef   RxHeader;
+    uint8_t               RxData[8];
+    if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO1, &RxHeader, RxData) != HAL_OK) {
+        /* Reception Error */
+        _Error_Handler(__FILE__, __LINE__);
+    }
+	can_gui_package* package = new can_gui_package();
+
+    package->id = RxHeader.StdId;
+    package->isRemote = RxHeader.RTR;
+    package->dlc = RxHeader.DLC;
+    for (int i = 0; i < 8; i++) {
+        package->data.data_b[i] = RxData[i];
+    }
+    gfxQueueGSyncPush(canTransmitQueue, &package->q_item);
 }
 
 static void MX_GPIO_Init(void) {
@@ -234,11 +328,25 @@ static void MX_GPIO_Init(void) {
 }
 
 /* USER CODE BEGIN 4 */
+CAN_TxHeaderTypeDef   TxHeader;
+uint8_t               TxData[8];
+uint32_t              TxMailbox;
 void transmitThread(void* _) {
-	while (1) {
-		vTaskDelay(10000);
-		//gfxQueueGSyncItem* package_queued = gfxQueueGSyncGet(canTransmitQueue, TIME_INFINITE);
-		//gfxQueueGSyncPut(canReceiveQueue, package_queued);
+	while (true) {
+		gfxQueueGSyncItem* package_queued = gfxQueueGSyncGet(canTransmitQueue, TIME_INFINITE);
+		auto package = (can_gui_package*) package_queued;
+		TxHeader.StdId = package->id;
+		TxHeader.ExtId = 0x00;
+		TxHeader.RTR = package->isRemote;
+		TxHeader.IDE = CAN_ID_STD;
+		TxHeader.DLC = package->dlc;
+		TxHeader.TransmitGlobalTime = DISABLE;
+		for (int i = 0; i < 8; i++) {
+			TxData[i] = package->data.data_b[i];
+		}
+		if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK) {
+			continue;
+		}
 	}
 }
 /* USER CODE END 4 */
@@ -246,23 +354,9 @@ void transmitThread(void* _) {
 /* StartDefaultTask function */
 // extern void initMainPage(void);
 void StartDefaultTask(void const * argument) {
-	initMainPage();
-	/* USER CODE END 5 */
+    cMainView.initMainPage();
 }
-void canTask(void* argument) {
-//vTaskDelay(5000);
-	while (1) {
-		CAN_packet p;
-		p.id = 0x102;
-		CAN_driver.send(p);
-		CAN_packet d;
-		CAN_driver.receive(d);
-		volatile uint16_t temp = d.id;
-		vTaskDelay(200);
-	}
-
-	/* USER CODE END 5 */
-}
+/* USER CODE END 5 */
 
 /**
  * @brief  This function is executed in case of error occurrence.

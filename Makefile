@@ -31,7 +31,7 @@ CMSIS			= ./res/Drivers/CMSIS
 ##############################################################################################
 # Set these for your project
 #
-ARCH     = /opt/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-
+ARCH     = /opt/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-
 SRCFLAGS = -ggdb -O1
 CFLAGS   = 
 CXXFLAGS = -fno-rtti
@@ -48,7 +48,6 @@ SRC	 += Src/View/can_view.cpp
 SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
 SRC	 += Src/common/can_gui_package.cpp
-SRC	 += Src/can_driver.cpp
 SRC      += Src/main.cpp \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c \
@@ -80,11 +79,11 @@ LIBS     =
 INCPATH  = ./Inc
 INCPATH  += Inc/images
 INCPATH  += Inc/common
-INCPATH += Src/VirtualKeyBoard
-INCPATH += Src/Common
+INCPATH  += Inc/events
 INCPATH += ./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include
 INCPATH += ./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 INCPATH += ./res/Drivers/CMSIS/Include
+INCPATH += ./Src/VirtualKeyBoard
 LIBPATH  =
 LDSCRIPT = 
 

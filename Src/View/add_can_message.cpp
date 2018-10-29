@@ -1,5 +1,6 @@
 #include "notification_helper.h"
 #include "gfx.h"
+#include "event_listener.h"
 #include "can_gui_package.h"
 #include "add_can_message.h"
 #include <stdio.h>
@@ -12,31 +13,84 @@
 #include "../armcan/ugfx/src/gwin/gwin_class.h"
 #include "../armcan/ugfx/src/gwin/gwin_container.h"
 
-GHandle ghBackButton;
-GHandle ghAcceptButton;
-GHandle	ghAddIsRemote;
-gdispImage addImage;
-// gdispImage backImage;
+EVENT_ACTION CAddCanMessageView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {
+    switch (gEvent->type) {
+        case GEVENT_GWIN_BUTTON: {
+            GWindowObject *target = ((GEventGWinButton *) gEvent)->gwin;
 
-void showAddFrame()
-{
+            if (target == ghBackButton) {
+                return CLOSE_ADD_VIEW;
+            } else if (target == ghAcceptButton) {
+                return ADD_MESSAGE;
+            }
+            break;
+        }
+        case GEVENT_GWIN_SLIDER: {
+            //TODO: else not working if more than one (global) slider event
+            return ADD_VIEW_SLIDER_CHANGE;
+        }
+        case GEVENT_GWIN_CHECKBOX: {
+            if (gwinCheckboxIsChecked(ghAddIsRemote)) {
+                return ADD_VIEW_SHOW_SLIDER;
+            } else {
+                //TODO: else not working if more than one (global) checkbox event
+                return ADD_VIEW_HIDE_SLIDER;
+            }
+        }
+        default: {
+            return currentAction != NO_ACTION ? currentAction : NO_ACTION;
+        }
+    }
+}
+
+EVENT_ACTION_STATUS CAddCanMessageView::performAction(EVENT_ACTION action, GEvent * gEvent) {
+    switch(action) {
+        case CLOSE_ADD_VIEW:
+        {
+            hideAddFrame();
+            break;
+        }
+        case SHOW_ADD_VIEW:
+        {
+            showAddFrame();
+            break;
+        }
+        case ADD_MESSAGE: {
+            break;
+        }
+        case ADD_VIEW_SLIDER_CHANGE: {
+            setSliderPosition(((GEventGWinSlider *) gEvent)->position);
+            break;
+        }
+        case ADD_VIEW_SHOW_SLIDER: {
+            setSliderPosition(0);
+            hideSlider();
+            break;
+        }
+        case ADD_VIEW_HIDE_SLIDER:{
+            showSlider();
+            break;
+        }
+    }
+    return EVENT_NOT_HANDLED;
+}
+
+void CAddCanMessageView::showAddFrame() {
     createAddFrame();
     showVirtualKeyboard();
     showKeyBoard();
     byteOrderLabelVisible = 1;
 }
 
-void hideAddFrame()
-{
+void CAddCanMessageView::hideAddFrame() {
     // gwinHide(ghFrame1);
     hideVirtualKeyboard();
     gwinDestroy(ghFrame1);
-    ghFrame1=0;    
+    ghFrame1 = 0;
     byteOrderLabelVisible = 0;
 }
 
-void createAddFrame()
-{
+void CAddCanMessageView::createAddFrame() {
     GWidgetInit wi;
 
     gwinWidgetClearInit(&wi);
@@ -44,7 +98,7 @@ void createAddFrame()
     const uint16_t width = 400;
     const uint16_t height = 160;
 
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
+    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
     // Apply the frame parameters
     wi.g.width = gdispGetWidth();
     wi.g.height = gdispGetHeight();
@@ -120,7 +174,7 @@ void createAddFrame()
     wi.g.y = 1;
     wi.text = "X";
     ghBackButton = gwinButtonCreate(NULL, &wi);
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
+    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
@@ -162,8 +216,7 @@ void createAddFrame()
     ghLSBLabel = gwinLabelCreate(NULL, &wi);
 
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans14"));
-    for (int i = 0; i < 8; i++)
-    {
+    for (int i = 0; i < 8; i++) {
         gwinWidgetClearInit(&wi);
         wi.g.show = FALSE;
         wi.g.x = i * 58;
@@ -177,93 +230,85 @@ void createAddFrame()
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
 }
 
-void setSliderPosition(int pos)
-{
+void CAddCanMessageView::setSliderPosition(int pos) {
     gwinSliderSetPosition(ghSlider1, pos);
     char buffer[33];
     snprintf(buffer, sizeof(buffer), "%d Byte", pos);
     gwinSetText(ghLabel2, buffer, TRUE);
 
-    for (int i = 0; i < 8; i++)
-    {
-        if (i == pos - 1 && pos > 1)
-        {
+    for (int i = 0; i < 8; i++) {
+        if (i == pos - 1 && pos > 1) {
             gwinMove(ghLSBLabel, 15 + i * 58, 160);
         }
-        if (i >= pos)
-        {
+        if (i >= pos) {
             gwinSetText(ghDataTextEdits[i], 0, 1);
             gwinHide(ghDataTextEdits[i]);
             gwinSetFocus(ghAddIsRemote);
-        }
-        else
-        {
+        } else {
             gwinShow(ghDataTextEdits[i]);
-            if(pos == 1) {
+            if (pos == 1) {
                 gwinSetFocus(ghAddIsRemote);
             } else {
                 ghDataTextEdits[0];
             }
         }
     }
-    if (byteOrderLabelVisible == 1 && pos > 1)
-    {
+    if (byteOrderLabelVisible == 1 && pos > 1) {
         gwinShow(ghLSBLabel);
         gwinShow(ghMSBLabel);
         byteOrderLabelVisible = 0;
     }
-    if (pos <= 1)
-    {
+    if (pos <= 1) {
         gwinHide(ghLSBLabel);
         gwinHide(ghMSBLabel);
         byteOrderLabelVisible = 1;
     }
 }
 
-uint8_t getFormData(can_gui_form_data* formData) {
-    const char* idStr = gwinGetText(ghIDTextEdit);
+uint8_t CAddCanMessageView::getFormData(can_gui_form_data *formData) {
+    const char *idStr = gwinGetText(ghIDTextEdit);
     formData->id = strtoul(idStr, NULL, 16);
-    if(formData->id > 0x7FF) {
+    if (formData->id > 0x7FF) {
         showMessage(" ID muss kleiner als 0x7FF sein ");
         return 0;
     }
     formData->dlc = gwinSliderGetPosition(ghSlider1);
     formData->isRemote = gwinCheckboxIsChecked(ghAddIsRemote);
 
-    for(uint8_t i = 0; i<8; i++) {
-        const char* textStr = gwinGetText(ghDataTextEdits[i]);
-        if(strlen(textStr) == 0) {
-            formData->data.data_b[7-i] = 0;
+    for (uint8_t i = 0; i < formData->dlc; i++) {
+        const char *textStr = gwinGetText(ghDataTextEdits[i]);
+
+        if (strlen(textStr) == 0) {
+            formData->data.data_b[i] = 0;
             continue;
         }
-        if(i<formData->dlc) {
-            formData->data.data_b[7-i] = strtoul(textStr, NULL, 16);   
+        if (i < formData->dlc) {
+            formData->data.data_b[i] = strtoul(textStr, NULL, 16);
         } else {
-            formData->data.data_b[7-i] = 0;            
+            formData->data.data_b[i] = 0;
         }
         gwinSetText(ghDataTextEdits[i], 0, FALSE);
     }
+
     setSliderPosition(0);
     gwinSliderSetPosition(ghSlider1, 0);
     return 1;
 }
 
-void hideSlider() {
+void CAddCanMessageView::hideSlider() {
     gwinHide(ghSlider1);
     gwinHide(ghLabel2);
 }
 
-void showSlider() {
+void CAddCanMessageView::showSlider() {
     gwinShow(ghSlider1);
     gwinShow(ghLabel2);
 }
 
-void showVirtualKeyboard()
-{
+void CAddCanMessageView::showVirtualKeyboard() {
     createKeyBoard(HEX_KEYBOARD);
 }
 
-void hideVirtualKeyboard()
-{
+void CAddCanMessageView::hideVirtualKeyboard() {
     deleteKeyBoard();
 }

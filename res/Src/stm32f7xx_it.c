@@ -4,7 +4,7 @@
   * @brief   Interrupt Service Routines.
   ******************************************************************************
   *
-  * COPYRIGHT(c) 2017 STMicroelectronics
+  * COPYRIGHT(c) 2018 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -41,24 +41,24 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern CAN_HandleTypeDef hcan;
 
 /******************************************************************************/
-/*            Cortex-M7 Processor Interruption and Exception Handlers         */ 
+/*            Cortex-M7 Processor Interruption and Exception Handlers         */
 /******************************************************************************/
 
 /**
 * @brief This function handles System tick timer.
 */
-void SysTick_Handler(void)
-{
-  /* USER CODE BEGIN SysTick_IRQn 0 */
+void SysTick_Handler(void) {
+    /* USER CODE BEGIN SysTick_IRQn 0 */
 
-  /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
-  osSystickHandler();
-  /* USER CODE BEGIN SysTick_IRQn 1 */
+    /* USER CODE END SysTick_IRQn 0 */
+    HAL_IncTick();
+    osSystickHandler();
+    /* USER CODE BEGIN SysTick_IRQn 1 */
 
-  /* USER CODE END SysTick_IRQn 1 */
+    /* USER CODE END SysTick_IRQn 1 */
 }
 
 /******************************************************************************/
@@ -67,6 +67,45 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f7xx.s).                    */
 /******************************************************************************/
+
+/**
+* @brief This function handles CAN1 TX interrupts.
+*/
+void CAN1_TX_IRQHandler(void) {
+    /* USER CODE BEGIN CAN1_TX_IRQn 0 */
+
+    /* USER CODE END CAN1_TX_IRQn 0 */
+    HAL_CAN_IRQHandler(&hcan);
+    /* USER CODE BEGIN CAN1_TX_IRQn 1 */
+
+    /* USER CODE END CAN1_TX_IRQn 1 */
+}
+
+/**
+* @brief This function handles CAN1 RX0 interrupts.
+*/
+void CAN1_RX0_IRQHandler(void) {
+    /* USER CODE BEGIN CAN1_RX0_IRQn 0 */
+
+    /* USER CODE END CAN1_RX0_IRQn 0 */
+    HAL_CAN_IRQHandler(&hcan);
+    /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
+
+    /* USER CODE END CAN1_RX0_IRQn 1 */
+}
+
+/**
+* @brief This function handles CAN1 RX1 interrupt.
+*/
+void CAN1_RX1_IRQHandler(void) {
+    /* USER CODE BEGIN CAN1_RX1_IRQn 0 */
+
+    /* USER CODE END CAN1_RX1_IRQn 0 */
+    HAL_CAN_IRQHandler(&hcan);
+    /* USER CODE BEGIN CAN1_RX1_IRQn 1 */
+
+    /* USER CODE END CAN1_RX1_IRQn 1 */
+}
 
 /* USER CODE BEGIN 1 */
 

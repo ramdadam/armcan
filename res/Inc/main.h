@@ -1,7 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : main.hpp
-  * Description        : This file contains the common defines of the application
+  * @file           : main.h
+  * @brief          : Header for main.c file.
+  *                   This file contains the common defines of the application.
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -9,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * Copyright (c) 2017 STMicroelectronics International N.V. 
+  * Copyright (c) 2018 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -45,12 +46,13 @@
   *
   ******************************************************************************
   */
+
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
-  /* Includes ------------------------------------------------------------------*/
+#ifndef __MAIN_H__
+#define __MAIN_H__
 
 /* Includes ------------------------------------------------------------------*/
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -69,8 +71,6 @@
 #define FMC_NBL1_GPIO_Port GPIOE
 #define FMC_NBL0_Pin GPIO_PIN_0
 #define FMC_NBL0_GPIO_Port GPIOE
-#define ARDUINO_SCL_D15_Pin GPIO_PIN_8
-#define ARDUINO_SCL_D15_GPIO_Port GPIOB
 #define ULPI_D7_Pin GPIO_PIN_5
 #define ULPI_D7_GPIO_Port GPIOB
 #define ARDUINO_PWM_D3_Pin GPIO_PIN_4
@@ -93,8 +93,6 @@
 #define DCMI_D7_GPIO_Port GPIOE
 #define RMII_TXD0_Pin GPIO_PIN_13
 #define RMII_TXD0_GPIO_Port GPIOG
-#define ARDUINO_SDA_D14_Pin GPIO_PIN_9
-#define ARDUINO_SDA_D14_GPIO_Port GPIOB
 #define VCP_RX_Pin GPIO_PIN_7
 #define VCP_RX_GPIO_Port GPIOB
 #define QSPI_NCS_Pin GPIO_PIN_6
@@ -399,13 +397,6 @@ void _Error_Handler(char *, int);
 }
 #endif
 
-/**
-  * @}
-  */ 
+#endif /* __MAIN_H__ */
 
-/**
-  * @}
-*/ 
-
-#endif /* __MAIN_H */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

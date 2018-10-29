@@ -9,32 +9,31 @@ GHandle rxTable;
 extern gfxQueueGSync* canReceiveQueue;
 
 threadreturn_t CANReceiveThread(void* param)
-{	
+{
+    CRxCanView* cRxCanView = (CRxCanView*) param;
  	while (1) {
         const gfxQueueGSyncItem* package_queued = gfxQueueGSyncPop(canReceiveQueue, TIME_INFINITE);
-        if(package_queued != 0)
-        putRxCanPackage((can_gui_package*)package_queued);
-	} 
-	// return 0;
+        if(package_queued != 0){
+            can_gui_package *canGuiPackage = (can_gui_package*)package_queued;
+            cRxCanView->putRxCanPackage(canGuiPackage);
+            delete canGuiPackage;
+        }
+	}
 }
 
-void createRxCanViewTable(GHandle *parent)
+void CRxCanView::createRxCanViewTable(GHandle *parent)
 {
     rxTable = createBaseTableWidget(parent);
     rxCanContainer = (can_gui_package_array)gfxAlloc(RX_MAX_PACKAGES * sizeof(can_gui_package *));
-    gfxThreadCreate(NULL, 128, NORMAL_PRIORITY, CANReceiveThread, 0);
+    gfxThreadCreate(NULL, 128, NORMAL_PRIORITY, CANReceiveThread, this);
 }
 
-void deleteRxCanViewTable()
+void CRxCanView::deleteRxCanViewTable()
 {
     deleteTableWidget();
 }
 
-void addRXCanMessage(can_gui_package *package) {
-
-}
-
-void syncRxList()
+void CRxCanView::syncRxList()
 {
     gwinListDeleteAll(rxTable);
     for (uint16_t i = 0; i < rxCanContainerSize; i++)
@@ -43,17 +42,16 @@ void syncRxList()
     }
 }
 
-int8_t putRxCanPackage(can_gui_package *package)
+int8_t CRxCanView::putRxCanPackage(can_gui_package *package)
 {
-    uint8_t found = FALSE;
+    bool found = FALSE;
     for (uint16_t i = 0; i < rxCanContainerSize; i++)
     {
         can_gui_package *temp = rxCanContainer[i];
         if (temp && temp->id == package->id && temp->isRemote == package->isRemote)
         {
-//            temp->count += 1;
             found = TRUE;
-//            bumpPackageCounter(temp);
+            bumpPackageCounter(temp);
             //gwinRedraw(rxTable);
             return 0;
         }

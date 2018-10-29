@@ -1,0 +1,30 @@
+
+enum EVENT_ACTION_STATUS {
+    EVENT_HANDLED = 0,
+    EVENT_NOT_HANDLED,
+    EVENT_ERROR
+};
+enum EVENT_ACTION {
+//    KEY_PRESSED = 0,
+    NO_ACTION = 0,
+    SHOW_MAIN_VIEW,
+    SHOW_ADD_VIEW,
+    CLOSE_ADD_VIEW,
+    ADD_VIEW_SHOW_SLIDER,
+    ADD_VIEW_HIDE_SLIDER,
+    ADD_VIEW_SLIDER_CHANGE,
+    ADD_MESSAGE,//7
+    SHOW_EDIT_VIEW,
+    CLOSE_EDIT_VIEW,
+    ACCEPT_EDIT,//10
+    SHOW_CYCLIC_TEXTBOX,
+    HIDE_CYCLIC_TEXTBOX,
+    DELETE_TX_ITEM
+};
+
+class CEventListener {
+public:
+    virtual EVENT_ACTION evalEvent(GEvent *, EVENT_ACTION currentAction) {};
+
+    virtual EVENT_ACTION_STATUS performAction(EVENT_ACTION action, GEvent *) {};
+};
