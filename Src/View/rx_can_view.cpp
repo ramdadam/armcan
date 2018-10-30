@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include "notification_helper.h"
 
-GHandle rxTable;
 extern gfxQueueGSync* canReceiveQueue;
 
 threadreturn_t CANReceiveThread(void* param)
@@ -16,16 +15,15 @@ threadreturn_t CANReceiveThread(void* param)
         if(package_queued != 0){
             can_gui_package *canGuiPackage = (can_gui_package*)package_queued;
             cRxCanView->putRxCanPackage(canGuiPackage);
-            delete canGuiPackage;
         }
 	}
 }
 
 void CRxCanView::createRxCanViewTable(GHandle *parent)
 {
-    rxTable = createBaseTableWidget(parent);
+    createBaseTableWidget(parent);
     rxCanContainer = (can_gui_package_array)gfxAlloc(RX_MAX_PACKAGES * sizeof(can_gui_package *));
-    gfxThreadCreate(NULL, 128, NORMAL_PRIORITY, CANReceiveThread, this);
+//    gfxThreadCreate(NULL, 128, NORMAL_PRIORITY, CANReceiveThread, this);
 }
 
 void CRxCanView::deleteRxCanViewTable()
@@ -35,10 +33,10 @@ void CRxCanView::deleteRxCanViewTable()
 
 void CRxCanView::syncRxList()
 {
-    gwinListDeleteAll(rxTable);
+    gwinListDeleteAll(table_view);
     for (uint16_t i = 0; i < rxCanContainerSize; i++)
     {
-        gwinListAddItem(rxTable, rxCanContainer[i]->displayText, 0);
+        gwinListAddItem(table_view, rxCanContainer[i]->displayText, 0);
     }
 }
 
@@ -51,6 +49,7 @@ int8_t CRxCanView::putRxCanPackage(can_gui_package *package)
         if (temp && temp->id == package->id && temp->isRemote == package->isRemote)
         {
             found = TRUE;
+            temp->count += 1;
             bumpPackageCounter(temp);
             //gwinRedraw(rxTable);
             return 0;
@@ -60,10 +59,11 @@ int8_t CRxCanView::putRxCanPackage(can_gui_package *package)
     {
         if (rxCanContainerSize < RX_MAX_PACKAGES)
         {
+            bumpPackageCounter(package);
             rxCanContainer[rxCanContainerSize] = package;
-            package->count = 1;
             rxCanContainerSize += 1;
+            syncRxList();
         }
     }
-    syncRxList();
+//    syncRxList();
 }

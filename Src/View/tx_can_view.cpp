@@ -66,7 +66,7 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     wi.g.show = TRUE;
     wi.g.width = 27;
     wi.g.height = 27;
-    wi.g.x = 1;
+    wi.g.x = 225;
     wi.g.parent = *parent;
     wi.g.y = 225;
     wi.text = 0;

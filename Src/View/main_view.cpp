@@ -40,8 +40,8 @@ void CMainView::createTabset(void) {
     wi.g.x = 0;
     wi.g.y = 0;
     ghTabset = gwinTabsetCreate(0, &wi, GWIN_TABSET_BORDER);
-    tabset_page_1 = gwinTabsetAddTab(ghTabset, "Transmit", 1);
     tabset_page_2 = gwinTabsetAddTab(ghTabset, "Receive", 1);
+    tabset_page_1 = gwinTabsetAddTab(ghTabset, "Transmit", 1);
     createTable();
 }
 
@@ -57,6 +57,9 @@ void CMainView::hideMainpage() {
     gwinHide(cTxCanView.getTXEditButton());
 }
 
+void CMainView::addRxCanPackage(can_gui_package* package) {
+    cRxCanView.putRxCanPackage(package);
+}
 
 void CMainView::triggerRxRedraw() {
     cRxCanView.redrawTable();

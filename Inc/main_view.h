@@ -6,7 +6,7 @@ class CMainView {
 
 public:
     void initMainPage();
-
+    void addRxCanPackage(can_gui_package* package);
 protected:
     void createTable(void);
 

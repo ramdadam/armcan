@@ -62,14 +62,17 @@
 #include "add_can_message.h"
 #include "main_view.h"
 #include <stdio.h>
+
 /* USER CODE BEGIN Includes */
-extern gfxQueueGSync* canTransmitQueue;
-extern gfxQueueGSync* canReceiveQueue;
-void* operator new(size_t size) {
-	return gfxAlloc(size);
+extern gfxQueueGSync *canTransmitQueue;
+extern gfxQueueGSync *canReceiveQueue;
+
+void *operator new(size_t size) {
+    return gfxAlloc(size);
 }
-void operator delete(void* ptr, size_t size) {
-	gfxFree(ptr);
+
+void operator delete(void *ptr, size_t size) {
+    gfxFree(ptr);
 }
 /* USER CODE END Includes */
 
@@ -78,21 +81,26 @@ void operator delete(void* ptr, size_t size) {
 
 osThreadId defaultTaskHandle;
 CAN_HandleTypeDef hcan;
-
+gfxQueueGSync *canNotificationQueue;
 /* USER CODE BEGIN PV */
 extern "C" void __attribute ((weak)) _init(void) {
-}
-;
+};
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+
 static void MX_GPIO_Init(void);
+
 static void MX_CAN1_Init(void);
-void StartDefaultTask(void const * argument);
-void transmitThread(void* _);
+
+void StartDefaultTask(void const *argument);
+
+void transmitThread(void *_);
+
+void receiveThread(void *_);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -103,137 +111,141 @@ void transmitThread(void* _);
 
 /* USER CODE END 0 */
 CMainView cMainView;
+
 int main(void) {
 
-	/* USER CODE BEGIN 1 */
+    /* USER CODE BEGIN 1 */
 
-	/* USER CODE END 1 */
+    /* USER CODE END 1 */
 
-	/* MCU Configuration----------------------------------------------------------*/
+    /* MCU Configuration----------------------------------------------------------*/
 
-	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-	HAL_Init();
+    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    HAL_Init();
 
-	/* USER CODE BEGIN Init */
+    /* USER CODE BEGIN Init */
 
-	/* USER CODE END Init */
+    /* USER CODE END Init */
 
-	/* Configure the system clock */
-	SystemClock_Config();
+    /* Configure the system clock */
+    SystemClock_Config();
 
-	/* USER CODE BEGIN SysInit */
+    /* USER CODE BEGIN SysInit */
 
-	/* USER CODE END SysInit */
+    /* USER CODE END SysInit */
 
-	/* Initialize all configured peripherals */
-	MX_GPIO_Init();
-	MX_CAN1_Init();
+    /* Initialize all configured peripherals */
+    MX_GPIO_Init();
+    MX_CAN1_Init();
 
-	/* USER CODE BEGIN 2 */
+    /* USER CODE BEGIN 2 */
 
-	/* USER CODE END 2 */
+    /* USER CODE END 2 */
 
-	/* USER CODE BEGIN RTOS_MUTEX */
-	/* add mutexes, ... */
-	/* USER CODE END RTOS_MUTEX */
+    /* USER CODE BEGIN RTOS_MUTEX */
+    /* add mutexes, ... */
+    /* USER CODE END RTOS_MUTEX */
 
-	/* USER CODE BEGIN RTOS_SEMAPHORES */
-	/* add semaphores, ... */
-	/* USER CODE END RTOS_SEMAPHORES */
+    /* USER CODE BEGIN RTOS_SEMAPHORES */
+    /* add semaphores, ... */
+    /* USER CODE END RTOS_SEMAPHORES */
 
-	/* USER CODE BEGIN RTOS_TIMERS */
-	/* start timers, add new ones, ... */
-	/* USER CODE END RTOS_TIMERS */
+    /* USER CODE BEGIN RTOS_TIMERS */
+    /* start timers, add new ones, ... */
+    /* USER CODE END RTOS_TIMERS */
 
-	/* Create the thread(s) */
-	/* definition and creation of defaultTask */
+    /* Create the thread(s) */
+    /* definition and creation of defaultTask */
 
-	/* USER CODE BEGIN RTOS_THREADS */
+    /* USER CODE BEGIN RTOS_THREADS */
 
-	canTransmitQueue = (gfxQueueGSync*) gfxAlloc(sizeof(gfxQueueGSync));
-	canReceiveQueue = (gfxQueueGSync*) gfxAlloc(sizeof(gfxQueueGSync));
-	gfxQueueGSyncInit(canTransmitQueue);
-	gfxQueueGSyncInit(canReceiveQueue);
+    canNotificationQueue = (gfxQueueGSync *) gfxAlloc(sizeof(gfxQueueGSync));
+    canTransmitQueue = (gfxQueueGSync *) gfxAlloc(sizeof(gfxQueueGSync));
+    canReceiveQueue = (gfxQueueGSync *) gfxAlloc(sizeof(gfxQueueGSync));
+    gfxQueueGSyncInit(canNotificationQueue);
+    gfxQueueGSyncInit(canTransmitQueue);
+    gfxQueueGSyncInit(canReceiveQueue);
 
-	osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 3, 1024);
-	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+    osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 3, 1024);
+    defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-	gfxThreadCreate(NULL, 128, NORMAL_PRIORITY, transmitThread, 0);
-	/* USER CODE END RTOS_THREADS */
+    gfxThreadCreate(NULL, 128, NORMAL_PRIORITY, transmitThread, 0);
+    gfxThreadCreate(NULL, 128, NORMAL_PRIORITY, receiveThread, 0);
+    /* USER CODE END RTOS_THREADS */
 
-	/* USER CODE BEGIN RTOS_QUEUES */
-	/* add queues, ... */
-	/* USER CODE END RTOS_QUEUES */
+    /* USER CODE BEGIN RTOS_QUEUES */
+    /* add queues, ... */
+    /* USER CODE END RTOS_QUEUES */
 
-	/* Start scheduler */
-	osKernelStart();
+    /* Start scheduler */
+    osKernelStart();
 
-	/* We should never get here as control is now taken by the scheduler */
+    /* We should never get here as control is now taken by the scheduler */
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
-	while (1) {
-		/* USER CODE END WHILE */
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
+    while (1) {
+        /* USER CODE END WHILE */
 
-		/* USER CODE BEGIN 3 */
+        /* USER CODE BEGIN 3 */
 
-	}
-	/* USER CODE END 3 */
+    }
+    /* USER CODE END 3 */
 
 }
+
 /** System Clock Configuration
  */
 void SystemClock_Config(void) {
 
-	RCC_OscInitTypeDef RCC_OscInitStruct;
-	RCC_ClkInitTypeDef RCC_ClkInitStruct;
+    RCC_OscInitTypeDef RCC_OscInitStruct;
+    RCC_ClkInitTypeDef RCC_ClkInitStruct;
 
-	/**Configure the main internal regulator output voltage
-	 */
-	__HAL_RCC_PWR_CLK_ENABLE()
-	;
+    /**Configure the main internal regulator output voltage
+     */
+    __HAL_RCC_PWR_CLK_ENABLE();
 
-	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
+    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
 
-	/**Initializes the CPU, AHB and APB busses clocks
-	 */
-	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-	RCC_OscInitStruct.HSICalibrationValue = 16;
+    /**Initializes the CPU, AHB and APB busses clocks
+     */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.HSICalibrationValue = 16;
 
-	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-	RCC_OscInitStruct.PLL.PLLM = 16;
-	RCC_OscInitStruct.PLL.PLLN = 400;
-	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-	RCC_OscInitStruct.PLL.PLLQ = 8;
-	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-		_Error_Handler(__FILE__, __LINE__);
-	}
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+    RCC_OscInitStruct.PLL.PLLM = 16;
+    RCC_OscInitStruct.PLL.PLLN = 400;
+    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+    RCC_OscInitStruct.PLL.PLLQ = 8;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+        _Error_Handler(__FILE__, __LINE__);
+    }
 
-	/**Initializes the CPU, AHB and APB busses clocks
-	 */
-	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
+    /**Initializes the CPU, AHB and APB busses clocks
+     */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+                                  | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
-		_Error_Handler(__FILE__, __LINE__);
-	}
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
+        _Error_Handler(__FILE__, __LINE__);
+    }
 
-	/**Configure the Systick interrupt time
-	 */
-	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
+    /**Configure the Systick interrupt time
+     */
+    HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
 
-	/**Configure the Systick
-	 */
-	HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+    /**Configure the Systick
+     */
+    HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
-	/* SysTick_IRQn interrupt configuration */
-	HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+    /* SysTick_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
 }
 
 /* CAN1 init function */
@@ -251,8 +263,7 @@ static void MX_CAN1_Init(void) {
     hcan.Init.AutoRetransmission = DISABLE;
     hcan.Init.ReceiveFifoLocked = DISABLE;
     hcan.Init.TransmitFifoPriority = DISABLE;
-    if (HAL_CAN_Init(&hcan) != HAL_OK)
-    {
+    if (HAL_CAN_Init(&hcan) != HAL_OK) {
         _Error_Handler(__FILE__, __LINE__);
     }
 
@@ -264,15 +275,15 @@ static void MX_CAN1_Init(void) {
     sFilterConfig.FilterIdLow = 0x0000;
     sFilterConfig.FilterMaskIdHigh = 0x0000;
     sFilterConfig.FilterMaskIdLow = 0x0000;
-    sFilterConfig.FilterFIFOAssignment = 0;
+    sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
     sFilterConfig.FilterActivation = ENABLE;
+    sFilterConfig.SlaveStartFilterBank = 14;
 
     if (HAL_CAN_ConfigFilter(&hcan, &sFilterConfig) != HAL_OK) {
         _Error_Handler(__FILE__, __LINE__);
 
     }
-    if (HAL_CAN_Start(&hcan) != HAL_OK)
-    {
+    if (HAL_CAN_Start(&hcan) != HAL_OK) {
         _Error_Handler(__FILE__, __LINE__);
     }
     /* rx fifo0 message pending aktivieren*/
@@ -280,35 +291,63 @@ static void MX_CAN1_Init(void) {
         /* Notification Error */
         _Error_Handler(__FILE__, __LINE__);
     }
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO1_MSG_PENDING) != HAL_OK) {
-        /* Notification Error */
-        _Error_Handler(__FILE__, __LINE__);
+//    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO1_MSG_PENDING) != HAL_OK) {
+//        /* Notification Error */
+//        _Error_Handler(__FILE__, __LINE__);
+//    }
+}
+
+CAN_RxHeaderTypeDef RxHeader;
+uint8_t RxData[8];
+
+void receiveThread(void *_) {
+    while (1) {
+        gfxQueueGSyncGet(canNotificationQueue, TIME_INFINITE);
+        if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
+            _Error_Handler(__FILE__, __LINE__);
+        }
+        can_gui_package* rxPackage = new can_gui_package();
+        rxPackage->id = RxHeader.StdId;
+        rxPackage->isRemote = RxHeader.RTR;
+        rxPackage->dlc = RxHeader.DLC;
+        for (int i = 0; i < RxHeader.DLC; i++) {
+            rxPackage->data.data_b[i] = RxData[i];
+        }
+//        gfxQueueGSyncPut(canReceiveQueue, &rxPackage->q_item);
+        cMainView.addRxCanPackage(rxPackage);
+        if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK) {
+            /* Notification Error */
+            _Error_Handler(__FILE__, __LINE__);
+        }
+        HAL_Delay(100);
     }
 }
 
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
-    CAN_RxHeaderTypeDef   RxHeader;
-    uint8_t               RxData[8];
-    if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
-        /* Reception Error */
-        _Error_Handler(__FILE__, __LINE__);
-    }
-	can_gui_package* package = new can_gui_package();
+gfxQueueGSyncItem q_item;
 
-    package->id = RxHeader.StdId;
-    package->isRemote = RxHeader.RTR;
-    package->dlc = RxHeader.DLC;
-    for (int i = 0; i < 8; i++) {
-        package->data.data_b[i] = RxData[i];
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+    if (HAL_CAN_DeactivateNotification(hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK) {
+        /* Notification Error */
+        _Error_Handler(__FILE__, __LINE__);
+        return;
     }
-    gfxQueueGSyncPush(canTransmitQueue, &package->q_item);
+    gfxQueueGSyncPushI(canNotificationQueue, &q_item);
+//    if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
+//        _Error_Handler(__FILE__, __LINE__);
+//    }
+//    rxPackage->id = RxHeader.StdId;
+//    rxPackage->isRemote = RxHeader.RTR;
+//    rxPackage->dlc = RxHeader.DLC;
+//    for (int i = 0; i < RxHeader.DLC; i++) {
+//    	rxPackage->data.data_b[i] = RxData[i];
+//    }
+//    gfxQueueGSyncPushI(canReceiveQueue, &rxPackage->q_item);
 }
 
 void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
-    CAN_RxHeaderTypeDef   RxHeader;
+    /*CAN_RxHeaderTypeDef   RxHeader;
     uint8_t               RxData[8];
     if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO1, &RxHeader, RxData) != HAL_OK) {
-        /* Reception Error */
         _Error_Handler(__FILE__, __LINE__);
     }
 	can_gui_package* package = new can_gui_package();
@@ -319,7 +358,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     for (int i = 0; i < 8; i++) {
         package->data.data_b[i] = RxData[i];
     }
-    gfxQueueGSyncPush(canTransmitQueue, &package->q_item);
+    gfxQueueGSyncPush(canTransmitQueue, &package->q_item);*/
 }
 
 static void MX_GPIO_Init(void) {
@@ -328,32 +367,33 @@ static void MX_GPIO_Init(void) {
 }
 
 /* USER CODE BEGIN 4 */
-CAN_TxHeaderTypeDef   TxHeader;
-uint8_t               TxData[8];
-uint32_t              TxMailbox;
-void transmitThread(void* _) {
-	while (true) {
-		gfxQueueGSyncItem* package_queued = gfxQueueGSyncGet(canTransmitQueue, TIME_INFINITE);
-		auto package = (can_gui_package*) package_queued;
-		TxHeader.StdId = package->id;
-		TxHeader.ExtId = 0x00;
-		TxHeader.RTR = package->isRemote;
-		TxHeader.IDE = CAN_ID_STD;
-		TxHeader.DLC = package->dlc;
-		TxHeader.TransmitGlobalTime = DISABLE;
-		for (int i = 0; i < 8; i++) {
-			TxData[i] = package->data.data_b[i];
-		}
-		if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK) {
-			continue;
-		}
-	}
+CAN_TxHeaderTypeDef TxHeader;
+uint8_t TxData[8];
+uint32_t TxMailbox;
+
+void transmitThread(void *_) {
+    while (true) {
+        gfxQueueGSyncItem *package_queued = gfxQueueGSyncGet(canTransmitQueue, TIME_INFINITE);
+        auto package = (can_gui_package *) package_queued;
+        TxHeader.StdId = package->id;
+        TxHeader.ExtId = 0x00;
+        TxHeader.RTR = package->isRemote;
+        TxHeader.IDE = CAN_ID_STD;
+        TxHeader.DLC = package->dlc;
+        TxHeader.TransmitGlobalTime = DISABLE;
+        for (int i = 0; i < 8; i++) {
+            TxData[i] = package->data.data_b[i];
+        }
+        if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK) {
+            continue;
+        }
+    }
 }
 /* USER CODE END 4 */
 
 /* StartDefaultTask function */
 // extern void initMainPage(void);
-void StartDefaultTask(void const * argument) {
+void StartDefaultTask(void const *argument) {
     cMainView.initMainPage();
 }
 /* USER CODE END 5 */
@@ -363,12 +403,12 @@ void StartDefaultTask(void const * argument) {
  * @param  None
  * @retval None
  */
-void _Error_Handler(char * file, int line) {
-	/* USER CODE BEGIN Error_Handler_Debug */
-	/* User can add his own implementation to report the HAL error return state */
-	while (1) {
-	}
-	/* USER CODE END Error_Handler_Debug */
+void _Error_Handler(char *file, int line) {
+    /* USER CODE BEGIN Error_Handler_Debug */
+    /* User can add his own implementation to report the HAL error return state */
+    while (1) {
+    }
+    /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef USE_FULL_ASSERT
@@ -382,10 +422,10 @@ void _Error_Handler(char * file, int line) {
  */
 void assert_failed(uint8_t* file, uint32_t line)
 {
-	/* USER CODE BEGIN 6 */
-	/* User can add his own implementation to report the file name and line number,
-	 ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-	/* USER CODE END 6 */
+    /* USER CODE BEGIN 6 */
+    /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    /* USER CODE END 6 */
 
 }
 
