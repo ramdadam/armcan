@@ -49,28 +49,37 @@ SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
 SRC	 += Src/common/can_gui_package.cpp
 SRC      += Src/main.cpp \
+./res/startup_stm32f746xx.s \
+./res/Src/bsp_driver_sd.c \
+./res/Src/sd_diskio.c \
+./res/Src/fatfs.c \
+./res/Src/freertos.c \
+./res/Src/stm32f7xx_it.c \
+./res/Src/stm32f7xx_hal_msp.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_can.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_sdmmc.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sd.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim.c \
-./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c \
-./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_tim_ex.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash_ex.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma_ex.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c \
-./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash.c \
-./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_can.c \
-./res/Src/system_stm32f7xx.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c \
-./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c \
-./res/Src/stm32f7xx_it.c \
-./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c \
-./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c \
-./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c \
-./res/Src/stm32f7xx_hal_msp.c \
-./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash_ex.c \
-./res/Src/freertos.c \
-./res/startup_stm32f746xx.s \
-./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c  
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c \
+./res/Src/system_stm32f7xx.c \
+./res/Middlewares/Third_Party/FatFs/src/diskio.c \
+./res/Middlewares/Third_Party/FatFs/src/ff.c \
+./res/Middlewares/Third_Party/FatFs/src/ff_gen_drv.c \
+./res/Middlewares/Third_Party/FatFs/src/option/syscall.c \
+./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c
 
 OBJS     =
 DEFS     = GFX_OS_HEAP_SIZE=40960 STM32F746xx GFX_OS_NO_INIT CAN_INTERRUPT_PRIORITY=10 ENTER_ISR LEAVE_ISR CAN_HARDWARE_ENABLED MAX_SEMAPHORE_COUNT=50
@@ -84,6 +93,7 @@ INCPATH += ./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include
 INCPATH += ./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 INCPATH += ./res/Drivers/CMSIS/Include
 INCPATH += ./Src/VirtualKeyBoard
+INCPATH += ./res/Middlewares/Third_Party/FatFs/src
 LIBPATH  =
 LDSCRIPT = 
 

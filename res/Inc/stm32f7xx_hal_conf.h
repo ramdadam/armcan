@@ -40,7 +40,6 @@
  extern "C" {
 #endif
 
-#include "main.h"
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
@@ -58,7 +57,7 @@
 /* #define HAL_CRYP_MODULE_ENABLED   */
 /* #define HAL_DAC_MODULE_ENABLED   */
 /* #define HAL_DCMI_MODULE_ENABLED   */
-/* #define HAL_DMA2D_MODULE_ENABLED   */
+ #define HAL_DMA2D_MODULE_ENABLED
 /* #define HAL_ETH_MODULE_ENABLED   */
 /* #define HAL_NAND_MODULE_ENABLED   */
 /* #define HAL_NOR_MODULE_ENABLED   */
@@ -73,7 +72,7 @@
 /* #define HAL_RNG_MODULE_ENABLED   */
 /* #define HAL_RTC_MODULE_ENABLED   */
 /* #define HAL_SAI_MODULE_ENABLED   */
-/* #define HAL_SD_MODULE_ENABLED   */
+#define HAL_SD_MODULE_ENABLED
 /* #define HAL_MMC_MODULE_ENABLED   */
 /* #define HAL_SPDIFRX_MODULE_ENABLED   */
 /* #define HAL_SPI_MODULE_ENABLED   */

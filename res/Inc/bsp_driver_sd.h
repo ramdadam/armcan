@@ -1,8 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * File Name          : freertos.c
-  * Description        : Code for freertos applications
+ ******************************************************************************
+  * @file    bsp_driver_sd.h (based on stm32756g_eval_sd.h)
+  * @brief   This file contains the common defines and functions prototypes for 
+  *          the bsp_driver_sd.c driver.
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -46,46 +46,74 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __STM32F7_SD_H
+#define __STM32F7_SD_H
+
+#ifdef __cplusplus
+ extern "C" {
+#endif 
 
 /* Includes ------------------------------------------------------------------*/
-#include "FreeRTOS.h"
-#include "task.h"
-#include "main.h"
+#include "stm32f7xx_hal.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */     
+/* Exported types --------------------------------------------------------*/ 
+/** 
+  * @brief SD Card information structure 
+  */
+#define BSP_SD_CardInfo HAL_SD_CardInfoTypeDef
 
-/* USER CODE END Includes */
+/* Exported constants --------------------------------------------------------*/ 
+/**
+  * @brief  SD status structure definition  
+  */     
+#define   MSD_OK                        ((uint8_t)0x00)
+#define   MSD_ERROR                     ((uint8_t)0x01)
+#define   MSD_ERROR_SD_NOT_PRESENT      ((uint8_t)0x02)
 
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
+/** 
+  * @brief  SD transfer state definition  
+  */     
+#define   SD_TRANSFER_OK                ((uint8_t)0x00)
+#define   SD_TRANSFER_BUSY              ((uint8_t)0x01)
 
-/* USER CODE END PTD */
+#define SD_PRESENT               ((uint8_t)0x01)
+#define SD_NOT_PRESENT           ((uint8_t)0x00)
+#define SD_DATATIMEOUT           ((uint32_t)100000000)
 
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
+#ifdef OLD_API
+/* kept to avoid issue when migrating old projects. */
+/* USER CODE BEGIN 0 */
 
-/* USER CODE END PD */
+/* USER CODE END 0 */ 
+#else
+/* USER CODE BEGIN BSP_H_CODE */
 
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
+/* Exported functions --------------------------------------------------------*/
+uint8_t BSP_SD_Init(void);
+uint8_t BSP_SD_ITConfig(void);
+uint8_t BSP_SD_ReadBlocks(uint32_t *pData, uint32_t ReadAddr, uint32_t NumOfBlocks, uint32_t Timeout);
+uint8_t BSP_SD_WriteBlocks(uint32_t *pData, uint32_t WriteAddr, uint32_t NumOfBlocks, uint32_t Timeout);
+uint8_t BSP_SD_ReadBlocks_DMA(uint32_t *pData, uint32_t ReadAddr, uint32_t NumOfBlocks);
+uint8_t BSP_SD_WriteBlocks_DMA(uint32_t *pData, uint32_t WriteAddr, uint32_t NumOfBlocks);
+uint8_t BSP_SD_Erase(uint32_t StartAddr, uint32_t EndAddr);
+uint8_t BSP_SD_GetCardState(void);
+void    BSP_SD_GetCardInfo(BSP_SD_CardInfo *CardInfo);
+uint8_t BSP_SD_IsDetected(void);
 
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-/* USER CODE BEGIN Variables */
-
-/* USER CODE END Variables */
-
-/* Private function prototypes -----------------------------------------------*/
-/* USER CODE BEGIN FunctionPrototypes */
+/* These functions can be modified in case the current settings (e.g. DMA stream)
+   need to be changed for specific application needs */
+void    BSP_SD_AbortCallback(void);
+void    BSP_SD_WriteCpltCallback(void);
+void    BSP_SD_ReadCpltCallback(void);
+/* USER CODE END BSP_H_CODE */
+#endif
    
-/* USER CODE END FunctionPrototypes */
+#ifdef __cplusplus
+}
+#endif
 
-/* Private application code --------------------------------------------------*/
-/* USER CODE BEGIN Application */
-     
-/* USER CODE END Application */
+#endif /* __STM32F7_SD_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

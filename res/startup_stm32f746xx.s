@@ -106,12 +106,12 @@ LoopFillZerobss:
   bcc  FillZerobss
 
 /* Call the clock system initialization function.*/
-  bl  SystemInit
+  bl  SystemInit   
 /* Call static constructors */
-   bl __libc_init_array
+    bl __libc_init_array
 /* Call the application's entry point.*/
   bl  main
-  bx  lr
+  bx  lr    
 .size  Reset_Handler, .-Reset_Handler
 
 /**
@@ -237,7 +237,7 @@ g_pfnVectors:
   .word     OTG_HS_WKUP_IRQHandler            /* USB OTG HS Wakeup through EXTI */                         
   .word     OTG_HS_IRQHandler                 /* USB OTG HS                   */                   
   .word     DCMI_IRQHandler                   /* DCMI                         */                   
-  .word     0                                 /* Reserved                     */
+  .word     0                                 /* Reserved                     */                   
   .word     RNG_IRQHandler                    /* Rng                          */
   .word     FPU_IRQHandler                    /* FPU                          */
   .word     UART7_IRQHandler                  /* UART7                        */      
@@ -585,5 +585,5 @@ g_pfnVectors:
    .weak      SPDIF_RX_IRQHandler            
    .thumb_set SPDIF_RX_IRQHandler,Default_Handler 
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/        
  

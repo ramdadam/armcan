@@ -1,8 +1,7 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * File Name          : freertos.c
-  * Description        : Code for freertos applications
+  * @file   fatfs.h
+  * @brief  Header for fatfs applications
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -46,46 +45,35 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 
-/* Includes ------------------------------------------------------------------*/
-#include "FreeRTOS.h"
-#include "task.h"
-#include "main.h"
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __fatfs_H
+#define __fatfs_H
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */     
+#include "ff.h"
+#include "ff_gen_drv.h"
+#include "sd_diskio.h" /* defines SD_Driver as external */
+
+/* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
 
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
+extern uint8_t retSD; /* Return value for SD */
+extern char SDPath[4]; /* SD logical drive path */
+extern FATFS SDFatFS; /* File system object for SD logical drive */
+extern FIL SDFile; /* File object for SD */
 
-/* USER CODE END PTD */
+void MX_FATFS_Init(void);
 
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
+/* USER CODE BEGIN Prototypes */
 
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-/* USER CODE BEGIN Variables */
-
-/* USER CODE END Variables */
-
-/* Private function prototypes -----------------------------------------------*/
-/* USER CODE BEGIN FunctionPrototypes */
-   
-/* USER CODE END FunctionPrototypes */
-
-/* Private application code --------------------------------------------------*/
-/* USER CODE BEGIN Application */
-     
-/* USER CODE END Application */
+/* USER CODE END Prototypes */
+#ifdef __cplusplus
+}
+#endif
+#endif /*__fatfs_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

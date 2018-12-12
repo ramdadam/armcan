@@ -1,3 +1,4 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.h
@@ -46,19 +47,47 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef __MAIN_H
+#define __MAIN_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f7xx_hal.h"
 
+/* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
 
-/* Private define ------------------------------------------------------------*/
+/* Exported types ------------------------------------------------------------*/
+/* USER CODE BEGIN ET */
 
+/* USER CODE END ET */
+
+/* Exported constants --------------------------------------------------------*/
+/* USER CODE BEGIN EC */
+
+/* USER CODE END EC */
+
+/* Exported macro ------------------------------------------------------------*/
+/* USER CODE BEGIN EM */
+
+/* USER CODE END EM */
+
+/* Exported functions prototypes ---------------------------------------------*/
+void Error_Handler(void);
+
+/* USER CODE BEGIN EFP */
+
+/* USER CODE END EFP */
+
+/* Private defines -----------------------------------------------------------*/
 #define LCD_B0_Pin GPIO_PIN_4
 #define LCD_B0_GPIO_Port GPIOE
 #define OTG_HS_OverCurrent_Pin GPIO_PIN_3
@@ -71,6 +100,8 @@
 #define FMC_NBL1_GPIO_Port GPIOE
 #define FMC_NBL0_Pin GPIO_PIN_0
 #define FMC_NBL0_GPIO_Port GPIOE
+#define ARDUINO_SCL_D15_Pin GPIO_PIN_8
+#define ARDUINO_SCL_D15_GPIO_Port GPIOB
 #define ULPI_D7_Pin GPIO_PIN_5
 #define ULPI_D7_GPIO_Port GPIOB
 #define ARDUINO_PWM_D3_Pin GPIO_PIN_4
@@ -93,6 +124,8 @@
 #define DCMI_D7_GPIO_Port GPIOE
 #define RMII_TXD0_Pin GPIO_PIN_13
 #define RMII_TXD0_GPIO_Port GPIOG
+#define ARDUINO_SDA_D14_Pin GPIO_PIN_9
+#define ARDUINO_SDA_D14_GPIO_Port GPIOB
 #define VCP_RX_Pin GPIO_PIN_7
 #define VCP_RX_GPIO_Port GPIOB
 #define QSPI_NCS_Pin GPIO_PIN_6
@@ -181,8 +214,8 @@
 #define DCMI_PWR_EN_GPIO_Port GPIOH
 #define DCMI_D4_Pin GPIO_PIN_14
 #define DCMI_D4_GPIO_Port GPIOH
-#define ARDUINO_PWM_CS_D10_Pin GPIO_PIN_0
-#define ARDUINO_PWM_CS_D10_GPIO_Port GPIOI
+#define ARDUINO_PWM_CS_D5_Pin GPIO_PIN_0
+#define ARDUINO_PWM_CS_D5_GPIO_Port GPIOI
 #define VCP_TX_Pin GPIO_PIN_9
 #define VCP_TX_GPIO_Port GPIOA
 #define RCC_OSC32_OUT_Pin GPIO_PIN_15
@@ -191,8 +224,8 @@
 #define LCD_G6_GPIO_Port GPIOK
 #define LCD_G7_Pin GPIO_PIN_2
 #define LCD_G7_GPIO_Port GPIOK
-#define ARDUINO_PWM_D5_Pin GPIO_PIN_8
-#define ARDUINO_PWM_D5_GPIO_Port GPIOA
+#define ARDUINO_PWM_D10_Pin GPIO_PIN_8
+#define ARDUINO_PWM_D10_GPIO_Port GPIOA
 #define OSC_25M_Pin GPIO_PIN_0
 #define OSC_25M_GPIO_Port GPIOH
 #define FMC_A2_Pin GPIO_PIN_2
@@ -375,28 +408,14 @@
 #define ARDUINO_MISO_D12_GPIO_Port GPIOB
 #define ARDUINO_MOSI_PWM_D11_Pin GPIO_PIN_15
 #define ARDUINO_MOSI_PWM_D11_GPIO_Port GPIOB
-
-/* ########################## Assert Selection ############################## */
-/**
-  * @brief Uncomment the line below to expanse the "assert_param" macro in the 
-  *        HAL drivers code
-  */
-/* #define USE_FULL_ASSERT    1U */
-
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
- extern "C" {
-#endif
-void _Error_Handler(char *, int);
-
-#define Error_Handler() _Error_Handler(__FILE__, __LINE__)
-#ifdef __cplusplus
 }
 #endif
 
-#endif /* __MAIN_H__ */
+#endif /* __MAIN_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

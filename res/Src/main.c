@@ -1,4 +1,4 @@
-
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.c
@@ -46,22 +46,40 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32f7xx_hal.h"
 #include "cmsis_os.h"
+#include "fatfs.h"
 
+/* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
 
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan1;
 
-osThreadId defaultTaskHandle;
+SD_HandleTypeDef hsd1;
 
+osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
-/* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */
 
@@ -69,21 +87,21 @@ osThreadId defaultTaskHandle;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_CAN1_Init(void);
+static void MX_SDMMC1_SD_Init(void);
 void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
-/* Private function prototypes -----------------------------------------------*/
 
 /* USER CODE END PFP */
 
+/* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
-  *
-  * @retval None
+  * @retval int
   */
 int main(void)
 {
@@ -91,7 +109,7 @@ int main(void)
 
   /* USER CODE END 1 */
 
-  /* MCU Configuration----------------------------------------------------------*/
+  /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
@@ -110,6 +128,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_CAN1_Init();
+  MX_SDMMC1_SD_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -149,13 +168,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-  /* USER CODE END WHILE */
+    /* USER CODE END WHILE */
 
-  /* USER CODE BEGIN 3 */
-
+    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
-
 }
 
 /**
@@ -164,65 +181,74 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
-    RCC_OscInitTypeDef RCC_OscInitStruct;
-    RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  /**Configure the main internal regulator output voltage 
+  */
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+  /**Initializes the CPU, AHB and APB busses clocks 
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = 16;
+  RCC_OscInitStruct.PLL.PLLN = 400;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 8;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /**Activate the Over-Drive mode 
+  */
+  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /**Initializes the CPU, AHB and APB busses clocks 
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
 
-    /**Configure the main internal regulator output voltage
-     */
-    __HAL_RCC_PWR_CLK_ENABLE()
-            ;
-
-    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
-
-    /**Initializes the CPU, AHB and APB busses clocks
-     */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-    RCC_OscInitStruct.HSICalibrationValue = 16;
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-    RCC_OscInitStruct.PLL.PLLM = 25;
-    RCC_OscInitStruct.PLL.PLLN = 400;
-    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-    RCC_OscInitStruct.PLL.PLLQ = 8;
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-        _Error_Handler(__FILE__, __LINE__);
-    }
-
-    /**Initializes the CPU, AHB and APB busses clocks
-     */
-    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-                                  | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
-        _Error_Handler(__FILE__, __LINE__);
-    }
-
-    /**Configure the Systick interrupt time
-     */
-    HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
-
-    /**Configure the Systick
-     */
-    HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
-    /* SysTick_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SDMMC1|RCC_PERIPHCLK_CLK48;
+  PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48SOURCE_PLL;
+  PeriphClkInitStruct.Sdmmc1ClockSelection = RCC_SDMMC1CLKSOURCE_CLK48;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
-/* CAN1 init function */
+/**
+  * @brief CAN1 Initialization Function
+  * @param None
+  * @retval None
+  */
 static void MX_CAN1_Init(void)
 {
 
+  /* USER CODE BEGIN CAN1_Init 0 */
+
+  /* USER CODE END CAN1_Init 0 */
+
+  /* USER CODE BEGIN CAN1_Init 1 */
+
+  /* USER CODE END CAN1_Init 1 */
   hcan1.Instance = CAN1;
-  hcan1.Init.Prescaler = 16;
+  hcan1.Init.Prescaler = 100;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
   hcan1.Init.TimeSeg1 = CAN_BS1_7TQ;
@@ -235,154 +261,50 @@ static void MX_CAN1_Init(void)
   hcan1.Init.TransmitFifoPriority = DISABLE;
   if (HAL_CAN_Init(&hcan1) != HAL_OK)
   {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
+  /* USER CODE BEGIN CAN1_Init 2 */
+
+  /* USER CODE END CAN1_Init 2 */
 
 }
 
-/** Configure pins
-     PE4   ------> LTDC_B0
-     PE2   ------> QUADSPI_BK1_IO2
-     PG14   ------> ETH_TXD1
-     PE1   ------> FMC_NBL1
-     PE0   ------> FMC_NBL0
-     PB5   ------> USB_OTG_HS_ULPI_D7
-     PB4   ------> S_TIM3_CH1
-     PD7   ------> SPDIFRX_IN0
-     PC12   ------> SDMMC1_CK
-     PA15   ------> S_TIM2_CH1_ETR
-     PE5   ------> DCMI_D6
-     PE6   ------> DCMI_D7
-     PG13   ------> ETH_TXD0
-     PB7   ------> USART1_RX
-     PB6   ------> QUADSPI_BK1_NCS
-     PG15   ------> FMC_SDNCAS
-     PG11   ------> ETH_TX_EN
-     PJ13   ------> LTDC_B1
-     PD0   ------> FMC_D2_DA2
-     PC11   ------> SDMMC1_D3
-     PC10   ------> SDMMC1_D2
-     PI4   ------> SAI2_MCLK_A
-     PK7   ------> LTDC_DE
-     PK6   ------> LTDC_B7
-     PK5   ------> LTDC_B6
-     PG12   ------> LTDC_B4
-     PG10   ------> SAI2_SD_B
-     PJ14   ------> LTDC_B2
-     PD3   ------> DCMI_D5
-     PD1   ------> FMC_D3_DA3
-     PF0   ------> FMC_A0
-     PI5   ------> SAI2_SCK_A
-     PI7   ------> SAI2_FS_A
-     PI10   ------> LTDC_HSYNC
-     PI6   ------> SAI2_SD_A
-     PK4   ------> LTDC_B5
-     PG9   ------> DCMI_VSYNC
-     PJ15   ------> LTDC_B3
-     PD2   ------> SDMMC1_CMD
-     PI1   ------> SPI2_SCK
-     PA10   ------> USB_OTG_FS_ID
-     PF1   ------> FMC_A1
-     PI9   ------> LTDC_VSYNC
-     PH14   ------> DCMI_D4
-     PI0   ------> S_TIM5_CH4
-     PA9   ------> USART1_TX
-     PK1   ------> LTDC_G6
-     PK2   ------> LTDC_G7
-     PC9   ------> SDMMC1_D1
-     PA8   ------> S_TIM1_CH1
-     PF2   ------> FMC_A2
-     PI15   ------> LTDC_R0
-     PJ11   ------> LTDC_G4
-     PK0   ------> LTDC_G5
-     PC8   ------> SDMMC1_D0
-     PC7   ------> USART6_RX
-     PF3   ------> FMC_A3
-     PI14   ------> LTDC_CLK
-     PH4   ------> USB_OTG_HS_ULPI_NXT
-     PJ8   ------> LTDC_G1
-     PJ10   ------> LTDC_G3
-     PG8   ------> FMC_SDCLK
-     PC6   ------> USART6_TX
-     PF4   ------> FMC_A4
-     PH5   ------> FMC_SDNWE
-     PH3   ------> FMC_SDNE0
-     PJ7   ------> LTDC_G0
-     PJ9   ------> LTDC_G2
-     PF7   ------> ADC3_IN5
-     PF6   ------> ADC3_IN4
-     PF5   ------> FMC_A5
-     PJ6   ------> LTDC_R7
-     PD15   ------> FMC_D1_DA1
-     PB13   ------> USB_OTG_HS_ULPI_D6
-     PD10   ------> FMC_D15_DA15
-     PF10   ------> ADC3_IN8
-     PF9   ------> ADC3_IN7
-     PF8   ------> ADC3_IN6
-     PC3   ------> FMC_SDCKE0
-     PD14   ------> FMC_D0_DA0
-     PB12   ------> USB_OTG_HS_ULPI_D5
-     PD9   ------> FMC_D14_DA14
-     PD8   ------> FMC_D13_DA13
-     PC0   ------> USB_OTG_HS_ULPI_STP
-     PC1   ------> ETH_MDC
-     PC2   ------> USB_OTG_HS_ULPI_DIR
-     PB2   ------> QUADSPI_CLK
-     PF12   ------> FMC_A6
-     PG1   ------> FMC_A11
-     PF15   ------> FMC_A9
-     PJ4   ------> LTDC_R5
-     PD12   ------> QUADSPI_BK1_IO1
-     PD13   ------> QUADSPI_BK1_IO3
-     PJ5   ------> LTDC_R6
-     PH12   ------> DCMI_D3
-     PA1   ------> ETH_REF_CLK
-     PA0/WKUP   ------> ADCx_IN0
-     PA4   ------> DCMI_HSYNC
-     PC4   ------> ETH_RXD0
-     PF13   ------> FMC_A7
-     PG0   ------> FMC_A10
-     PJ3   ------> LTDC_R4
-     PE8   ------> FMC_D5_DA5
-     PD11   ------> QUADSPI_BK1_IO0
-     PG5   ------> FMC_A15_BA1
-     PG4   ------> FMC_A14_BA0
-     PH7   ------> I2C3_SCL
-     PH9   ------> DCMI_D0
-     PH11   ------> DCMI_D2
-     PA2   ------> ETH_MDIO
-     PA6   ------> DCMI_PIXCLK
-     PA5   ------> USB_OTG_HS_ULPI_CK
-     PC5   ------> ETH_RXD1
-     PF14   ------> FMC_A8
-     PJ2   ------> LTDC_R3
-     PF11   ------> FMC_SDNRAS
-     PE9   ------> FMC_D6_DA6
-     PE11   ------> FMC_D8_DA8
-     PE14   ------> FMC_D11_DA11
-     PB10   ------> USB_OTG_HS_ULPI_D3
-     PH6   ------> S_TIM12_CH1
-     PH8   ------> I2C3_SDA
-     PH10   ------> DCMI_D1
-     PA3   ------> USB_OTG_HS_ULPI_D0
-     PA7   ------> ETH_CRS_DV
-     PB1   ------> USB_OTG_HS_ULPI_D2
-     PB0   ------> USB_OTG_HS_ULPI_D1
-     PJ0   ------> LTDC_R1
-     PJ1   ------> LTDC_R2
-     PE7   ------> FMC_D4_DA4
-     PE10   ------> FMC_D7_DA7
-     PE12   ------> FMC_D9_DA9
-     PE15   ------> FMC_D12_DA12
-     PE13   ------> FMC_D10_DA10
-     PB11   ------> USB_OTG_HS_ULPI_D4
-     PB14   ------> SPI2_MISO
-     PB15   ------> SPI2_MOSI
-*/
-static void MX_GPIO_Init(void)
+/**
+  * @brief SDMMC1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SDMMC1_SD_Init(void)
 {
 
-  GPIO_InitTypeDef GPIO_InitStruct;
+  /* USER CODE BEGIN SDMMC1_Init 0 */
+
+  /* USER CODE END SDMMC1_Init 0 */
+
+  /* USER CODE BEGIN SDMMC1_Init 1 */
+
+  /* USER CODE END SDMMC1_Init 1 */
+  hsd1.Instance = SDMMC1;
+  hsd1.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
+  hsd1.Init.ClockBypass = SDMMC_CLOCK_BYPASS_DISABLE;
+  hsd1.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
+  hsd1.Init.BusWide = SDMMC_BUS_WIDE_1B;
+  hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
+  hsd1.Init.ClockDiv = 0;
+  /* USER CODE BEGIN SDMMC1_Init 2 */
+
+  /* USER CODE END SDMMC1_Init 2 */
+
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
@@ -454,6 +376,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : ARDUINO_SCL_D15_Pin ARDUINO_SDA_D14_Pin */
+  GPIO_InitStruct.Pin = ARDUINO_SCL_D15_Pin|ARDUINO_SDA_D14_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /*Configure GPIO pins : ULPI_D7_Pin ULPI_D6_Pin ULPI_D5_Pin ULPI_D3_Pin 
                            ULPI_D2_Pin ULPI_D1_Pin ULPI_D4_Pin */
   GPIO_InitStruct.Pin = ULPI_D7_Pin|ULPI_D6_Pin|ULPI_D5_Pin|ULPI_D3_Pin 
@@ -479,16 +409,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.Alternate = GPIO_AF8_SPDIFRX;
   HAL_GPIO_Init(SPDIF_RX0_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : SDMMC_CK_Pin SDMMC_D3_Pin SDMMC_D2_Pin PC9 
-                           PC8 */
-  GPIO_InitStruct.Pin = SDMMC_CK_Pin|SDMMC_D3_Pin|SDMMC_D2_Pin|GPIO_PIN_9 
-                          |GPIO_PIN_8;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF12_SDMMC1;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : ARDUINO_PWM_D9_Pin */
   GPIO_InitStruct.Pin = ARDUINO_PWM_D9_Pin;
@@ -671,14 +591,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(OTG_FS_OverCurrent_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : SDMMC_D0_Pin */
-  GPIO_InitStruct.Pin = SDMMC_D0_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF12_SDMMC1;
-  HAL_GPIO_Init(SDMMC_D0_GPIO_Port, &GPIO_InitStruct);
-
   /*Configure GPIO pins : TP3_Pin NC2_Pin */
   GPIO_InitStruct.Pin = TP3_Pin|NC2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -718,13 +630,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
   HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : ARDUINO_PWM_CS_D10_Pin */
-  GPIO_InitStruct.Pin = ARDUINO_PWM_CS_D10_Pin;
+  /*Configure GPIO pin : ARDUINO_PWM_CS_D5_Pin */
+  GPIO_InitStruct.Pin = ARDUINO_PWM_CS_D5_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.Alternate = GPIO_AF2_TIM5;
-  HAL_GPIO_Init(ARDUINO_PWM_CS_D10_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(ARDUINO_PWM_CS_D5_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : VCP_TX_Pin */
   GPIO_InitStruct.Pin = VCP_TX_Pin;
@@ -734,13 +646,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
   HAL_GPIO_Init(VCP_TX_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : ARDUINO_PWM_D5_Pin */
-  GPIO_InitStruct.Pin = ARDUINO_PWM_D5_Pin;
+  /*Configure GPIO pin : ARDUINO_PWM_D10_Pin */
+  GPIO_InitStruct.Pin = ARDUINO_PWM_D10_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
-  HAL_GPIO_Init(ARDUINO_PWM_D5_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(ARDUINO_PWM_D10_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LCD_INT_Pin */
   GPIO_InitStruct.Pin = LCD_INT_Pin;
@@ -902,6 +814,8 @@ static void MX_GPIO_Init(void)
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
+  /* init code for FATFS */
+  MX_FATFS_Init();
 
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
@@ -914,17 +828,13 @@ void StartDefaultTask(void const * argument)
 
 /**
   * @brief  This function is executed in case of error occurrence.
-  * @param  file: The file name as string.
-  * @param  line: The line in file as a number.
   * @retval None
   */
-void _Error_Handler(char *file, int line)
+void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  while(1) 
-  {
-  }
+
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -936,21 +846,13 @@ void _Error_Handler(char *file, int line)
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t* file, uint32_t line)
+void assert_failed(uint8_t *file, uint32_t line)
 { 
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
-    ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+     tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

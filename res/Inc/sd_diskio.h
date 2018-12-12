@@ -1,8 +1,7 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * File Name          : freertos.c
-  * Description        : Code for freertos applications
+  * @file    sd_diskio.h (based on sd_diskio_dma_rtos_template.h v2.0.2)
+  * @brief   Header for sd_diskio.c module
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -46,46 +45,27 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __SD_DISKIO_H
+#define __SD_DISKIO_H
+
+/* USER CODE BEGIN firstSection */ 
+/* can be used to modify / undefine following code or add new definitions */
+/* USER CODE END firstSection */
 
 /* Includes ------------------------------------------------------------------*/
-#include "FreeRTOS.h"
-#include "task.h"
-#include "main.h"
+#include "bsp_driver_sd.h"
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+/* Exported functions ------------------------------------------------------- */
+extern const Diskio_drvTypeDef  SD_Driver;
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */     
+/* USER CODE BEGIN lastSection */ 
+/* can be used to modify / undefine previous code or add new definitions */
+/* USER CODE END lastSection */
 
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-/* USER CODE BEGIN Variables */
-
-/* USER CODE END Variables */
-
-/* Private function prototypes -----------------------------------------------*/
-/* USER CODE BEGIN FunctionPrototypes */
-   
-/* USER CODE END FunctionPrototypes */
-
-/* Private application code --------------------------------------------------*/
-/* USER CODE BEGIN Application */
-     
-/* USER CODE END Application */
+#endif /* __SD_DISKIO_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+

@@ -49,7 +49,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-#include "stm32f7xx_hal.h"
+#include "fatfs.h"
 #include "cmsis_os.h"
 
 #include "gfx.h"
@@ -81,6 +81,8 @@ void operator delete(void *ptr, size_t size) {
 
 osThreadId defaultTaskHandle;
 CAN_HandleTypeDef hcan;
+
+SD_HandleTypeDef hsd1;
 gfxQueueGSync *canNotificationQueue;
 /* USER CODE BEGIN PV */
 extern "C" void __attribute ((weak)) _init(void) {
@@ -95,6 +97,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 
 static void MX_CAN1_Init(void);
+static void MX_SDMMC1_SD_Init(void);
 
 void StartDefaultTask(void const *argument);
 
@@ -137,7 +140,7 @@ int main(void) {
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
     MX_CAN1_Init();
-
+    MX_SDMMC1_SD_Init();
     /* USER CODE BEGIN 2 */
 
     /* USER CODE END 2 */
@@ -193,59 +196,133 @@ int main(void) {
     /* USER CODE END 3 */
 
 }
+#define SD_DETECT_PIN                        GPIO_PIN_13
+#define SD_DETECT_GPIO_PORT                  GPIOC
+#define SD_DETECT_GPIO_CLK_ENABLE()          __HAL_RCC_GPIOC_CLK_ENABLE()
+#define SD_DETECT_GPIO_CLK_DISABLE()         __HAL_RCC_GPIOC_CLK_DISABLE()
+#define SD_DETECT_EXTI_IRQn                  EXTI15_10_IRQn
+static void MX_SDMMC1_SD_Init(void)
+{
 
+  /* USER CODE BEGIN SDMMC1_Init 0 */
+
+  /* USER CODE END SDMMC1_Init 0 */
+
+  /* USER CODE BEGIN SDMMC1_Init 1 */
+
+  /* USER CODE END SDMMC1_Init 1 */
+    uint8_t sd_state = MSD_OK;
+
+    /* uSD device interface configuration */
+    hsd1.Instance = SDMMC1;
+
+    hsd1.Init.ClockEdge           = SDMMC_CLOCK_EDGE_RISING;
+    hsd1.Init.ClockBypass         = SDMMC_CLOCK_BYPASS_DISABLE;
+    hsd1.Init.ClockPowerSave      = SDMMC_CLOCK_POWER_SAVE_DISABLE;
+    hsd1.Init.BusWide             = SDMMC_BUS_WIDE_1B;
+    hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
+    hsd1.Init.ClockDiv            = SDMMC_TRANSFER_CLK_DIV;
+
+    /* Msp SD Detect pin initialization */
+
+    GPIO_InitTypeDef  gpio_init_structure;
+
+    SD_DETECT_GPIO_CLK_ENABLE();
+
+    /* GPIO configuration in input for uSD_Detect signal */
+    gpio_init_structure.Pin       = SD_DETECT_PIN;
+    gpio_init_structure.Mode      = GPIO_MODE_INPUT;
+    gpio_init_structure.Pull      = GPIO_PULLUP;
+    gpio_init_structure.Speed     = GPIO_SPEED_HIGH;
+    HAL_GPIO_Init(SD_DETECT_GPIO_PORT, &gpio_init_structure);
+//    if(BSP_SD_IsDetected() != SD_PRESENT)   /* Check if SD card is present */
+//    {
+//        return MSD_ERROR_SD_NOT_PRESENT;
+//    }
+
+    /* Msp SD initialization */
+//    BSP_SD_MspInit(&hsd1, NULL);
+
+    /* HAL SD initialization */
+    if(HAL_SD_Init(&hsd1) != HAL_OK)
+    {
+        sd_state = MSD_ERROR;
+    }
+
+    /* Configure SD Bus width */
+    if(sd_state == MSD_OK)
+    {
+        /* Enable wide operation */
+        if(HAL_SD_ConfigWideBusOperation(&hsd1, SDMMC_BUS_WIDE_4B) != HAL_OK)
+        {
+            sd_state = MSD_ERROR;
+        }
+        else
+        {
+            sd_state = MSD_OK;
+        }
+    }
+
+//    return  sd_state;
+  //HAL_SD_Init(&hsd1);
+  /* USER CODE BEGIN SDMMC1_Init 2 */
+
+  /* USER CODE END SDMMC1_Init 2 */
+
+}
 /** System Clock Configuration
  */
 void SystemClock_Config(void) {
 
-    RCC_OscInitTypeDef RCC_OscInitStruct;
-    RCC_ClkInitTypeDef RCC_ClkInitStruct;
+	  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+	  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+	  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
-    /**Configure the main internal regulator output voltage
-     */
-    __HAL_RCC_PWR_CLK_ENABLE();
+	  /**Configure the main internal regulator output voltage
+	  */
+	  __HAL_RCC_PWR_CLK_ENABLE();
+	  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+	  /**Initializes the CPU, AHB and APB busses clocks
+	  */
+	  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+	  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+	  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+	  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+	  RCC_OscInitStruct.PLL.PLLM = 16;
+	  RCC_OscInitStruct.PLL.PLLN = 400;
+	  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+	  RCC_OscInitStruct.PLL.PLLQ = 8;
+	  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+	  {
+	    Error_Handler();
+	  }
+	  /**Activate the Over-Drive mode
+	  */
+	  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
+	  {
+	    Error_Handler();
+	  }
+	  /**Initializes the CPU, AHB and APB busses clocks
+	  */
+	  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+	                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+	  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+	  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
 
-    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
-
-    /**Initializes the CPU, AHB and APB busses clocks
-     */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-    RCC_OscInitStruct.HSICalibrationValue = 16;
-
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-    RCC_OscInitStruct.PLL.PLLM = 16;
-    RCC_OscInitStruct.PLL.PLLN = 400;
-    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-    RCC_OscInitStruct.PLL.PLLQ = 8;
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-        _Error_Handler(__FILE__, __LINE__);
-    }
-
-    /**Initializes the CPU, AHB and APB busses clocks
-     */
-    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-                                  | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
-
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
-        _Error_Handler(__FILE__, __LINE__);
-    }
-
-    /**Configure the Systick interrupt time
-     */
-    HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
-
-    /**Configure the Systick
-     */
-    HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
-    /* SysTick_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+	  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_6) != HAL_OK)
+	  {
+	    Error_Handler();
+	  }
+	  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SDMMC1|RCC_PERIPHCLK_CLK48;
+	  PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48SOURCE_PLL;
+	  PeriphClkInitStruct.Sdmmc1ClockSelection = RCC_SDMMC1CLKSOURCE_CLK48;
+	  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+	  {
+	    Error_Handler();
+	  }
 }
 
 /* CAN1 init function */
@@ -263,9 +340,9 @@ static void MX_CAN1_Init(void) {
     hcan.Init.AutoRetransmission = DISABLE;
     hcan.Init.ReceiveFifoLocked = DISABLE;
     hcan.Init.TransmitFifoPriority = DISABLE;
-    if (HAL_CAN_Init(&hcan) != HAL_OK) {
-        _Error_Handler(__FILE__, __LINE__);
-    }
+//    if (HAL_CAN_Init(&hcan) != HAL_OK) {
+//        _Error_Handler(__FILE__, __LINE__);
+//    }
 
     CAN_FilterTypeDef sFilterConfig;
     sFilterConfig.FilterBank = 0;
@@ -279,22 +356,24 @@ static void MX_CAN1_Init(void) {
     sFilterConfig.FilterActivation = ENABLE;
     sFilterConfig.SlaveStartFilterBank = 14;
 
-    if (HAL_CAN_ConfigFilter(&hcan, &sFilterConfig) != HAL_OK) {
-        _Error_Handler(__FILE__, __LINE__);
-
-    }
-    if (HAL_CAN_Start(&hcan) != HAL_OK) {
-        _Error_Handler(__FILE__, __LINE__);
-    }
-    /* rx fifo0 message pending aktivieren*/
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK) {
-        /* Notification Error */
-        _Error_Handler(__FILE__, __LINE__);
-    }
+//    if (HAL_CAN_ConfigFilter(&hcan, &sFilterConfig) != HAL_OK) {
+//        _Error_Handler(__FILE__, __LINE__);
+//
+//    }
+//    /* rx fifo0 message pending aktivieren*/
+//    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK) {
+//        /* Notification Error */
+//        _Error_Handler(__FILE__, __LINE__);
+//    }
+//    /* rx fifo1 message pending aktivieren*/
 //    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO1_MSG_PENDING) != HAL_OK) {
 //        /* Notification Error */
 //        _Error_Handler(__FILE__, __LINE__);
 //    }
+//    if (HAL_CAN_Start(&hcan) != HAL_OK) {
+//        _Error_Handler(__FILE__, __LINE__);
+//    }
+
 }
 
 CAN_RxHeaderTypeDef RxHeader;
@@ -393,7 +472,20 @@ void transmitThread(void *_) {
 
 /* StartDefaultTask function */
 // extern void initMainPage(void);
+
 void StartDefaultTask(void const *argument) {
+
+    MX_FATFS_Init();
+//	if (gfileMount('F', "/"))
+//		gfxHalt("Can't mount the FAT file system");
+//    GFILE* file = gfileOpen("asd", "wx");
+//	if(!file) {
+//		gfxHalt("Can't open the file file.txt");;
+//	}
+//
+//    const char *buf = "deine mutter";
+//    volatile size_t len = gfileWrite(file, buf, 12);
+//    gfileClose(file);
     cMainView.initMainPage();
 }
 /* USER CODE END 5 */
