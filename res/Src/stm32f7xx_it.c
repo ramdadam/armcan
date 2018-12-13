@@ -186,7 +186,7 @@ void SysTick_Handler(void)
   * @param  None
   * @retval None
   */
-void BSP_SDMMC_IRQHandler(void)
+void SDMMC1_IRQHandler(void)
 {
     HAL_SD_IRQHandler(&hsd1);
 }
@@ -196,7 +196,7 @@ void BSP_SDMMC_IRQHandler(void)
 * @param  None
 * @retval None
 */
-void BSP_SDMMC_DMA_Tx_IRQHandler(void)
+void DMA2_Stream6_IRQHandler(void)
 {
     HAL_DMA_IRQHandler(hsd1.hdmatx);
 }
@@ -206,7 +206,7 @@ void BSP_SDMMC_DMA_Tx_IRQHandler(void)
 * @param  None
 * @retval None
 */
-void BSP_SDMMC_DMA_Rx_IRQHandler(void)
+void DMA2_Stream3_IRQHandler(void)
 {
     HAL_DMA_IRQHandler(hsd1.hdmarx);
 }

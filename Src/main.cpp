@@ -203,7 +203,7 @@ int main(void) {
 #define SD_DETECT_EXTI_IRQn                  EXTI15_10_IRQn
 static void MX_SDMMC1_SD_Init(void)
 {
-
+//	BSP_SD_Init();
   /* USER CODE BEGIN SDMMC1_Init 0 */
 
   /* USER CODE END SDMMC1_Init 0 */
@@ -211,59 +211,59 @@ static void MX_SDMMC1_SD_Init(void)
   /* USER CODE BEGIN SDMMC1_Init 1 */
 
   /* USER CODE END SDMMC1_Init 1 */
-    uint8_t sd_state = MSD_OK;
-
-    /* uSD device interface configuration */
-    hsd1.Instance = SDMMC1;
-
-    hsd1.Init.ClockEdge           = SDMMC_CLOCK_EDGE_RISING;
-    hsd1.Init.ClockBypass         = SDMMC_CLOCK_BYPASS_DISABLE;
-    hsd1.Init.ClockPowerSave      = SDMMC_CLOCK_POWER_SAVE_DISABLE;
-    hsd1.Init.BusWide             = SDMMC_BUS_WIDE_1B;
-    hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
-    hsd1.Init.ClockDiv            = SDMMC_TRANSFER_CLK_DIV;
-
-    /* Msp SD Detect pin initialization */
-
-    GPIO_InitTypeDef  gpio_init_structure;
-
-    SD_DETECT_GPIO_CLK_ENABLE();
-
-    /* GPIO configuration in input for uSD_Detect signal */
-    gpio_init_structure.Pin       = SD_DETECT_PIN;
-    gpio_init_structure.Mode      = GPIO_MODE_INPUT;
-    gpio_init_structure.Pull      = GPIO_PULLUP;
-    gpio_init_structure.Speed     = GPIO_SPEED_HIGH;
-    HAL_GPIO_Init(SD_DETECT_GPIO_PORT, &gpio_init_structure);
-//    if(BSP_SD_IsDetected() != SD_PRESENT)   /* Check if SD card is present */
+//    uint8_t sd_state = MSD_OK;
+//
+//    /* uSD device interface configuration */
+//    hsd1.Instance = SDMMC1;
+//
+//    hsd1.Init.ClockEdge           = SDMMC_CLOCK_EDGE_RISING;
+//    hsd1.Init.ClockBypass         = SDMMC_CLOCK_BYPASS_DISABLE;
+//    hsd1.Init.ClockPowerSave      = SDMMC_CLOCK_POWER_SAVE_DISABLE;
+//    hsd1.Init.BusWide             = SDMMC_BUS_WIDE_1B;
+//    hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
+//    hsd1.Init.ClockDiv            = SDMMC_TRANSFER_CLK_DIV;
+//
+//    /* Msp SD Detect pin initialization */
+//
+//    GPIO_InitTypeDef  gpio_init_structure;
+//
+//    SD_DETECT_GPIO_CLK_ENABLE();
+//
+//    /* GPIO configuration in input for uSD_Detect signal */
+//    gpio_init_structure.Pin       = SD_DETECT_PIN;
+//    gpio_init_structure.Mode      = GPIO_MODE_INPUT;
+//    gpio_init_structure.Pull      = GPIO_PULLUP;
+//    gpio_init_structure.Speed     = GPIO_SPEED_HIGH;
+//    HAL_GPIO_Init(SD_DETECT_GPIO_PORT, &gpio_init_structure);
+////    if(BSP_SD_IsDetected() != SD_PRESENT)   /* Check if SD card is present */
+////    {
+////        return MSD_ERROR_SD_NOT_PRESENT;
+////    }
+//
+//    /* Msp SD initialization */
+////    BSP_SD_MspInit(&hsd1, NULL);
+//
+//    /* HAL SD initialization */
+//    if(HAL_SD_Init(&hsd1) != HAL_OK)
 //    {
-//        return MSD_ERROR_SD_NOT_PRESENT;
+//        sd_state = MSD_ERROR;
 //    }
-
-    /* Msp SD initialization */
-//    BSP_SD_MspInit(&hsd1, NULL);
-
-    /* HAL SD initialization */
-    if(HAL_SD_Init(&hsd1) != HAL_OK)
-    {
-        sd_state = MSD_ERROR;
-    }
-
-    /* Configure SD Bus width */
-    if(sd_state == MSD_OK)
-    {
-        /* Enable wide operation */
-        if(HAL_SD_ConfigWideBusOperation(&hsd1, SDMMC_BUS_WIDE_4B) != HAL_OK)
-        {
-            sd_state = MSD_ERROR;
-        }
-        else
-        {
-            sd_state = MSD_OK;
-        }
-    }
-
-//    return  sd_state;
+//
+//    /* Configure SD Bus width */
+//    if(sd_state == MSD_OK)
+//    {
+//        /* Enable wide operation */
+//        if(HAL_SD_ConfigWideBusOperation(&hsd1, SDMMC_BUS_WIDE_4B) != HAL_OK)
+//        {
+//            sd_state = MSD_ERROR;
+//        }
+//        else
+//        {
+//            sd_state = MSD_OK;
+//        }
+//    }
+//
+////    return  sd_state;
   //HAL_SD_Init(&hsd1);
   /* USER CODE BEGIN SDMMC1_Init 2 */
 
