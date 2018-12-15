@@ -49,7 +49,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-#include "fatfs.h"
 #include "cmsis_os.h"
 
 #include "gfx.h"
@@ -475,7 +474,6 @@ void transmitThread(void *_) {
 
 void StartDefaultTask(void const *argument) {
 
-    MX_FATFS_Init();
 //	if (gfileMount('F', "/"))
 //		gfxHalt("Can't mount the FAT file system");
 //    GFILE* file = gfileOpen("asd", "wx");

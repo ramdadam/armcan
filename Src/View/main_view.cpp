@@ -2,6 +2,8 @@
 #define __MAIN_VIEW_H
 
 #include "gfx.h"
+#include "fatfs.h"
+
 #include "can_gui_package.h"
 #include "event_listener.h"
 #include "edit_can_message.h"
@@ -92,6 +94,7 @@ void CMainView::initMainPage(void) {
     gtimerInit(redrawTimer);
     gtimerStart(redrawTimer, redrawTables, this, TRUE, 1000);
 
+    MX_FATFS_Init();
     while (1) {
         pe = geventEventWait(&gl, TIME_INFINITE);
 

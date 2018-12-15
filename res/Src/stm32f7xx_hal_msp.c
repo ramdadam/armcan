@@ -55,10 +55,6 @@
 #define SD_DMAx_Rx_STREAM                 DMA2_Stream3
 #define SD_DMAx_Tx_IRQn                   DMA2_Stream6_IRQn
 #define SD_DMAx_Rx_IRQn                   DMA2_Stream3_IRQn
-#define BSP_SDMMC_IRQHandler              SDMMC1_IRQHandler
-#define BSP_SDMMC_DMA_Tx_IRQHandler       DMA2_Stream6_IRQHandler
-#define BSP_SDMMC_DMA_Rx_IRQHandler       DMA2_Stream3_IRQHandler
-#define SD_DetectIRQHandler()             HAL_GPIO_EXTI_IRQHandler(SD_DETECT_PIN)
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 /* USER CODE BEGIN Includes */

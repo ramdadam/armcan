@@ -58,7 +58,7 @@
 #define GDISP_NEED_ELLIPSE              FALSE
 #define GDISP_NEED_ARC                  FALSE
 #define GDISP_NEED_SCROLL               FALSE
-#define GDISP_NEED_PIXELREAD            FALSE
+#define GDISP_NEED_PIXELREAD            TRUE
 #define GDISP_NEED_CONTROL              FALSE
 #define GDISP_NEED_ASYNC                FALSE
 #define GDISP_NEED_MSGAPI               FALSE
