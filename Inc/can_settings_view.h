@@ -5,6 +5,34 @@
 #ifndef ARMCAN_CAN_SETTINGS_VIEW_H
 #define ARMCAN_CAN_SETTINGS_VIEW_H
 
+const GWidgetStyle GreenButtonStyle = {
+        HTML2COLOR(0xFFFFFF),			// window background
+        HTML2COLOR(0x2A8FCD),			// focused
+
+// enabled color set
+        {
+                HTML2COLOR(0xffffff),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0x28A745),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        },
+
+// disabled color set
+        {
+                HTML2COLOR(0xffffff),		// text
+                HTML2COLOR(0x808080),		// edge
+                HTML2COLOR(0x28A745),		// fill
+                HTML2COLOR(0xC0E0C0)		// progress - active area
+        },
+
+// pressed color set
+        {
+                HTML2COLOR(0xffffff),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0x28A745),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        }
+};
 const GWidgetStyle GreenTextStyle = {
         HTML2COLOR(0xFFFFFF),			// window background
         HTML2COLOR(0x2A8FCD),			// focused
@@ -61,6 +89,63 @@ const GWidgetStyle RedTextStyle = {
                 HTML2COLOR(0x00E000)		// progress - active area
         }
 };
+
+const GWidgetStyle RedButtonStyle = {
+        HTML2COLOR(0xFFFFFF),			// window background
+        HTML2COLOR(0x2A8FCD),			// focused
+
+// enabled color set
+        {
+                HTML2COLOR(0xE0E0E0),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0xDC3545),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        },
+
+// disabled color set
+        {
+                HTML2COLOR(0xE0E0E0),		// text
+                HTML2COLOR(0x808080),		// edge
+                HTML2COLOR(0xDC3545),		// fill
+                HTML2COLOR(0xC0E0C0)		// progress - active area
+        },
+
+// pressed color set
+        {
+                HTML2COLOR(0xE0E0E0),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0xDC3545),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        }
+};
+const GWidgetStyle GrayButtonStyle = {
+        HTML2COLOR(0xFFFFFF),			// window background
+        HTML2COLOR(0x2A8FCD),			// focused
+
+// enabled color set
+        {
+                HTML2COLOR(0xE0E0E0),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0x6c757d),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        },
+
+// disabled color set
+        {
+                HTML2COLOR(0xE0E0E0),		// text
+                HTML2COLOR(0x808080),		// edge
+                HTML2COLOR(0x6c757d),		// fill
+                HTML2COLOR(0xC0E0C0)		// progress - active area
+        },
+
+// pressed color set
+        {
+                HTML2COLOR(0xE0E0E0),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0x6c757d),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        }
+};
 class CCanSettingsView : public CEventListener {
         public:
         CCanSettingsView();
@@ -77,10 +162,19 @@ class CCanSettingsView : public CEventListener {
         GHandle parent;
         GHandle settings;
 
+
+        GHandle ghPrescalerAddBtn;
+        GHandle ghPrescalerSubBtn;
         GHandle ghPrescalerSlider;
         GHandle ghPrescalerLabel;
 
         GHandle ghCanSpeedLabel;
+
+        GHandle ghCanSleepCheckBox;
+
+        GHandle ghAcceptChanges;
+        GHandle ghCancelChanges;
+        GHandle ghResetToDefaultButton;
 
         GHandle ghFreeBytesLabel;
         GHandle ghCanStateLabel;
@@ -106,6 +200,12 @@ class CCanSettingsView : public CEventListener {
         uint8_t canErrorCodeIsError;
 
         uint16_t canPrescaler;
+        bool canSleepModeActive;
+
+        /* current view state */
+        bool showActionButtons = false;
+        bool showResetToDefaultButton = false;
+
 
 };
 

@@ -14,7 +14,7 @@ void CCanDriver::MX_CAN1_Init(uint16_t prescaler = DEFAULT_CAN_PRESCALER, bool s
 
     hcan.Instance = CAN1;
     hcan.Init.Prescaler = prescaler;
-    hcan.Init.Mode = sleepMode ? CAN_MODE_LOOPBACK : CAN_MODE_NORMAL;
+    hcan.Init.Mode = sleepMode ? CAN_MODE_SILENT : CAN_MODE_NORMAL;
     hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
     hcan.Init.TimeSeg1 = CAN_BS1_8TQ;
     hcan.Init.TimeSeg2 = CAN_BS2_1TQ;

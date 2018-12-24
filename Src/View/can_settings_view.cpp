@@ -34,14 +34,14 @@ void CCanSettingsView::updateHeapLabel() {
     uint8_t tempCanStateHasError = canDriver.getUserFriendlyState(canStateDescription, &tempCanState);
     uint8_t tempCanErrorCodeIsError = canDriver.getUserFriendlyErrorText(canErrorCodeDescription, &tempCanErrorCode);
 
-    if(tempCanErrorCode != canErrorCode) {
+    if (tempCanErrorCode != canErrorCode) {
         canErrorCode = tempCanErrorCode;
         canErrorCodeIsError = tempCanErrorCodeIsError;
         snprintf(canErrorCodeLabelText, errorTextMaxLength, errorCodeTemplate, canErrorCodeDescription);
         gwinSetStyle(ghCanErrorCodeLabel, canErrorCodeIsError ? &RedTextStyle : &GreenTextStyle);
         gwinRedraw(ghCanErrorCodeLabel);
     }
-    if(tempCanState != canState) {
+    if (tempCanState != canState) {
         canState = tempCanState;
         canStateHasError = tempCanStateHasError;
         snprintf(canStateLabelText, stateTextMaxLength, stateTemplate, canStateDescription);
@@ -50,7 +50,7 @@ void CCanSettingsView::updateHeapLabel() {
     }
 
     size_t currentHeapSize = xPortGetFreeHeapSize();
-    if(heapSize != currentHeapSize) {
+    if (heapSize != currentHeapSize) {
         snprintf(freeBytesLabelText, heapTextMaxLength, heapTemplate, currentHeapSize, configTOTAL_HEAP_SIZE);
         gwinRedraw(ghFreeBytesLabel);
     }
@@ -113,9 +113,19 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     ghFreeBytesLabel = gwinLabelCreate(nullptr, &wi);
 
     gwinWidgetClearInit(&wi);
-    wi.g.x = 20;
-    wi.g.y = 90;
-    wi.g.width = 435;
+    wi.g.x = 5;
+    wi.g.y = 80;
+    wi.g.width = 35;
+    wi.g.height = 35;
+    wi.g.show = TRUE;
+    wi.text = "+";
+    wi.g.parent = *parent;
+    ghPrescalerAddBtn = gwinButtonCreate(nullptr, &wi);
+
+    gwinWidgetClearInit(&wi);
+    wi.g.x = 50;
+    wi.g.y = 80;
+    wi.g.width = 375;
     wi.g.height = 35;
     wi.g.show = TRUE;
     wi.text = "CAN Prescaler (1 - 1024)";
@@ -124,10 +134,19 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     gwinSliderSetRange(ghPrescalerSlider, 1, 1024);
     gwinSliderSetPosition(ghPrescalerSlider, DEFAULT_CAN_PRESCALER);
 
+    gwinWidgetClearInit(&wi);
+    wi.g.x = 435;
+    wi.g.y = 80;
+    wi.g.width = 35;
+    wi.g.height = 35;
+    wi.g.show = TRUE;
+    wi.text = "-";
+    wi.g.parent = *parent;
+    ghPrescalerSubBtn = gwinButtonCreate(nullptr, &wi);
 
     gwinWidgetClearInit(&wi);
     wi.g.x = 5;
-    wi.g.y = 145;
+    wi.g.y = 125;
     wi.g.width = 0;
     wi.g.height = 20;
     wi.g.show = TRUE;
@@ -137,13 +156,64 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     gwinWidgetClearInit(&wi);
 
     wi.g.x = 5;
-    wi.g.y = 165;
+    wi.g.y = 145;
     wi.g.width = 0;
     wi.g.height = 20;
     wi.g.show = TRUE;
     wi.text = "CAN Speed";
     wi.g.parent = *parent;
     ghCanSpeedLabel = gwinLabelCreate(nullptr, &wi);
+    gwinWidgetClearInit(&wi);
+
+    wi.g.x = 5;
+    wi.g.y = 165;
+    wi.g.width = 165;
+    wi.g.height = 30;
+    wi.g.show = TRUE;
+    wi.text = "CAN Sleep Mode: ";
+    wi.g.parent = *parent;
+    wi.customDraw = gwinCheckboxDraw_CheckOnRight;
+    wi.customParam = nullptr;
+    wi.customStyle = nullptr;
+
+    ghCanSleepCheckBox = gwinCheckboxCreate(nullptr, &wi);
+    gwinCheckboxCheck(ghCanSleepCheckBox, false);
+    gwinWidgetClearInit(&wi);
+
+
+    wi.g.x = 310;
+    wi.g.y = 225;
+    wi.g.width = 80;
+    wi.g.height = 30;
+    wi.g.show = TRUE;
+    wi.text = "Accept";
+    wi.g.parent = *parent;
+    ghAcceptChanges = gwinButtonCreate(nullptr, &wi);
+    gwinSetStyle(ghAcceptChanges, &GreenButtonStyle);
+    gwinWidgetClearInit(&wi);
+
+    wi.g.x = 400;
+    wi.g.y = 225;
+    wi.g.width = 80;
+    wi.g.height = 30;
+    wi.g.show = TRUE;
+    wi.text = "Cancel";
+    wi.g.parent = *parent;
+    ghCancelChanges = gwinButtonCreate(nullptr, &wi);
+    gwinSetStyle(ghCancelChanges, &RedButtonStyle);
+    gwinWidgetClearInit(&wi);
+
+    wi.g.x = 5;
+    wi.g.y = 225;
+    wi.g.width = 135;
+    wi.g.height = 30;
+    wi.g.show = TRUE;
+    wi.text = "Default Settings";
+    wi.g.parent = *parent;
+    ghResetToDefaultButton = gwinButtonCreate(nullptr, &wi);
+    gwinSetStyle(ghResetToDefaultButton, &GrayButtonStyle);
+    gwinWidgetClearInit(&wi);
+
 
     gwinSetText(ghFreeBytesLabel, freeBytesLabelText, 0);
     gwinSetText(ghCanStateLabel, canStateLabelText, 0);
@@ -154,31 +224,36 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
 }
 
-EVENT_ACTION CCanSettingsView::evalEvent(GEvent * gEvent, EVENT_ACTION currentAction) {
+EVENT_ACTION CCanSettingsView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {
     switch (gEvent->type) {
         case GEVENT_GWIN_BUTTON: {
-//            GWindowObject *target = ((GEventGWinButton *) gEvent)->gwin;
-//
-//            if (target == ghBackButton) {
-//                return CLOSE_ADD_VIEW;
-//            } else if (target == ghAcceptButton) {
-//                return ADD_MESSAGE;
-//            }
+            GWindowObject *target = ((GEventGWinButton *) gEvent)->gwin;
+
+            if (target == ghPrescalerAddBtn) {
+                return INCREASE_CAN_PRESCALER_BY_ONE;
+            } else if (target == ghPrescalerSubBtn) {
+                return DECREASE_CAN_PRESCALER_BY_ONE;
+            } else if (target == ghAcceptChanges) {
+                return ACCEPT_SETTINGS_CHANGE;
+            }
             break;
         }
         case GEVENT_GWIN_SLIDER: {
             GWindowObject *target = ((GEventGWinSlider *) gEvent)->gwin;
-            if(ghPrescalerSlider == target) {
+            if (ghPrescalerSlider == target) {
                 return CAN_PRESCALER_SLIDER_CHANGE;
             }
         }
         case GEVENT_GWIN_CHECKBOX: {
-//            if (gwinCheckboxIsChecked(ghAddIsRemote)) {
-//                return ADD_VIEW_SHOW_SLIDER;
-//            } else {
-//                //TODO: else not working if more than one (global) checkbox event
-//                return ADD_VIEW_HIDE_SLIDER;
-//            }
+            GEventGWinCheckbox *checkBoxEvent = (GEventGWinCheckbox *) gEvent;
+            GWindowObject *target = checkBoxEvent->gwin;
+            if (target == ghCanSleepCheckBox) {
+                if (checkBoxEvent->isChecked) {
+                    return ACTIVATE_CAN_SLEEP_MODE;
+                } else {
+                    return DEACTIVATE_CAN_SLEEP_MODE;
+                }
+            }
         }
         default: {
             return currentAction != NO_ACTION ? currentAction : NO_ACTION;
@@ -187,11 +262,33 @@ EVENT_ACTION CCanSettingsView::evalEvent(GEvent * gEvent, EVENT_ACTION currentAc
     return currentAction != NO_ACTION ? currentAction : NO_ACTION;
 }
 
-EVENT_ACTION_STATUS CCanSettingsView::performAction(EVENT_ACTION action, GEvent * gEvent) {
-    switch(action) {
-        case CAN_PRESCALER_SLIDER_CHANGE:
-        {
-            onPrescalerSliderChange(((GEventGWinSlider *) gEvent)->position);
+EVENT_ACTION_STATUS CCanSettingsView::performAction(EVENT_ACTION action, GEvent *gEvent) {
+    switch (action) {
+        case CAN_PRESCALER_SLIDER_CHANGE: {
+            canPrescaler = ((GEventGWinSlider *) gEvent)->position;
+            onPrescalerSliderChange(canPrescaler);
+            break;
+        }
+        case ACTIVATE_CAN_SLEEP_MODE: {
+            canSleepModeActive = true;
+            break;
+        }
+        case DEACTIVATE_CAN_SLEEP_MODE: {
+            canSleepModeActive = false;
+            break;
+        }
+        case INCREASE_CAN_PRESCALER_BY_ONE: {
+            canPrescaler += 1;
+            onPrescalerSliderChange(canPrescaler);
+            break;
+        }
+        case DECREASE_CAN_PRESCALER_BY_ONE: {
+            canPrescaler -= 1;
+            onPrescalerSliderChange(canPrescaler);
+            break;
+        }
+        case ACCEPT_SETTINGS_CHANGE: {
+            canDriver.MX_CAN1_Init(canPrescaler, canSleepModeActive);
             break;
         }
     }
@@ -199,11 +296,8 @@ EVENT_ACTION_STATUS CCanSettingsView::performAction(EVENT_ACTION action, GEvent 
 }
 
 void CCanSettingsView::onPrescalerSliderChange(int pos) {
-    canPrescaler = pos;
     snprintf(prescalerLabelText, prescalerTextMaxLength, prescalerTemplate, pos);
     snprintf(canSpeedLabelText, canSpeedTextMaxLength, canSpeedTemplate, DEFAULT_CAN_SPEED / pos);
-//    gwinSetText(ghPrescalerLabel, prescalerLabelText, 0);
-//    gwinSetText(ghCanSpeedLabel, canSpeedLabelText, 0);
     gwinRedraw(ghPrescalerLabel);
     gwinRedraw(ghCanSpeedLabel);
 
