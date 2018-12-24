@@ -31,32 +31,28 @@ void CCanSettingsView::updateHeapLabel() {
     uint32_t tempCanState = 0;
     uint32_t tempCanErrorCode = 0;
 
-    uint8_t tempCanStateHasError = canDriver.getUserFriendlyState(canStateLabelText, &tempCanState);
-    uint8_t tempCanErrorCodeIsError = canDriver.getUserFriendlyErrorText(canErrorCodeLabelText, &tempCanErrorCode);
-
-    bool updateNeeded = false;
+    uint8_t tempCanStateHasError = canDriver.getUserFriendlyState(canStateDescription, &tempCanState);
+    uint8_t tempCanErrorCodeIsError = canDriver.getUserFriendlyErrorText(canErrorCodeDescription, &tempCanErrorCode);
 
     if(tempCanErrorCode != canErrorCode) {
         canErrorCode = tempCanErrorCode;
         canErrorCodeIsError = tempCanErrorCodeIsError;
         snprintf(canErrorCodeLabelText, errorTextMaxLength, errorCodeTemplate, canErrorCodeDescription);
-        updateNeeded = true;
+        gwinSetStyle(ghCanErrorCodeLabel, canErrorCodeIsError ? &RedTextStyle : &GreenTextStyle);
+        gwinRedraw(ghCanErrorCodeLabel);
     }
     if(tempCanState != canState) {
         canState = tempCanState;
         canStateHasError = tempCanStateHasError;
         snprintf(canStateLabelText, stateTextMaxLength, stateTemplate, canStateDescription);
-        updateNeeded = true;
+        gwinSetStyle(ghCanErrorCodeLabel, canStateHasError ? &RedTextStyle : &GreenTextStyle);
+        gwinRedraw(ghCanStateLabel);
     }
 
     size_t currentHeapSize = xPortGetFreeHeapSize();
     if(heapSize != currentHeapSize) {
         snprintf(freeBytesLabelText, heapTextMaxLength, heapTemplate, currentHeapSize, configTOTAL_HEAP_SIZE);
-        updateNeeded = true;
-    }
-
-    if(updateNeeded) {
-//        gwinRedraw(parent);
+        gwinRedraw(ghFreeBytesLabel);
     }
 }
 
@@ -71,12 +67,15 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     canStateDescription = (char *) gfxAlloc(sizeof(char) * stateTextMaxLength);
     canErrorCodeDescription = (char *) gfxAlloc(sizeof(char) * errorTextMaxLength);
 
-    canStateHasError = canDriver.getUserFriendlyState(canStateLabelText, &canState);
-    canErrorCodeIsError = canDriver.getUserFriendlyErrorText(canErrorCodeLabelText, &canErrorCode);
+    canStateHasError = canDriver.getUserFriendlyState(canStateDescription, &canState);
+    canErrorCodeIsError = canDriver.getUserFriendlyErrorText(canErrorCodeDescription, &canErrorCode);
 
     snprintf(prescalerLabelText, prescalerTextMaxLength, prescalerTemplate, DEFAULT_CAN_PRESCALER);
     snprintf(canSpeedLabelText, canSpeedTextMaxLength, canSpeedTemplate, DEFAULT_CAN_SPEED / DEFAULT_CAN_PRESCALER);
 
+
+    snprintf(canErrorCodeLabelText, errorTextMaxLength, errorCodeTemplate, canErrorCodeDescription);
+    snprintf(canStateLabelText, stateTextMaxLength, stateTemplate, canStateDescription);
 
     GWidgetInit wi;
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
@@ -90,6 +89,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     wi.g.parent = *parent;
     wi.text = "Loading Can State";
     ghCanStateLabel = gwinLabelCreate(nullptr, &wi);
+    gwinSetStyle(ghCanStateLabel, canErrorCodeIsError ? &RedTextStyle : &GreenTextStyle);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = 1;
@@ -100,6 +100,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     wi.g.parent = *parent;
     wi.text = "Loading Can Error State";
     ghCanErrorCodeLabel = gwinLabelCreate(nullptr, &wi);
+    gwinSetStyle(ghCanErrorCodeLabel, canStateHasError ? &RedTextStyle : &GreenTextStyle);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = 1;

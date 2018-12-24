@@ -5,7 +5,62 @@
 #ifndef ARMCAN_CAN_SETTINGS_VIEW_H
 #define ARMCAN_CAN_SETTINGS_VIEW_H
 
+const GWidgetStyle GreenTextStyle = {
+        HTML2COLOR(0xFFFFFF),			// window background
+        HTML2COLOR(0x2A8FCD),			// focused
 
+// enabled color set
+        {
+                HTML2COLOR(0x28A745),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0xE0E0E0),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        },
+
+// disabled color set
+        {
+                HTML2COLOR(0x28A745),		// text
+                HTML2COLOR(0x808080),		// edge
+                HTML2COLOR(0xE0E0E0),		// fill
+                HTML2COLOR(0xC0E0C0)		// progress - active area
+        },
+
+// pressed color set
+        {
+                HTML2COLOR(0x28A745),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0x808080),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        }
+};
+const GWidgetStyle RedTextStyle = {
+        HTML2COLOR(0xFFFFFF),			// window background
+        HTML2COLOR(0x2A8FCD),			// focused
+
+// enabled color set
+        {
+                HTML2COLOR(0xDC3545),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0xE0E0E0),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        },
+
+// disabled color set
+        {
+                HTML2COLOR(0xDC3545),		// text
+                HTML2COLOR(0x808080),		// edge
+                HTML2COLOR(0xE0E0E0),		// fill
+                HTML2COLOR(0xC0E0C0)		// progress - active area
+        },
+
+// pressed color set
+        {
+                HTML2COLOR(0xDC3545),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0x808080),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        }
+};
 class CCanSettingsView : public CEventListener {
         public:
         CCanSettingsView();
