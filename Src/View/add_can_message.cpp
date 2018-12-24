@@ -26,8 +26,10 @@ EVENT_ACTION CAddCanMessageView::evalEvent(GEvent *gEvent, EVENT_ACTION currentA
             break;
         }
         case GEVENT_GWIN_SLIDER: {
-            //TODO: else not working if more than one (global) slider event
-            return ADD_VIEW_SLIDER_CHANGE;
+            GWindowObject *target = ((GEventGWinSlider *) gEvent)->gwin;
+            if(ghSlider1 == target) {
+                return ADD_VIEW_SLIDER_CHANGE;
+            }
         }
         case GEVENT_GWIN_CHECKBOX: {
             if (gwinCheckboxIsChecked(ghAddIsRemote)) {
@@ -41,6 +43,7 @@ EVENT_ACTION CAddCanMessageView::evalEvent(GEvent *gEvent, EVENT_ACTION currentA
             return currentAction != NO_ACTION ? currentAction : NO_ACTION;
         }
     }
+    return currentAction != NO_ACTION ? currentAction : NO_ACTION;
 }
 
 EVENT_ACTION_STATUS CAddCanMessageView::performAction(EVENT_ACTION action, GEvent * gEvent) {
@@ -274,7 +277,7 @@ uint8_t CAddCanMessageView::getFormData(can_gui_form_data *formData) {
     }
     formData->dlc = gwinSliderGetPosition(ghSlider1);
     formData->isRemote = gwinCheckboxIsChecked(ghAddIsRemote);
-
+    formData->data.data_l = 0;
     for (uint8_t i = 0; i < formData->dlc; i++) {
         const char *textStr = gwinGetText(ghDataTextEdits[i]);
 
@@ -283,11 +286,11 @@ uint8_t CAddCanMessageView::getFormData(can_gui_form_data *formData) {
             continue;
         }
         if (i < formData->dlc) {
-            formData->data.data_b[i] = strtoul(textStr, NULL, 16);
+            formData->data.data_b[i] = static_cast<uint8_t>(strtoul(textStr, NULL, 16));
         } else {
             formData->data.data_b[i] = 0;
         }
-        gwinSetText(ghDataTextEdits[i], 0, FALSE);
+        gwinSetText(ghDataTextEdits[i], nullptr, FALSE);
     }
 
     setSliderPosition(0);

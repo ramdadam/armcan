@@ -27,17 +27,80 @@ EVENT_ACTION CTxCanView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {
             }
             return currentAction != NO_ACTION ? currentAction : NO_ACTION;
         }
+        case GEVENT_GWIN_LIST: {
+            GWindowObject *target = ((GEventGWinList *) gEvent)->gwin;
+
+            if(target ==table ) {
+                int16_t index = gwinListGetSelected(table);
+                if (index > txCanContainerSize) {
+                    return NO_ACTION;
+                } else if (index < 0) {
+                    return NO_ACTION;
+                } else {
+                    return TX_ITEM_SELECTED;
+                }
+            }
+        }
         default:
             return currentAction != NO_ACTION ? currentAction : NO_ACTION;
     }
 }
 
 EVENT_ACTION_STATUS CTxCanView::performAction(EVENT_ACTION action, GEvent *gEvent) {
-//    switch(action) {
-//        case SHOW_EDIT_VIEW:
-//        case DELETE_TX_ITEM:
-//    }
-return EVENT_HANDLED;
+    switch(action) {
+        case ACCEPT_EDIT: {
+            gwinShow(ghTxEditButton);
+            gwinShow(ghDeleteTXItemButton);
+            break;
+        }
+        case CLOSE_EDIT_VIEW: {
+            gwinShow(ghTxEditButton);
+            gwinShow(ghDeleteTXItemButton);
+            break;
+        }
+        case ADD_MESSAGE:
+        {
+            gwinShow(ghTxEditButton);
+            gwinShow(ghDeleteTXItemButton);
+            break;
+        }
+        case TX_ITEM_SELECTED: {
+            gwinShow(ghTxEditButton);
+            gwinShow(ghDeleteTXItemButton);
+            break;
+        }
+        case DELETE_TX_ITEM: {
+            //TODO: extract event handling
+            int16_t index = gwinListGetSelected(table);
+            //TODO: add mutex to prevent data corruption
+            if(index >= 0 && txCanContainerSize > 0) {
+
+                can_gui_package* temp = txCanContainer[index];
+                for(int16_t i = index; i<txCanContainerSize; i++) {
+                    txCanContainer[i] = txCanContainer[i+1];
+                }
+
+                //TODO: extract with edit can message timer deletion logic
+                if (temp->timer != nullptr) {
+                    auto *timer = (GTimer *) temp->timer;
+
+                    gtimerJab(timer);
+                    gtimerDeinit(timer);
+                    gfxFree(temp->timer);
+                }
+                gwinListItemDelete(table, index);
+                gfxFree(temp);
+
+                txCanContainerSize-=1;
+                if(txCanContainerSize == 0) {
+
+                    gwinHide(ghTxEditButton);
+                    gwinHide(ghDeleteTXItemButton);
+                }
+            }
+        }
+    }
+    return EVENT_HANDLED;
 }
 
 void CTxCanView::createButtonGroup(GHandle *parent) {
@@ -63,13 +126,13 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     ghDeleteTXItemButton = gwinButtonCreate(NULL, &wi);
 
     gwinWidgetClearInit(&wi);
-    wi.g.show = TRUE;
+    wi.g.show = false;
     wi.g.width = 27;
     wi.g.height = 27;
     wi.g.x = 225;
     wi.g.parent = *parent;
     wi.g.y = 225;
-    wi.text = 0;
+    wi.text = nullptr;
     ghTxEditButton = createImagePushButton(&wi, &iconEdit, EDIT_IMAGE);
 }
 
@@ -120,11 +183,11 @@ int8_t CTxCanView::putTxCanPackage(can_gui_package *package, uint8_t allowPackag
 }
 
 can_gui_package *CTxCanView::getTxSelectedCANPackage() {
-    uint16_t index = gwinListGetSelected(table);
+    int16_t index = gwinListGetSelected(table);
     if (index > txCanContainerSize) {
-        return 0;
+        return nullptr;
     } else if (index == -1) {
-        return 0;
+        return nullptr;
     } else {
         return txCanContainer[index];
     }

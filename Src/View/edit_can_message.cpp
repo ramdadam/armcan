@@ -8,15 +8,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include "vkeyboard.h"
+#include "stm32f7xx_hal.h"
+#include "can_driver.h"
 
 extern gfxQueueGSync *canTransmitQueue;
 
 void sendCANPackageCallback(void *CANPackage) {
     if (CANPackage != 0) {
-        can_gui_package *package = (can_gui_package *) CANPackage;
-        package->count += 1;
-        bumpPackageCounter(package);
-        gfxQueueGSyncPut(canTransmitQueue, &package->q_item);
+        //TODO: refactor so that main.cpp takes care of transmission
+        canDriver.sendCANPackage(static_cast<can_gui_package *>(CANPackage));
     }
 }
 
@@ -114,8 +114,8 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
     wi.g.height = 0;
     wi.g.parent = ghFrame;
 
-    char *idString = (char *) gfxAlloc(sizeof(char) * 30);
-    snprintf(idString, 30, "ID(hex): 0x%x", package->id);
+    char *idString = (char *) gfxAlloc(sizeof(char) * 5);
+    snprintf(idString, 5, "ID(hex): 0x%x", package->id);
     wi.text = (const char *) idString;
     ghEditIDLabel = gwinLabelCreate(nullptr, &wi);
 
@@ -241,7 +241,7 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
 
     createKeyBoard(NUMERIC_KEYBOARD);
 
-    if (package->timer != 0 && package->cycle > 0) {
+    if (package->timer != nullptr && package->cycle > 0) {
         char buffer[6];
         snprintf(buffer, 6, "%d", package->cycle);
         gwinSetText(ghEditCycleTextEdit, buffer, TRUE);
@@ -274,7 +274,7 @@ void CEditMessageView::saveEditForm() {
     if (showCyclicBox == 1) {
         const char *cycleTimeStr = gwinGetText(ghEditCycleTextEdit);
         currentPackage->cycle = strtoul(cycleTimeStr, nullptr, 10);
-        if (currentPackage->timer != 0) {
+        if (currentPackage->timer != nullptr) {
             auto *timer = (GTimer *) currentPackage->timer;
             gtimerJab(timer);
             gtimerStart(timer, sendCANPackageCallback, currentPackage, TRUE, currentPackage->cycle);
@@ -285,16 +285,16 @@ void CEditMessageView::saveEditForm() {
             currentPackage->timer = (void *) timer;
         }
     } else {
-        if (currentPackage->timer != 0) {
+        if (currentPackage->timer != nullptr) {
             auto *timer = (GTimer *) currentPackage->timer;
             immediateDeleteTimer(timer);
-            currentPackage->timer = 0;
+            currentPackage->timer = nullptr;
         }
     }
 }
 
 void CEditMessageView::immediateDeleteTimer(GTimer *timer) {
-    if (timer != 0) {
+    if (timer != nullptr) {
         gtimerJab(timer);
         gtimerDeinit(timer);
         gfxFree(timer);

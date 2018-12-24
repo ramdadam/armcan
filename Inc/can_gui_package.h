@@ -14,8 +14,10 @@ typedef struct
     } data;
     uint32_t count = 0;
     uint32_t cycle = 0;
-    void* timer = 0;
+    void* timer = nullptr;
     char displayText[100];
+    uint64_t lastTick = 0;
+    uint16_t dataPosStart = 0;
 } can_gui_package;
 
 typedef can_gui_package** can_gui_package_array;
@@ -33,6 +35,7 @@ typedef struct
 } can_gui_form_data;
 
 void bumpPackageCounter(can_gui_package* package);
+void packageToString(can_gui_package* package);
 
 void buildStringInCanGuiPackage(can_gui_package *package);
 

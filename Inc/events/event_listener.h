@@ -19,7 +19,14 @@ enum EVENT_ACTION {
     ACCEPT_EDIT,//10
     SHOW_CYCLIC_TEXTBOX,
     HIDE_CYCLIC_TEXTBOX,
-    DELETE_TX_ITEM
+    DELETE_TX_ITEM,
+
+    //TX View
+    TX_ITEM_SELECTED,
+
+    //Settings View
+    CAN_PRESCALER_SLIDER_CHANGE
+
 };
 
 class CEventListener {

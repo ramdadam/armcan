@@ -12,14 +12,20 @@ void buildStringInCanGuiPackage(can_gui_package *package) {
     // package->displayText = {0};
     char idString[30] = {0};
     snprintf(idString, 30, "ID: 0x%X | ", package->id);
-    strncat(package->displayText, idString, strlen(idString));
+    size_t idStrLen = strlen(idString);
+    strncat(package->displayText, idString, idStrLen);
+    package->dataPosStart += idStrLen;
 
     if (package->isRemote) {
         strncat(package->displayText, "R | ", 2);
+        package->dataPosStart += 2;
+
     } else {
-        char dlcString[13] = {0}; // (char *)gfxAlloc(sizeof(char) * 12);
+        char dlcString[13] = {0};
         snprintf(dlcString, 13, "DLC: %d | ", package->dlc);
-        strncat(package->displayText, dlcString, strlen(dlcString));
+        size_t dlcStrLength = strlen(dlcString);
+        strncat(package->displayText, dlcString, dlcStrLength);
+        package->dataPosStart += dlcStrLength;
 
 
         char dataString[30] = {0};
@@ -28,8 +34,9 @@ void buildStringInCanGuiPackage(can_gui_package *package) {
             const char *format = "%02X | ";
             const char *formatDpp = "%02X:";
             size_t pos = strlen(dataDescription);
-            strncat(&dataString[0], dataDescription, strlen(dataDescription));
+            strncat(&dataString[0], dataDescription, pos);
 
+            package->dataPosStart += pos;
 
             for (uint8_t i = 0; i < package->dlc; i++) {
                 char buffer[8] = {0};
@@ -54,7 +61,19 @@ void buildStringInCanGuiPackage(can_gui_package *package) {
     }
 }
 
+void increaseOnlyCounter(can_gui_package *package) {
+//    char packageCount[10] = {0};
+//    snprintf(packageCount, 10, "%d", package->count);
+//    strncat(package->displayText + package->dataPosStart, packageCount, strlen(packageCount));
+    buildStringInCanGuiPackage(package);
+
+}
+
 void bumpPackageCounter(can_gui_package *package) {
+     increaseOnlyCounter(package);
+}
+
+void packageToString(can_gui_package *package) {
     buildStringInCanGuiPackage(package);
 }
 

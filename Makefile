@@ -39,9 +39,11 @@ ASFLAGS  =
 LDFLAGS  = --specs=nosys.specs
 
 SRC	 = Src/VirtualKeyBoard/vkeyboard.cpp
+SRC	 += Src/Driver/can_driver.cpp
 SRC	 += Src/common/ImagePushButton.cpp
 SRC	 += Src/common/notification_helper.cpp
 SRC	 += Src/View/main_view.cpp
+SRC	 += Src/View/can_settings_view.cpp
 SRC	 += Src/View/add_can_message.cpp
 SRC	 += Src/View/edit_can_message.cpp
 SRC	 += Src/View/can_view.cpp
@@ -54,7 +56,7 @@ SRC      += Src/main.cpp \
 ./res/Src/sd_diskio.c \
 ./res/Src/fatfs.c \
 ./res/Src/freertos.c \
-./res/Src/stm32f7xx_it.c \
+./Src/stm32f7xx_it.c \
 ./res/Src/stm32f7xx_hal_msp.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_can.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c \
@@ -89,6 +91,7 @@ INCPATH  = ./Inc
 INCPATH  += Inc/images
 INCPATH  += Inc/common
 INCPATH  += Inc/events
+INCPATH  += Inc/Driver
 INCPATH += ./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include
 INCPATH += ./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 INCPATH += ./res/Drivers/CMSIS/Include

@@ -32,7 +32,7 @@ static const GVSpecialKey Num1SKeys[] = {{ "\010", "\b", 0, 0 } };
 
 static const char Num1Set1Row0[] = "1234";
 static const char Num1Set1Row1[] = "5678";
-static const char Num1Set0Row3[] = "0\003\001";
+static const char Num1Set0Row3[] = "90\001";
 
 static const char *Num1Set0[] = { Num1Set1Row0, Num1Set1Row1, Num1Set0Row3, 0
 		, 0 };

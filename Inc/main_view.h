@@ -22,14 +22,18 @@ private:
 
     void triggerTxRedraw();
 
+    void triggerSettingsUpdate();
+
     GHandle ghTabset = 0;
     GHandle tabset_page_1;
     GHandle tabset_page_2;
+    GHandle canSettingsPage;
 
     /* Views */
     CEditMessageView cEditMessageView;
     CRxCanView cRxCanView;
     CTxCanView cTxCanView;
+    CCanSettingsView cCanSettingsPage;
     CAddCanMessageView cAddCanMessageView;
 
 };

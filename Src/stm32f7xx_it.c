@@ -38,6 +38,7 @@
 
 /* USER CODE BEGIN 0 */
 
+extern SD_HandleTypeDef hsd1;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -69,6 +70,34 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /* USER CODE BEGIN 1 */
+/**
+  * @brief  This function handles SDMMC1 global interrupt request.
+  * @param  None
+  * @retval None
+  */
+void SDMMC1_IRQHandler(void)
+{
+  HAL_SD_IRQHandler(&hsd1);
+}
 
+/**
+* @brief  This function handles DMA2 Stream 6 interrupt request.
+* @param  None
+* @retval None
+*/
+void DMA2_Stream6_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(hsd1.hdmatx);
+}
+
+/**
+* @brief  This function handles DMA2 Stream 3 interrupt request.
+* @param  None
+* @retval None
+*/
+void DMA2_Stream3_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(hsd1.hdmarx);
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
