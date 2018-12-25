@@ -13,7 +13,7 @@
 #include "tx_can_view.h"
 #include "rx_can_view.h"
 #include "add_can_message.h"
-
+#include "fatfs.h"
 #include "main_view.h"
 #include "logger.h"
 
@@ -29,7 +29,7 @@ void CMainView::createTable() {
     }
     cTxCanView.createTxCanViewTable(&tabset_page_1);
     cRxCanView.createRxCanViewTable(&tabset_page_2);
-    cCanSettingsPage.createSettingsPage(&canSettingsPage);
+    cCanSettingsPage.createSettingsPage(&tabset_page_3);
     firstRun = false;
 }
 
@@ -45,7 +45,8 @@ void CMainView::createTabset() {
     ghTabset = gwinTabsetCreate(nullptr, &wi, GWIN_TABSET_BORDER);
     tabset_page_2 = gwinTabsetAddTab(ghTabset, "Receive", 1);
     tabset_page_1 = gwinTabsetAddTab(ghTabset, "Transmit", 1);
-    canSettingsPage = gwinTabsetAddTab(ghTabset, "Settings", 1);
+    tabset_page_3 = gwinTabsetAddTab(ghTabset, "CAN Settings", 1);
+    tabset_page_4 = gwinTabsetAddTab(ghTabset, "SD Settings", 1);
     createTable();
 }
 
@@ -94,7 +95,6 @@ void CMainView::initMainPage(void) {
     initNotifications();
     geventListenerInit(&gl);
     gwinAttachListener(&gl);
-
     GTimer *redrawTimer = nullptr;
     gtimerInit(redrawTimer);
     gtimerStart(redrawTimer, redrawTables, this, TRUE, 1000);

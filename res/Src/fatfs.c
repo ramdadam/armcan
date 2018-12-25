@@ -91,9 +91,9 @@ void MX_FATFS_Init(void) {
                     for (uint16_t x = 0; x < width; x++) {
                         uint32_t color = gdispGetPixelColor(x, y);
                         static uint8_t colorRGB[3];
-                        colorRGB[0] = RED_OF(color);  /* red */
-                        colorRGB[1] = GREEN_OF(color);  /* green */
-                        colorRGB[2] = BLUE_OF(color);  /* blue */
+                        colorRGB[0] = GREEN_OF(color);  /* green */
+                        colorRGB[1] = BLUE_OF(color);  /* blue */
+                        colorRGB[2] = RED_OF(color);  /* red */
                         f_write(&SDFile, colorRGB, 3, &byteswritten);
                     }
                 }

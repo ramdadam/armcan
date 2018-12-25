@@ -7,10 +7,15 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
+#include <locale.h>
 #include <Inc/can_settings_view.h>
 
 #include "can_gui_package.h"
 #include "can_driver.h"
+
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 const char *heapTemplate = "Heap: %d of %d bytes free";
 const char *stateTemplate = "Current CAN State: %s";
@@ -31,21 +36,35 @@ void CCanSettingsView::updateHeapLabel() {
     uint32_t tempCanState = 0;
     uint32_t tempCanErrorCode = 0;
 
+    memset(canStateDescription, 0, stateTextMaxLength);
+    memset(canErrorCodeDescription, 0, errorTextMaxLength);
     uint8_t tempCanStateHasError = canDriver.getUserFriendlyState(canStateDescription, &tempCanState);
     uint8_t tempCanErrorCodeIsError = canDriver.getUserFriendlyErrorText(canErrorCodeDescription, &tempCanErrorCode);
+
+    bool errorDidChange =
+            tempCanStateHasError != canStateHasError || tempCanErrorCodeIsError != canErrorCodeIsError;
+
+    if (errorDidChange && (tempCanStateHasError || tempCanErrorCodeIsError)) {
+        gwinShow(ghReInitCANButton);
+        gwinSetStyle(ghCanErrorCodeLabel, &RedTextStyle);
+        gwinSetStyle(ghCanStateLabel, &RedTextStyle);
+    } else if (errorDidChange) {
+        gwinHide(ghReInitCANButton);
+        gwinSetStyle(ghCanErrorCodeLabel, &GreenTextStyle);
+        gwinSetStyle(ghCanStateLabel, &GreenTextStyle);
+    }
 
     if (tempCanErrorCode != canErrorCode) {
         canErrorCode = tempCanErrorCode;
         canErrorCodeIsError = tempCanErrorCodeIsError;
         snprintf(canErrorCodeLabelText, errorTextMaxLength, errorCodeTemplate, canErrorCodeDescription);
-        gwinSetStyle(ghCanErrorCodeLabel, canErrorCodeIsError ? &RedTextStyle : &GreenTextStyle);
         gwinRedraw(ghCanErrorCodeLabel);
     }
+
     if (tempCanState != canState) {
         canState = tempCanState;
         canStateHasError = tempCanStateHasError;
         snprintf(canStateLabelText, stateTextMaxLength, stateTemplate, canStateDescription);
-        gwinSetStyle(ghCanErrorCodeLabel, canStateHasError ? &RedTextStyle : &GreenTextStyle);
         gwinRedraw(ghCanStateLabel);
     }
 
@@ -118,9 +137,9 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     wi.g.width = 35;
     wi.g.height = 35;
     wi.g.show = TRUE;
-    wi.text = "+";
+    wi.text = "-";
     wi.g.parent = *parent;
-    ghPrescalerAddBtn = gwinButtonCreate(nullptr, &wi);
+    ghPrescalerSubBtn = gwinButtonCreate(nullptr, &wi);
 
     gwinWidgetClearInit(&wi);
     wi.g.x = 50;
@@ -140,9 +159,9 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     wi.g.width = 35;
     wi.g.height = 35;
     wi.g.show = TRUE;
-    wi.text = "-";
+    wi.text = "+";
     wi.g.parent = *parent;
-    ghPrescalerSubBtn = gwinButtonCreate(nullptr, &wi);
+    ghPrescalerAddBtn = gwinButtonCreate(nullptr, &wi);
 
     gwinWidgetClearInit(&wi);
     wi.g.x = 5;
@@ -185,7 +204,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     wi.g.y = 225;
     wi.g.width = 80;
     wi.g.height = 30;
-    wi.g.show = TRUE;
+    wi.g.show = FALSE;
     wi.text = "Accept";
     wi.g.parent = *parent;
     ghAcceptChanges = gwinButtonCreate(nullptr, &wi);
@@ -196,7 +215,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     wi.g.y = 225;
     wi.g.width = 80;
     wi.g.height = 30;
-    wi.g.show = TRUE;
+    wi.g.show = FALSE;
     wi.text = "Cancel";
     wi.g.parent = *parent;
     ghCancelChanges = gwinButtonCreate(nullptr, &wi);
@@ -207,11 +226,22 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     wi.g.y = 225;
     wi.g.width = 135;
     wi.g.height = 30;
-    wi.g.show = TRUE;
+    wi.g.show = FALSE;
     wi.text = "Default Settings";
     wi.g.parent = *parent;
     ghResetToDefaultButton = gwinButtonCreate(nullptr, &wi);
     gwinSetStyle(ghResetToDefaultButton, &GrayButtonStyle);
+    gwinWidgetClearInit(&wi);
+
+    wi.g.x = 150;
+    wi.g.y = 225;
+    wi.g.width = 135;
+    wi.g.height = 30;
+    wi.g.show = (canErrorCodeIsError || canStateHasError);
+    wi.text = "Re-Init CAN";
+    wi.g.parent = *parent;
+    ghReInitCANButton = gwinButtonCreate(nullptr, &wi);
+    gwinSetStyle(ghReInitCANButton, &GrayButtonStyle);
     gwinWidgetClearInit(&wi);
 
 
@@ -235,6 +265,12 @@ EVENT_ACTION CCanSettingsView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAct
                 return DECREASE_CAN_PRESCALER_BY_ONE;
             } else if (target == ghAcceptChanges) {
                 return ACCEPT_SETTINGS_CHANGE;
+            } else if (target == ghCancelChanges) {
+                return CANCEL_SETTINGS_CHANGE;
+            } else if (target == ghResetToDefaultButton) {
+                return RESET_TO_DEFAULT_SETTINGS;
+            } else if (target == ghReInitCANButton) {
+                return REINIT_CAN;
             }
             break;
         }
@@ -261,6 +297,8 @@ EVENT_ACTION CCanSettingsView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAct
     }
     return currentAction != NO_ACTION ? currentAction : NO_ACTION;
 }
+static const uint16_t minPrescalerValue = 1;
+static const uint16_t maxPrescalerValue = 1024;
 
 EVENT_ACTION_STATUS CCanSettingsView::performAction(EVENT_ACTION action, GEvent *gEvent) {
     switch (action) {
@@ -270,24 +308,36 @@ EVENT_ACTION_STATUS CCanSettingsView::performAction(EVENT_ACTION action, GEvent 
             break;
         }
         case ACTIVATE_CAN_SLEEP_MODE: {
-            canSleepModeActive = true;
+            onSleepModeChange(true);
             break;
         }
         case DEACTIVATE_CAN_SLEEP_MODE: {
-            canSleepModeActive = false;
+            onSleepModeChange(false);
             break;
         }
         case INCREASE_CAN_PRESCALER_BY_ONE: {
-            canPrescaler += 1;
+            canPrescaler = MIN(canPrescaler + 1, maxPrescalerValue);
             onPrescalerSliderChange(canPrescaler);
             break;
         }
         case DECREASE_CAN_PRESCALER_BY_ONE: {
-            canPrescaler -= 1;
+            canPrescaler = MAX(canPrescaler - 1, minPrescalerValue);
             onPrescalerSliderChange(canPrescaler);
             break;
         }
         case ACCEPT_SETTINGS_CHANGE: {
+            onAcceptButtonClick();
+            break;
+        }
+        case CANCEL_SETTINGS_CHANGE: {
+            onCancelButtonClick();
+            break;
+        }
+        case RESET_TO_DEFAULT_SETTINGS: {
+            onResetButtonClick();
+            break;
+        }
+        case REINIT_CAN: {
             canDriver.MX_CAN1_Init(canPrescaler, canSleepModeActive);
             break;
         }
@@ -295,10 +345,69 @@ EVENT_ACTION_STATUS CCanSettingsView::performAction(EVENT_ACTION action, GEvent 
     return EVENT_NOT_HANDLED;
 }
 
+void CCanSettingsView::onSleepModeChange(bool sleep) {
+    if (sleep != canSleepModeActive) {
+        canSleepModeActive = sleep;
+        changeResetButtonVisibility();
+        changeActionButtonsVisibility(true);
+    }
+}
+
 void CCanSettingsView::onPrescalerSliderChange(int pos) {
+    changeResetButtonVisibility();
+    changeActionButtonsVisibility(true);
+
     snprintf(prescalerLabelText, prescalerTextMaxLength, prescalerTemplate, pos);
+
     snprintf(canSpeedLabelText, canSpeedTextMaxLength, canSpeedTemplate, DEFAULT_CAN_SPEED / pos);
     gwinRedraw(ghPrescalerLabel);
     gwinRedraw(ghCanSpeedLabel);
+}
 
+void CCanSettingsView::onResetButtonClick() {
+    canPrescaler = DEFAULT_CAN_PRESCALER;
+    canSleepModeActive = false;
+
+    changeResetButtonVisibility();
+    changeActionButtonsVisibility(false);
+
+    gwinSliderSetPosition(ghPrescalerSlider, DEFAULT_CAN_PRESCALER);
+    gwinCheckboxCheck(ghCanSleepCheckBox, false);
+    onPrescalerSliderChange(canPrescaler);
+    canDriver.MX_CAN1_Init(canPrescaler, canSleepModeActive);
+}
+
+void CCanSettingsView::onAcceptButtonClick() {
+    changeActionButtonsVisibility(false);
+    changeResetButtonVisibility();
+    canDriverPrescaler = canPrescaler;
+    canDriverSleepModeActive = canSleepModeActive;
+    canDriver.MX_CAN1_Init(canPrescaler, canSleepModeActive);
+}
+
+void CCanSettingsView::onCancelButtonClick() {
+    canPrescaler = canDriverPrescaler;
+    canSleepModeActive = canDriverSleepModeActive;
+
+    gwinSliderSetPosition(ghPrescalerSlider, canPrescaler);
+    gwinCheckboxCheck(ghCanSleepCheckBox, canSleepModeActive);
+    onPrescalerSliderChange(canPrescaler);
+}
+
+void CCanSettingsView::changeActionButtonsVisibility(bool show) {
+    if (show && (canDriverPrescaler != canPrescaler || canDriverSleepModeActive != canSleepModeActive)) {
+        gwinShow(ghAcceptChanges);
+        gwinShow(ghCancelChanges);
+    } else {
+        gwinHide(ghAcceptChanges);
+        gwinHide(ghCancelChanges);
+    }
+}
+
+void CCanSettingsView::changeResetButtonVisibility() {
+    if (canPrescaler != DEFAULT_CAN_PRESCALER || canSleepModeActive) {
+        gwinShow(ghResetToDefaultButton);
+    } else {
+        gwinHide(ghResetToDefaultButton);
+    }
 }

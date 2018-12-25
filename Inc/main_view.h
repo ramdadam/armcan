@@ -27,7 +27,8 @@ private:
     GHandle ghTabset = 0;
     GHandle tabset_page_1;
     GHandle tabset_page_2;
-    GHandle canSettingsPage;
+    GHandle tabset_page_3;
+    GHandle tabset_page_4;
 
     /* Views */
     CEditMessageView cEditMessageView;

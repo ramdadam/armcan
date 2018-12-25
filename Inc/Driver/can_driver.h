@@ -5,8 +5,8 @@
 #ifndef ARMCAN_CAN_DRIVER_H
 #define ARMCAN_CAN_DRIVER_H
 
-static const int DEFAULT_CAN_PRESCALER = 50;
-static const int DEFAULT_CAN_SPEED = 5000000;
+#define DEFAULT_CAN_PRESCALER 50
+#define DEFAULT_CAN_SPEED 5000000
 
 namespace CAN_driver_ISR // need a namespace to declare friend functions
 {
@@ -47,6 +47,7 @@ public:
     uint8_t getUserFriendlyState(char* text, uint32_t* canState);
 
 private:
+    bool disableCAN = false;
     CAN_HandleTypeDef hcan;
 
     CAN_RxHeaderTypeDef RxHeader;

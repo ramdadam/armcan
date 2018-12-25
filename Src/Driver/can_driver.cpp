@@ -11,7 +11,7 @@
 CCanDriver canDriver;
 
 void CCanDriver::MX_CAN1_Init(uint16_t prescaler = DEFAULT_CAN_PRESCALER, bool sleepMode = false) {
-
+    disableCAN = true;
     hcan.Instance = CAN1;
     hcan.Init.Prescaler = prescaler;
     hcan.Init.Mode = sleepMode ? CAN_MODE_SILENT : CAN_MODE_NORMAL;
@@ -62,6 +62,7 @@ void CCanDriver::MX_CAN1_Init(uint16_t prescaler = DEFAULT_CAN_PRESCALER, bool s
     if (HAL_CAN_Start(&hcan) != HAL_OK) {
         return;
     }
+    disableCAN = false;
 
 }
 
@@ -93,6 +94,9 @@ CCanDriver::CCanDriver() {
 }
 
 uint8_t CCanDriver::sendCANPackage(can_gui_package *package) {
+    if(disableCAN) {
+        return 1;
+    }
     package->count += 1;
     bumpPackageCounter(package);
 
@@ -113,6 +117,7 @@ uint8_t CCanDriver::sendCANPackage(can_gui_package *package) {
         }
         HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData0, &TxMailbox);
     }
+    return 0;
 }
 
 

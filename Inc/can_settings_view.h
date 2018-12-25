@@ -146,6 +146,7 @@ const GWidgetStyle GrayButtonStyle = {
                 HTML2COLOR(0x00E000)		// progress - active area
         }
 };
+
 class CCanSettingsView : public CEventListener {
         public:
         CCanSettingsView();
@@ -158,6 +159,14 @@ class CCanSettingsView : public CEventListener {
         private:
 
         void onPrescalerSliderChange(int pos);
+        void onSleepModeChange(bool sleep);
+
+        void onResetButtonClick();
+        void onAcceptButtonClick();
+        void onCancelButtonClick();
+
+        void changeActionButtonsVisibility(bool show);
+        void changeResetButtonVisibility();
 
         GHandle parent;
         GHandle settings;
@@ -175,6 +184,7 @@ class CCanSettingsView : public CEventListener {
         GHandle ghAcceptChanges;
         GHandle ghCancelChanges;
         GHandle ghResetToDefaultButton;
+        GHandle ghReInitCANButton;
 
         GHandle ghFreeBytesLabel;
         GHandle ghCanStateLabel;
@@ -191,7 +201,7 @@ class CCanSettingsView : public CEventListener {
         char *canStateDescription;
         char *canErrorCodeDescription;
 
-        /* current values*/
+        /* current view values*/
         size_t heapSize;
         uint32_t canState;
         uint8_t canStateHasError;
@@ -199,14 +209,12 @@ class CCanSettingsView : public CEventListener {
         uint32_t canErrorCode;
         uint8_t canErrorCodeIsError;
 
-        uint16_t canPrescaler;
-        bool canSleepModeActive;
+        uint16_t canPrescaler = 50;
+        bool canSleepModeActive = false;
 
-        /* current view state */
-        bool showActionButtons = false;
-        bool showResetToDefaultButton = false;
-
-
+        /* current driver values */
+        uint16_t canDriverPrescaler = 50;
+        bool canDriverSleepModeActive = false;
 };
 
 #endif //ARMCAN_CAN_SETTINGS_VIEW_H
