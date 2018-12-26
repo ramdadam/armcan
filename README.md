@@ -11,18 +11,18 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Prerequisites
 
-###ARM
+### ARM
 * gcc-arm-none-eabi-*
 * make
 * st-util
 
-###Linux
+### Linux
 * libsdl2-dev
 * build-essential
 * gcc-multilib
 
 
-####Only for Ubuntu 18.04:
+#### Only for Ubuntu 18.04:
 Currently libsdl2-dev is broken on 18.04. Follow this guide to downgrade libsdl2-dev ([source](https://www.gog.com/forum/xenonauts/ubuntu_1804_lts_bionic_beaver_dbus_error_solution))
 ```
 1a. Remove current version
@@ -47,7 +47,7 @@ sudo apt install libsdl2-dev:i386=2.0.4+dfsg1-2ubuntu2
 ```
 
 ## Building
-###ARM
+### ARM
 
 First set ARM GCC toolchain path in Makefile (ARCH=...), if it was not added to PATH.
 
@@ -61,7 +61,7 @@ Next download ugfx 2.8 from the ugfx.io page and extract the contents into the f
 make
 ```
 
-###Linux
+### Linux
 ```
 make -f Makefile_linux
 ```

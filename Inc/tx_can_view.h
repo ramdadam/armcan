@@ -1,6 +1,8 @@
 
 
 
+#include <Inc/common/ImagePushButton.h>
+
 #define TX_MAX_PACKAGES 25
 class CTxCanView : public CCanView, public CEventListener {
 public:
@@ -30,5 +32,17 @@ private:
     GHandle ghAddButton;
     GHandle ghDeleteTXItemButton;
     GHandle ghTxEditButton;
+    GHandle ghScreenshotButton;
+    GHandle ghRepeatOneButton;
+
+
+    gdispImage iconRepeatOne;
+    ImageButtonParameter repeatOneButtonParameter;
+
     gdispImage iconEdit;
+    ImageButtonParameter editButtonParameter;
+
+    gdispImage iconScreenshot;
+    gdispImage iconPressedScreenshot;
+    ImageButtonParameter screenshotButtonParameter;
 };

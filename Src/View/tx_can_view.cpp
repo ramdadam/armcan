@@ -110,8 +110,8 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     wi.g.width = 40;
     wi.g.height = 44;
     wi.g.parent = *parent;
-    wi.g.x = 440;
-    wi.g.y = 225;
+    wi.g.x = 430;
+    wi.g.y = 222;
     wi.text = "+";
     ghAddButton = gwinButtonCreate(NULL, &wi);
 
@@ -121,23 +121,53 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     wi.g.height = 44;
     wi.g.x = 350;
     wi.g.parent = *parent;
-    wi.g.y = 225;
+    wi.g.y = 222;
     wi.text = "-";
     ghDeleteTXItemButton = gwinButtonCreate(NULL, &wi);
 
     gwinWidgetClearInit(&wi);
-    wi.g.show = false;
-    wi.g.width = 27;
-    wi.g.height = 27;
-    wi.g.x = 225;
+    wi.g.show = 1;
+    wi.g.width = 32;
+    wi.g.height = 32;
+    wi.g.x = 250;
     wi.g.parent = *parent;
-    wi.g.y = 225;
+    wi.g.y = 220;
+    loadImageFromRomFs(&iconRepeatOne, REPEAT_ONE_IMAGE);
+    repeatOneButtonParameter.iconHover = &iconRepeatOne;
+    repeatOneButtonParameter.iconEnabled = &iconRepeatOne;
+    ghRepeatOneButton = createImagePushButton(&wi, &repeatOneButtonParameter);
+
+    gwinWidgetClearInit(&wi);
+    wi.g.show = 1;
+    wi.g.width = 32;
+    wi.g.height = 32;
+    wi.g.x = 10;
+    wi.g.parent = *parent;
+    wi.g.y = 220;
+    loadImageFromRomFs(&iconScreenshot, SCREENSHOT_IMAGE);
+    loadImageFromRomFs(&iconPressedScreenshot, SCREENSHOT_PRESSED_IMAGE);
+    screenshotButtonParameter.iconHover = &iconPressedScreenshot;
+    screenshotButtonParameter.iconEnabled = &iconScreenshot;
+    ghScreenshotButton = createImagePushButton(&wi, &screenshotButtonParameter);
+
+    gwinWidgetClearInit(&wi);
+    wi.g.show = false;
+    wi.g.width = 32;
+    wi.g.height = 32;
+    wi.g.x = 210;
+    wi.g.parent = *parent;
+    wi.g.y = 220;
     wi.text = nullptr;
-    ghTxEditButton = createImagePushButton(&wi, &iconEdit, EDIT_IMAGE);
+    loadImageFromRomFs(&iconEdit, EDIT_IMAGE);
+    editButtonParameter.iconHover = nullptr;
+    editButtonParameter.iconEnabled = &iconEdit;
+    ghTxEditButton = createImagePushButton(&wi, &editButtonParameter);
+
+
 }
 
 GHandle CTxCanView::createTxCanViewTable(GHandle *parent) {
-    table = createBaseTableWidget(parent, 480, 200);
+    table = createBaseTableWidget(parent, 480, 195);
     createButtonGroup(parent);
     txCanContainer = (can_gui_package_array) gfxAlloc(TX_MAX_PACKAGES * sizeof(can_gui_package *));
     return table;
