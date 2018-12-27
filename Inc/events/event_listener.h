@@ -23,6 +23,8 @@ enum EVENT_ACTION {
 
     //TX View
     TX_ITEM_SELECTED,
+    SEND_ONE_MESSAGE,
+    TAKE_TX_SCREENSHOT,
 
     //Settings View
     CAN_PRESCALER_SLIDER_CHANGE,

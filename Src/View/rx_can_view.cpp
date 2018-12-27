@@ -1,9 +1,9 @@
 #include "gfx.h"
 #include "can_gui_package.h"
 #include "can_view.h"
-#include "rx_can_view.h"
+#include "Inc/View/rx_can_view.h"
 #include <stdio.h>
-#include <Inc/can_gui_package.h>
+#include <Inc/common/can_gui_package.h>
 #include "notification_helper.h"
 
 extern gfxQueueGSync *canReceiveQueue;

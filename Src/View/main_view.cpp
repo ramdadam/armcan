@@ -4,18 +4,20 @@
 #include "gfx.h"
 #include "can_gui_package.h"
 #include "event_listener.h"
-#include "edit_can_message.h"
+#include "Inc/View/edit_can_message.h"
 #include "notification_helper.h"
 #include "gwin_table.h"
 #include <stdio.h>
-#include "can_settings_view.h"
+#include "Inc/View/can_settings_view.h"
 #include "can_view.h"
-#include "tx_can_view.h"
-#include "rx_can_view.h"
-#include "add_can_message.h"
+#include "Inc/View/tx_can_view.h"
+#include "Inc/View/rx_can_view.h"
+#include "Inc/View/add_can_message.h"
+#include "Inc/View/sd_settings_view.h"
 #include "fatfs.h"
-#include "main_view.h"
+#include "Inc/View/main_view.h"
 #include "logger.h"
+#include "can_driver.h"
 
 
 gfxQueueGSync *canTransmitQueue = nullptr;
@@ -30,6 +32,7 @@ void CMainView::createTable() {
     cTxCanView.createTxCanViewTable(&tabset_page_1);
     cRxCanView.createRxCanViewTable(&tabset_page_2);
     cCanSettingsPage.createSettingsPage(&tabset_page_3);
+    sdSettingsView.createSettingsPage(&tabset_page_4);
     firstRun = false;
 }
 
@@ -52,13 +55,13 @@ void CMainView::createTabset() {
 
 void CMainView::showMainpage() {
     gwinShow(ghTabset);
-    gwinShow(cTxCanView.getAddButton());
+//    gwinShow(cTxCanView.getAddButton());
 }
 
 void CMainView::hideMainpage() {
     gwinHide(ghTabset);
-    gwinHide(cTxCanView.getAddButton());
-    gwinHide(cTxCanView.getTXEditButton());
+//    gwinHide(cTxCanView.getAddButton());
+//    gwinHide(cTxCanView.getTXEditButton());
 }
 
 void CMainView::addRxCanPackage(can_gui_package* package) {
@@ -91,6 +94,7 @@ void CMainView::initMainPage(void) {
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
     gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
     gdispClear(White);
+//    MX_FATFS_Init();
     createTabset();
     initNotifications();
     geventListenerInit(&gl);
@@ -99,6 +103,7 @@ void CMainView::initMainPage(void) {
     gtimerInit(redrawTimer);
     gtimerStart(redrawTimer, redrawTables, this, TRUE, 1000);
 
+    canDriver.MX_CAN1_Init(50, false);
     while (true) {
         pe = geventEventWait(&gl, TIME_INFINITE);
 
@@ -114,9 +119,9 @@ void CMainView::initMainPage(void) {
         LOG_NUMBER("cCanSettingsPage action Handler: %d", action);
 
         cAddCanMessageView.performAction(action, pe);
-        cTxCanView.performAction(action, pe);
         cEditMessageView.performAction(action, pe);
         cCanSettingsPage.performAction(action, pe);
+        cTxCanView.performAction(action, pe);
         switch (action) {
             case CLOSE_ADD_VIEW: {
                 showMainpage();
@@ -158,6 +163,10 @@ void CMainView::initMainPage(void) {
             }
         }
     }
+}
+
+void CMainView::notifySdCardChanges() {
+    sdSettingsView.updateSettings();
 }
 
 

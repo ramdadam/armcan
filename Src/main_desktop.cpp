@@ -1,5 +1,5 @@
 #include "gfx.h"
-#include "main_view.h"
+#include "Inc/View/main_view.h"
 #include <stdio.h>
 
 extern gfxQueueGSync* canTransmitQueue;

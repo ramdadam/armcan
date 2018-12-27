@@ -3,14 +3,15 @@
 //
 #include "gfx.h"
 #include "event_listener.h"
-#include "can_settings_view.h"
+#include "Inc/View/can_settings_view.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-#include <Inc/can_settings_view.h>
+#include <Inc/View/can_settings_view.h>
 
+#include "WidgetStyles.h"
 #include "can_gui_package.h"
 #include "can_driver.h"
 
@@ -137,7 +138,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     wi.g.width = 35;
     wi.g.height = 35;
     wi.g.show = TRUE;
-    wi.text = "-";
+    wi.customDraw = gwinButtonDraw_ArrowDown;
     wi.g.parent = *parent;
     ghPrescalerSubBtn = gwinButtonCreate(nullptr, &wi);
 
@@ -159,7 +160,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     wi.g.width = 35;
     wi.g.height = 35;
     wi.g.show = TRUE;
-    wi.text = "+";
+    wi.customDraw = gwinButtonDraw_ArrowUp;
     wi.g.parent = *parent;
     ghPrescalerAddBtn = gwinButtonCreate(nullptr, &wi);
 

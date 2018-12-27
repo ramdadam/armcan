@@ -53,19 +53,12 @@ uint8_t retSD;    /* Return value for SD */
 char SDPath[4];   /* SD logical drive path */
 FATFS SDFatFS;    /* File system object for SD logical drive */
 FIL SDFile;       /* File object for SD */
-static uint8_t buffer[_MAX_SS];
+
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */
 
 void MX_FATFS_Init(void) {
-    /*## FatFS: Link the SD driver ###########################*/
-//  retSD = FATFS_LinkDriver(&SD_Driver, SDPath);
-
-    FRESULT res;                                          /* FatFs function common result code */
-    uint byteswritten, bytesread;                     /* File write/read counts */
-    uint8_t wtext[] = "This is STM32 working with FatFs"; /* File write buffer */
-    uint8_t rtext[100];                                   /* File read buffer */
     /* Mount the file system. */
     if (FATFS_LinkDriver(&SD_Driver, SDPath) == 0) {
         /*##-2- Register the file system object to the FatFs module ##############*/
@@ -75,37 +68,56 @@ void MX_FATFS_Init(void) {
         } else {
             /*##-3- Create a FAT file system (format) on the logical drive #########*/
             /* WARNING: Formatting the uSD card will delete all content on the device */
-            if (f_mkfs((TCHAR const *) SDPath, FM_ANY, 0, buffer, sizeof(buffer)) != FR_OK) {
-                /* FatFs Format Error */
-                Error_Handler();
-            }
+//            if (f_mkfs((TCHAR const *) SDPath, FM_FAT32, 0, buffer, sizeof(buffer)) != FR_OK) {
+//                /* FatFs Format Error */
+//                Error_Handler();
+//            }
             if (f_open(&SDFile, "n.pgm", FA_CREATE_ALWAYS | FA_WRITE) != FR_OK) {
                 /* 'STM32.TXT' file Open for write Error */
                 Error_Handler();
-            } else {
-                int16_t width = 480;//480 x 272
-                int16_t height = 272;
-
-                f_printf(&SDFile, "P6\n%d %d\n255\n", width, height);
-                for (uint16_t y = 0; y < height; y++) {
-                    for (uint16_t x = 0; x < width; x++) {
-                        uint32_t color = gdispGetPixelColor(x, y);
-                        static uint8_t colorRGB[3];
-                        colorRGB[0] = GREEN_OF(color);  /* green */
-                        colorRGB[1] = BLUE_OF(color);  /* blue */
-                        colorRGB[2] = RED_OF(color);  /* red */
-                        f_write(&SDFile, colorRGB, 3, &byteswritten);
-                    }
-                }
-
-                f_close(&SDFile);
-
             }
+//            else {
+//                int16_t width = 480;//480 x 272
+//                int16_t height = 272;
+//
+//                f_printf(&SDFile, "P6\n%d %d\n255\n", width, height);
+//                for (uint16_t y = 0; y < height; y++) {
+//                    for (uint16_t x = 0; x < width; x++) {
+//                        uint32_t color = gdispGetPixelColor(x, y);
+//                        static uint8_t colorRGB[3];
+//                        colorRGB[0] = GREEN_OF(color);  /* green */
+//                        colorRGB[1] = BLUE_OF(color);  /* blue */
+//                        colorRGB[2] = RED_OF(color);  /* red */
+//                        f_write(&SDFile, colorRGB, 3, &byteswritten);
+//                    }
+//                }
+//
+//                f_close(&SDFile);
+//
+//            }
         }
     }
     /* USER CODE BEGIN Init */
     /* additional user code for init */
     /* USER CODE END Init */
+}
+uint32_t getFreeSpace() {
+    DWORD fre_clust, fre_sect;
+    FATFS* fs = &SDFatFS;
+
+    FRESULT res = f_getfree("", &fre_clust, &fs);
+    if (res) return 0;
+
+    fre_sect = fre_clust * fs->csize;
+
+    return fre_sect/2;
+}
+
+uint32_t getTotalSpace() {
+    DWORD tot_sect;
+    /* Get total sectors and free sectors */
+    tot_sect = (SDFatFS.n_fatent - 2) * SDFatFS.csize;
+    return tot_sect/2;
 }
 
 /**

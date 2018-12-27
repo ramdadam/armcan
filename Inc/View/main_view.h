@@ -7,6 +7,7 @@ class CMainView {
 public:
     void initMainPage();
     void addRxCanPackage(can_gui_package* package);
+    void notifySdCardChanges();
 protected:
     void createTable(void);
 
@@ -35,6 +36,7 @@ private:
     CRxCanView cRxCanView;
     CTxCanView cTxCanView;
     CCanSettingsView cCanSettingsPage;
+    CSdSettingsView sdSettingsView;
     CAddCanMessageView cAddCanMessageView;
 
 };

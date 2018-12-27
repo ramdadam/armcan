@@ -1,5 +1,6 @@
 
-
+#ifndef __TX_VIEW_H
+#define __TX_VIEW_H
 
 #include <Inc/common/ImagePushButton.h>
 
@@ -28,12 +29,17 @@ public:
         return ghTxEditButton;
     }
 private:
+    void showAllActionButtons();
+    void hideAllActionButtons();
+    void checkRepeatBtnVisibility(int rowIndex);
     GHandle table;
     GHandle ghAddButton;
     GHandle ghDeleteTXItemButton;
     GHandle ghTxEditButton;
     GHandle ghScreenshotButton;
     GHandle ghRepeatOneButton;
+
+    GHandle ghPleaseWaitLabel;
 
 
     gdispImage iconRepeatOne;
@@ -46,3 +52,4 @@ private:
     gdispImage iconPressedScreenshot;
     ImageButtonParameter screenshotButtonParameter;
 };
+#endif

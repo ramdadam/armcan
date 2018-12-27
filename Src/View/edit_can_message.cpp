@@ -2,7 +2,7 @@
 #include "ImagePushButton.h"
 #include "can_gui_package.h"
 #include "event_listener.h"
-#include "edit_can_message.h"
+#include "Inc/View/edit_can_message.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -289,6 +289,7 @@ void CEditMessageView::saveEditForm() {
             auto *timer = (GTimer *) currentPackage->timer;
             immediateDeleteTimer(timer);
             currentPackage->timer = nullptr;
+            currentPackage->cycle = 0;
         }
     }
 }

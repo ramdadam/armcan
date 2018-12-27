@@ -68,6 +68,8 @@ extern FIL SDFile; /* File object for SD */
 
 void MX_FATFS_Init(void);
 
+uint32_t getFreeSpace();
+uint32_t getTotalSpace();
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */

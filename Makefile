@@ -40,6 +40,7 @@ LDFLAGS  = --specs=nosys.specs
 
 SRC	 = Src/VirtualKeyBoard/vkeyboard.cpp
 SRC	 += Src/Driver/can_driver.cpp
+SRC	 += Src/Driver/sd_driver.cpp
 SRC	 += Src/common/ImagePushButton.cpp
 SRC	 += Src/common/notification_helper.cpp
 SRC	 += Src/View/main_view.cpp
@@ -49,6 +50,7 @@ SRC	 += Src/View/edit_can_message.cpp
 SRC	 += Src/View/can_view.cpp
 SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
+SRC	 += Src/View/sd_settings_view.cpp
 SRC	 += Src/common/can_gui_package.cpp
 SRC      += Src/main.cpp \
 ./res/startup_stm32f746xx.s \
@@ -88,15 +90,16 @@ DEFS     = GFX_OS_HEAP_SIZE=40960 STM32F746xx GFX_OS_NO_INIT CAN_INTERRUPT_PRIOR
 #DEFS     = 
 LIBS     =
 INCPATH  = ./Inc
+INCPATH  += ./Inc/View
 INCPATH  += Inc/images
 INCPATH  += Inc/common
 INCPATH  += Inc/events
 INCPATH  += Inc/Driver
-INCPATH += ./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include
-INCPATH += ./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
-INCPATH += ./res/Drivers/CMSIS/Include
-INCPATH += ./Src/VirtualKeyBoard
-INCPATH += ./res/Middlewares/Third_Party/FatFs/src
+INCPATH  += ./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include
+INCPATH  += ./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
+INCPATH  += ./res/Drivers/CMSIS/Include
+INCPATH  += ./Src/VirtualKeyBoard
+INCPATH  += ./res/Middlewares/Third_Party/FatFs/src
 LIBPATH  =
 LDSCRIPT = 
 

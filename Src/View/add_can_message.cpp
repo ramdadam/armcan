@@ -2,7 +2,7 @@
 #include "gfx.h"
 #include "event_listener.h"
 #include "can_gui_package.h"
-#include "add_can_message.h"
+#include "Inc/View/add_can_message.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>

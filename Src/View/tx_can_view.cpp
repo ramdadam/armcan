@@ -4,11 +4,15 @@
 
 #include "can_gui_package.h"
 #include "can_view.h"
-#include "tx_can_view.h"
+#include "Inc/View/tx_can_view.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <Inc/View/tx_can_view.h>
+#include "can_driver.h"
+#include "sd_driver.h"
+
 #include "ImagePushButton.h"
 
 #define TX_CAN_TABLE_COL_COUNT 3
@@ -24,6 +28,10 @@ EVENT_ACTION CTxCanView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {
                 return DELETE_TX_ITEM;
             } else if (target == ghAddButton) {
                 return SHOW_ADD_VIEW;
+            } else if (target == ghRepeatOneButton) {
+                return SEND_ONE_MESSAGE;
+            } else if (target == ghScreenshotButton) {
+                return TAKE_TX_SCREENSHOT;
             }
             return currentAction != NO_ACTION ? currentAction : NO_ACTION;
         }
@@ -48,25 +56,42 @@ EVENT_ACTION CTxCanView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {
 
 EVENT_ACTION_STATUS CTxCanView::performAction(EVENT_ACTION action, GEvent *gEvent) {
     switch(action) {
-        case ACCEPT_EDIT: {
-            gwinShow(ghTxEditButton);
-            gwinShow(ghDeleteTXItemButton);
+        case TAKE_TX_SCREENSHOT: {
+            gwinShow(ghPleaseWaitLabel);
+            sdDriver.saveScreenshot();
+            gwinHide(ghPleaseWaitLabel);
             break;
         }
-        case CLOSE_EDIT_VIEW: {
-            gwinShow(ghTxEditButton);
-            gwinShow(ghDeleteTXItemButton);
+        case SHOW_EDIT_VIEW:
+        case SHOW_ADD_VIEW: {
+            hideAllActionButtons();
+            break;
+        }
+        case CLOSE_EDIT_VIEW:
+        case CLOSE_ADD_VIEW:
+        case ACCEPT_EDIT: {
+            showAllActionButtons();
+            int16_t index = gwinListGetSelected(table);
+            checkRepeatBtnVisibility(index);
             break;
         }
         case ADD_MESSAGE:
         {
-            gwinShow(ghTxEditButton);
-            gwinShow(ghDeleteTXItemButton);
+            showAllActionButtons();
             break;
         }
         case TX_ITEM_SELECTED: {
             gwinShow(ghTxEditButton);
-            gwinShow(ghDeleteTXItemButton);
+            int16_t index = gwinListGetSelected(table);
+            checkRepeatBtnVisibility(index);
+            break;
+        }
+        case SEND_ONE_MESSAGE: {
+            int16_t index = gwinListGetSelected(table);
+            if(index >= 0 && txCanContainerSize > 0) {
+                can_gui_package *temp = txCanContainer[index];
+                canDriver.sendCANPackage(temp);
+            }
             break;
         }
         case DELETE_TX_ITEM: {
@@ -97,6 +122,8 @@ EVENT_ACTION_STATUS CTxCanView::performAction(EVENT_ACTION action, GEvent *gEven
                     gwinHide(ghTxEditButton);
                     gwinHide(ghDeleteTXItemButton);
                 }
+                int16_t index = gwinListGetSelected(table);
+                checkRepeatBtnVisibility(index);
             }
         }
     }
@@ -126,7 +153,7 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     ghDeleteTXItemButton = gwinButtonCreate(NULL, &wi);
 
     gwinWidgetClearInit(&wi);
-    wi.g.show = 1;
+    wi.g.show = false;
     wi.g.width = 32;
     wi.g.height = 32;
     wi.g.x = 250;
@@ -138,7 +165,7 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     ghRepeatOneButton = createImagePushButton(&wi, &repeatOneButtonParameter);
 
     gwinWidgetClearInit(&wi);
-    wi.g.show = 1;
+    wi.g.show = true;
     wi.g.width = 32;
     wi.g.height = 32;
     wi.g.x = 10;
@@ -170,6 +197,19 @@ GHandle CTxCanView::createTxCanViewTable(GHandle *parent) {
     table = createBaseTableWidget(parent, 480, 195);
     createButtonGroup(parent);
     txCanContainer = (can_gui_package_array) gfxAlloc(TX_MAX_PACKAGES * sizeof(can_gui_package *));
+
+    GWidgetInit wi;
+    gwinWidgetClearInit(&wi);
+    wi.g.show = false;
+    wi.g.width = 0;
+    wi.g.height = 15;
+    wi.g.parent = *parent;
+    wi.g.x = 350;
+    wi.g.y = 2;
+    wi.text = "Please wait...";
+    ghPleaseWaitLabel = gwinLabelCreate(nullptr, &wi);
+    gwinSetFont(ghPleaseWaitLabel, gdispOpenFont("DejaVuSans16"));
+
     return table;
 }
 
@@ -203,7 +243,6 @@ int8_t CTxCanView::putTxCanPackage(can_gui_package *package, uint8_t allowPackag
     if (!found) {
         if (txCanContainerSize < TX_MAX_PACKAGES) {
             txCanContainer[txCanContainerSize] = package;
-            package->count = 1;
             txCanContainerSize += 1;
             syncList();
         }
@@ -221,4 +260,34 @@ can_gui_package *CTxCanView::getTxSelectedCANPackage() {
     } else {
         return txCanContainer[index];
     }
+}
+
+void CTxCanView::checkRepeatBtnVisibility(int rowIndex) {
+    //TODO: add mutex to prevent data corruption
+    if(rowIndex >= 0 && txCanContainerSize > 0) {
+        can_gui_package *temp = txCanContainer[rowIndex];
+        if(temp->cycle > 0 || temp->timer != nullptr) {
+            gwinHide(ghRepeatOneButton);
+        } else {
+            gwinShow(ghRepeatOneButton);
+        }
+    } else {
+        gwinHide(ghRepeatOneButton);
+    }
+}
+
+void CTxCanView::showAllActionButtons() {
+    gwinShow(ghScreenshotButton);
+    gwinShow(ghTxEditButton);
+    gwinShow(ghAddButton);
+    gwinShow(ghDeleteTXItemButton);
+    gwinShow(ghRepeatOneButton);
+}
+
+void CTxCanView::hideAllActionButtons() {
+    gwinHide(ghTxEditButton);
+    gwinHide(ghAddButton);
+    gwinHide(ghDeleteTXItemButton);
+    gwinHide(ghScreenshotButton);
+    gwinHide(ghRepeatOneButton);
 }

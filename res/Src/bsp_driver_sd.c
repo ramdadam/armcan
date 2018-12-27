@@ -130,7 +130,7 @@ uint8_t BSP_SD_ITConfig(void) {
     HAL_GPIO_Init(SD_DETECT_GPIO_PORT, &gpio_init_structure);
 
     /* Enable and set SD detect EXTI Interrupt to the lowest priority */
-    HAL_NVIC_SetPriority((IRQn_Type)(SD_DETECT_EXTI_IRQn), 0x0F, 0x00);
+    HAL_NVIC_SetPriority((IRQn_Type)(SD_DETECT_EXTI_IRQn), 0x0F, 0x0F);
     HAL_NVIC_EnableIRQ((IRQn_Type)(SD_DETECT_EXTI_IRQn));
 
     return MSD_OK;
