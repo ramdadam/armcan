@@ -16,12 +16,9 @@ public:
 
     void createButtonGroup(GHandle* parent);
     void createRxCanViewTable(GHandle* parent);
-    void deleteRxCanViewTable();
-    void takeScreenshot();
 private:
     GHandle ghClearBtn;
     GHandle ghScreenshotButton;
-    GHandle ghPleaseWaitLabel;
     void syncRxList();
     uint32_t rxCanContainerSize = 0;
     can_gui_package_array rxCanContainer = 0;

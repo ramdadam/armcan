@@ -6,11 +6,12 @@ public:
     GHandle createBaseTableWidget(GHandle* parent, uint16_t width = 480, uint16_t height = 272);
     void deleteTableWidget();
     void redrawTable();
+    void setWaitingLabelVisibility(bool show);
 protected:
     GHandle table_view;
     void addRow(char* item);
 private:
-    font_t titleFont;
+    GHandle ghPleaseWaitLabel;
 
 };
 #endif

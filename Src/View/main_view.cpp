@@ -8,6 +8,7 @@
 #include "notification_helper.h"
 #include "gwin_table.h"
 #include <stdio.h>
+#include "WidgetStyles.h"
 
 #include "Inc/View/can_settings_view.h"
 #include "can_view.h"
@@ -19,6 +20,7 @@
 #include "Inc/View/main_view.h"
 #include "logger.h"
 #include "can_driver.h"
+#include "sd_driver.h"
 
 gfxQueueGSync *canTransmitQueue = nullptr;
 gfxQueueGSync *canReceiveQueue = nullptr;
@@ -68,11 +70,13 @@ void CMainView::triggerTxRedraw() {
 }
 
 void CMainView::triggerCanSettingsUpdate() {
-    canSettingsView.updateHeapLabel();
+    canSettingsView.refreshSettings();
 }
 
 void CMainView::refreshActiveTab() {
-
+    if(disableActiveTabRefresh) {
+        return;
+    }
     if(gwinGetVisible(txTabPage)) {
         triggerTxRedraw();
     } else if(gwinGetVisible(rxTabPage)){
@@ -122,15 +126,11 @@ void CMainView::initMainPage(void) {
         sdSettingsView.performAction(action, pe);
         switch (action) {
             case TAKE_TX_SCREENSHOT: {
-                gwinDisable(ghTabset);
-                txView.takeScreenshot();
-                gwinEnable(ghTabset);
+                takeScreenshot(&txView);
                 break;
             }
             case TAKE_RX_SCREENSHOT: {
-                gwinDisable(ghTabset);
-                rxView.takeScreenshot();
-                gwinEnable(ghTabset);
+                takeScreenshot(&rxView);
                 break;
             }
             case CLOSE_ADD_VIEW: {
@@ -165,7 +165,7 @@ void CMainView::initMainPage(void) {
             }
             case SHOW_EDIT_VIEW: {
                 can_gui_package *tempCanPackage = txView.getTxSelectedCANPackage();
-                if (tempCanPackage != 0) {
+                if (tempCanPackage != nullptr) {
                     editMessageView.editCanMessage(tempCanPackage, FALSE);
                     hideMainpage();
                 }
@@ -179,6 +179,19 @@ void CMainView::notifySdCardChanges() {
     sdSettingsView.updateSettings();
 }
 
+void CMainView::takeScreenshot(CCanView* canView) {
+    gwinSetDefaultStyle(&ScreenshotWidgetStyle, 1);
+    disableActiveTabRefresh = true;
+    gwinDisable(ghTabset);
+    canView->setWaitingLabelVisibility(true);
+
+    sdDriver.saveScreenshot();
+
+    gwinSetDefaultStyle(&WhiteWidgetStyle, 1);
+    canView->setWaitingLabelVisibility(false);
+    gwinEnable(ghTabset);
+    disableActiveTabRefresh = false;
+}
 
 
 #endif

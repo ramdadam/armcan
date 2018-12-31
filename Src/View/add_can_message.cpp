@@ -98,18 +98,17 @@ void CAddCanMessageView::createAddFrame() {
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
-    const uint16_t width = 400;
-    const uint16_t height = 160;
 
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
+    font_t font = gdispOpenFont("DejaVuSans24");
     // Apply the frame parameters
     wi.g.width = gdispGetWidth();
     wi.g.height = gdispGetHeight();
     wi.g.y = 0;
     wi.g.x = 0;
     wi.text = "Add Can Message";
-    ghFrame1 = gwinContainerCreate(0, &wi, GWIN_CONTAINER_BORDER);
-
+    ghFrame1 = gwinContainerCreate(nullptr, &wi, GWIN_CONTAINER_BORDER);
+    gwinSetFont(ghFrame1, font);
+    
     gwinWidgetClearInit(&wi);
 
     wi.g.show = TRUE;
@@ -119,8 +118,9 @@ void CAddCanMessageView::createAddFrame() {
     wi.g.height = 0;
     wi.g.parent = ghFrame1;
     wi.text = "ID(hex)";
+    ghLabel1 = gwinLabelCreate(nullptr, &wi);
+    gwinSetFont(ghLabel1, font);
 
-    ghLabel1 = gwinLabelCreate(NULL, &wi);
     // TextEdit1
     wi.g.show = TRUE;
     wi.g.x = 165;
@@ -130,6 +130,7 @@ void CAddCanMessageView::createAddFrame() {
     wi.g.parent = ghFrame1;
     wi.text = "";
     ghIDTextEdit = gwinTexteditCreate(0, &wi, 3);
+    gwinSetFont(ghIDTextEdit, font);
 
     // Apply the checkbox parameters
     wi.g.x = 32;
@@ -139,13 +140,11 @@ void CAddCanMessageView::createAddFrame() {
     wi.g.height = 30;
     wi.g.parent = ghFrame1;
     wi.text = "Remote";
-    // Apply some default values for GWIN
     wi.customDraw = gwinCheckboxDraw_CheckOnRight;
-    wi.customParam = 0;
-    wi.customStyle = 0;
-
-    // Create the actual checkbox
-    ghAddIsRemote = gwinCheckboxCreate(NULL, &wi);
+    wi.customParam = nullptr;
+    wi.customStyle = nullptr;
+    ghAddIsRemote = gwinCheckboxCreate(nullptr, &wi);
+    gwinSetFont(ghAddIsRemote, font);
 
     gwinWidgetClearInit(&wi);
     wi.g.x = 15;
@@ -155,8 +154,9 @@ void CAddCanMessageView::createAddFrame() {
     wi.g.show = TRUE;
     wi.text = "DLC Length";
     wi.g.parent = ghFrame1;
-    ghSlider1 = gwinSliderCreate(NULL, &wi);
+    ghSlider1 = gwinSliderCreate(nullptr, &wi);
     gwinSliderSetRange(ghSlider1, 0, 8);
+    gwinSetFont(ghSlider1, font);
 
     wi.g.show = TRUE;
     wi.g.x = 365;
@@ -165,9 +165,9 @@ void CAddCanMessageView::createAddFrame() {
     wi.g.height = 35;
     wi.g.parent = ghFrame1;
     wi.text = "0 Byte";
-    ghLabel2 = gwinLabelCreate(NULL, &wi);
+    ghLabel2 = gwinLabelCreate(nullptr, &wi);
+    gwinSetFont(ghLabel2, font);
 
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
     wi.g.width = 25;
@@ -176,8 +176,8 @@ void CAddCanMessageView::createAddFrame() {
     wi.g.x = 1;
     wi.g.y = 1;
     wi.text = "X";
-    ghBackButton = gwinButtonCreate(NULL, &wi);
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
+    ghBackButton = gwinButtonCreate(nullptr, &wi);
+    gwinSetFont(ghBackButton, font);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
@@ -187,8 +187,9 @@ void CAddCanMessageView::createAddFrame() {
     wi.g.x = 445;
     wi.g.y = 0;
     wi.text = "+";
-    // ghAcceptButton = createImagePushButton(&wi, &addImage, ADD_IMAGE);
-    ghAcceptButton = gwinButtonCreate(NULL, &wi);
+    ghAcceptButton = gwinButtonCreate(nullptr, &wi);
+    gwinSetFont(ghAcceptButton, font);
+
     createKeyBoard(HEX_KEYBOARD);
 
     gwinWidgetClearInit(&wi);
@@ -198,13 +199,12 @@ void CAddCanMessageView::createAddFrame() {
     wi.g.height = 30;
     wi.g.y = 125;
     wi.g.x = 5;
-    wi.text = "Container";
     wi.g.show = TRUE;
     wi.g.parent = ghFrame1;
-    ghTexteditContainer = gwinContainerCreate(0, &wi, 0);
+    ghTexteditContainer = gwinContainerCreate(nullptr, &wi, 0);
 
     //MSB and LSB Label
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
+    font_t font12 = gdispOpenFont("DejaVuSans12");
     wi.customDraw = 0;
     wi.customParam = 0;
     wi.customStyle = 0;
@@ -217,8 +217,10 @@ void CAddCanMessageView::createAddFrame() {
     ghMSBLabel = gwinLabelCreate(NULL, &wi);
     wi.text = "LSB";
     ghLSBLabel = gwinLabelCreate(NULL, &wi);
+    gwinSetFont(ghMSBLabel, font12);
+    gwinSetFont(ghLSBLabel, font12);
 
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans14"));
+    font_t font14 = gdispOpenFont("DejaVuSans14");
     for (int i = 0; i < 8; i++) {
         gwinWidgetClearInit(&wi);
         wi.g.show = FALSE;
@@ -228,9 +230,9 @@ void CAddCanMessageView::createAddFrame() {
         wi.g.height = 35;
         wi.g.parent = ghTexteditContainer;
         wi.text = "";
-        ghDataTextEdits[i] = gwinTexteditCreate(0, &wi, 2);
+        ghDataTextEdits[i] = gwinTexteditCreate(nullptr, &wi, 2);
+        gwinSetFont(ghDataTextEdits[i], font14);
     }
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
 }
 
 void CAddCanMessageView::setSliderPosition(int pos) {
@@ -244,15 +246,13 @@ void CAddCanMessageView::setSliderPosition(int pos) {
             gwinMove(ghLSBLabel, 15 + i * 58, 160);
         }
         if (i >= pos) {
-            gwinSetText(ghDataTextEdits[i], 0, 1);
+            gwinSetText(ghDataTextEdits[i], nullptr, 0);
             gwinHide(ghDataTextEdits[i]);
             gwinSetFocus(ghAddIsRemote);
         } else {
             gwinShow(ghDataTextEdits[i]);
             if (pos == 1) {
                 gwinSetFocus(ghAddIsRemote);
-            } else {
-                ghDataTextEdits[0];
             }
         }
     }
@@ -270,13 +270,13 @@ void CAddCanMessageView::setSliderPosition(int pos) {
 
 uint8_t CAddCanMessageView::getFormData(can_gui_form_data *formData) {
     const char *idStr = gwinGetText(ghIDTextEdit);
-    formData->id = strtoul(idStr, NULL, 16);
+    formData->id = static_cast<uint16_t>(strtoul(idStr, NULL, 16));
     if (formData->id > 0x7FF) {
         showMessage(" ID muss kleiner als 0x7FF sein ");
         return 0;
     }
-    formData->dlc = gwinSliderGetPosition(ghSlider1);
-    formData->isRemote = gwinCheckboxIsChecked(ghAddIsRemote);
+    formData->dlc = static_cast<uint8_t>(gwinSliderGetPosition(ghSlider1));
+    formData->isRemote = static_cast<uint8_t>(gwinCheckboxIsChecked(ghAddIsRemote));
     formData->data.data_l = 0;
     for (uint8_t i = 0; i < formData->dlc; i++) {
         const char *textStr = gwinGetText(ghDataTextEdits[i]);
@@ -286,7 +286,7 @@ uint8_t CAddCanMessageView::getFormData(can_gui_form_data *formData) {
             continue;
         }
         if (i < formData->dlc) {
-            formData->data.data_b[i] = static_cast<uint8_t>(strtoul(textStr, NULL, 16));
+            formData->data.data_b[i] = static_cast<uint8_t>(strtoul(textStr, nullptr, 16));
         } else {
             formData->data.data_b[i] = 0;
         }

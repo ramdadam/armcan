@@ -27,22 +27,6 @@ void CRxCanView::createRxCanViewTable(GHandle *parent) {
     createBaseTableWidget(parent, 480, 195);
     rxCanContainer = (can_gui_package_array) gfxAlloc(RX_MAX_PACKAGES * sizeof(can_gui_package *));
     createButtonGroup(parent);
-
-    GWidgetInit wi;
-    gwinWidgetClearInit(&wi);
-    wi.g.show = false;
-    wi.g.width = 0;
-    wi.g.height = 15;
-    wi.g.parent = *parent;
-    wi.g.x = 350;
-    wi.g.y = 2;
-    wi.text = "Please wait...";
-    ghPleaseWaitLabel = gwinLabelCreate(nullptr, &wi);
-    gwinSetFont(ghPleaseWaitLabel, gdispOpenFont("DejaVuSans16"));
-}
-
-void CRxCanView::deleteRxCanViewTable() {
-    deleteTableWidget();
 }
 
 void CRxCanView::syncRxList() {
@@ -107,7 +91,7 @@ EVENT_ACTION_STATUS CRxCanView::performAction(EVENT_ACTION action, GEvent * gEve
 }
 
 void CRxCanView::createButtonGroup(GHandle *parent) {
-
+    font_t font = gdispOpenFont("DejaVuSans20");
     GWidgetInit wi;
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
@@ -118,6 +102,7 @@ void CRxCanView::createButtonGroup(GHandle *parent) {
     wi.g.y = 222;
     wi.text = "Clear";
     ghClearBtn = gwinButtonCreate(nullptr, &wi);
+    gwinSetFont(ghClearBtn, font);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = true;
@@ -131,12 +116,4 @@ void CRxCanView::createButtonGroup(GHandle *parent) {
     screenshotButtonParameter.iconHover = iconPressedScreenshot;
     screenshotButtonParameter.iconEnabled = iconScreenshot;
     ghScreenshotButton = createImagePushButton(&wi, &screenshotButtonParameter);
-
-}
-
-void CRxCanView::takeScreenshot() {
-    gwinShow(ghPleaseWaitLabel);
-    sdDriver.saveScreenshot();
-    gwinHide(ghPleaseWaitLabel);
-
 }

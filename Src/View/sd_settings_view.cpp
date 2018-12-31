@@ -26,6 +26,7 @@ const uint16_t sdStateMaxLength = 60;
 const uint16_t sdCardStateMaxLength = 60;
 
 CSdSettingsView::CSdSettingsView() {
+
 }
 
 EVENT_ACTION CSdSettingsView::evalEvent(GEvent * gEvent, EVENT_ACTION currentAction) {
@@ -109,8 +110,6 @@ void CSdSettingsView::createSettingsPage(GHandle *parent) {
     snprintf(sdCardStateLabelText, sdCardStateMaxLength, sdCardStateTemplate, tempSdCardStateErrorText);
 
     GWidgetInit wi;
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
-
     gwinWidgetClearInit(&wi);
     wi.g.show = 1;
     wi.g.width = 0;
@@ -186,6 +185,12 @@ void CSdSettingsView::createSettingsPage(GHandle *parent) {
 //    wi.text = "Formatting...";
 //    formatLabel = gwinLabelCreate(nullptr, &wi);
 //    gwinSetStyle(formatLabel, &RedButtonStyle);
+
+    font_t font = gdispOpenFont("DejaVuSans16");
+    gwinSetFont(isDetectedLabel, font);
+    gwinSetFont(freeSpaceLabel, font);
+    gwinSetFont(sdStateLabel, font);
+    gwinSetFont(sdCardStateLabel, font);
 
     gwinSetText(isDetectedLabel, isDetectedLabelText, 0);
     gwinSetText(freeSpaceLabel, freeSpaceLabelText, 0);

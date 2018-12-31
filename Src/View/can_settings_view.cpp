@@ -31,9 +31,14 @@ const uint16_t prescalerTextMaxLength = 30;
 const uint16_t canSpeedTextMaxLength = 40;
 
 CCanSettingsView::CCanSettingsView() {
+    canPrescaler = 50;
+    canSleepModeActive = false;
+
+    canDriverPrescaler = 50;
+    canDriverSleepModeActive = false;
 }
 
-void CCanSettingsView::updateHeapLabel() {
+void CCanSettingsView::refreshSettings() {
     uint32_t tempCanState = 0;
     uint32_t tempCanErrorCode = 0;
 
@@ -97,7 +102,6 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     snprintf(canStateLabelText, stateTextMaxLength, stateTemplate, canStateDescription);
 
     GWidgetInit wi;
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans16"));
     gwinWidgetClearInit(&wi);
 
     wi.g.show = 1;
@@ -244,14 +248,27 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     gwinSetStyle(ghReInitCANButton, &GrayButtonStyle);
     gwinWidgetClearInit(&wi);
 
+    font_t font = gdispOpenFont("DejaVuSans16");
+
+    gwinSetFont(ghFreeBytesLabel, font);
+    gwinSetFont(ghCanStateLabel, font);
+    gwinSetFont(ghCanErrorCodeLabel, font);
+    gwinSetFont(ghPrescalerLabel, font);
+    gwinSetFont(ghCanSpeedLabel, font);
+
+    gwinSetFont(ghCanSleepCheckBox, font);
+
+    gwinSetFont(ghAcceptChanges, font);
+    gwinSetFont(ghCancelChanges, font);
+    gwinSetFont(ghResetToDefaultButton, font);
+    gwinSetFont(ghReInitCANButton, font);
+
 
     gwinSetText(ghFreeBytesLabel, freeBytesLabelText, 0);
     gwinSetText(ghCanStateLabel, canStateLabelText, 0);
     gwinSetText(ghCanErrorCodeLabel, canErrorCodeLabelText, 0);
     gwinSetText(ghPrescalerLabel, prescalerLabelText, 0);
     gwinSetText(ghCanSpeedLabel, canSpeedLabelText, 0);
-
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
 }
 
 EVENT_ACTION CCanSettingsView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {

@@ -146,4 +146,33 @@ const GWidgetStyle GrayButtonStyle = {
                 HTML2COLOR(0x00E000)		// progress - active area
         }
 };
+
+const GWidgetStyle ScreenshotWidgetStyle = {
+        HTML2COLOR(0xFFFFFF),			// window background
+        HTML2COLOR(0x2A8FCD),			// focused
+
+// enabled color set
+        {
+                HTML2COLOR(0x000000),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0xE0E0E0),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        },
+
+// disabled color set
+        {
+                HTML2COLOR(0x000000),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0xE0E0E0),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        },
+
+// pressed color set
+        {
+                HTML2COLOR(0x404040),		// text
+                HTML2COLOR(0x404040),		// edge
+                HTML2COLOR(0x808080),		// fill
+                HTML2COLOR(0x00E000)		// progress - active area
+        }
+};
 #endif //ARMCAN_WIDGETSTYLES_H

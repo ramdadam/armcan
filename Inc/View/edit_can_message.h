@@ -34,6 +34,7 @@ public:
 private:
     GHandle ghFrame = 0;
     GHandle ghEditIDLabel = 0;
+    GHandle ghEditDLCLabel = 0;
     GHandle ghEditDataValue = 0;
     GHandle ghEditCheckbox = 0;
     GHandle ghEditCycleLabel = 0;
@@ -41,8 +42,6 @@ private:
     GHandle ghEditCycleMsLabel = 0;
     uint8_t showCyclicBox = 0;
     can_gui_package *currentPackage = 0;
-    gdispImage saveImage;
-    gdispImage backImage;
 
     GHandle ghEditRadioSelectCyclic = 0;
     GHandle ghEditRadioSelectOnce = 0;

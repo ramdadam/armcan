@@ -1,37 +1,36 @@
 #include "gfx.h"
 #include "can_view.h"
 
-#define Gray_40            HTML2COLOR(0x404040)
-#define Gray_80            HTML2COLOR(0x000000)
-#define Gray_A0            HTML2COLOR(0xA0A0A0)
-#define Gray_C0            HTML2COLOR(0xC0C0C0)
 
 GHandle CCanView::createBaseTableWidget(GHandle *parent, uint16_t width, uint16_t height) {
+    font_t titleFont = gdispOpenFont("DejaVuSans16");
+    enum scroll_t scrollBehaviour = scrollSmooth;
     GWidgetInit wi;
+
     gwinWidgetClearInit(&wi);
     wi.g.width = width;
     wi.g.height = height;
     wi.g.x = 0;
     wi.g.y = 20;
-
     wi.g.parent = *parent;
     wi.g.show = TRUE;
+    table_view = gwinListCreate(nullptr, &wi, FALSE);
 
-    titleFont = gdispOpenFont("DejaVuSans16");
-    color_t oldDefaultColor = gwinGetDefaultColor();
-
-    enum scroll_t scrollBehaviour = scrollSmooth;
-    gwinSetDefaultFont(titleFont);
-    gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
-    gwinSetDefaultBgColor(Gray_80);
-
-    table_view = gwinListCreate(NULL, &wi, FALSE);
     gwinListSetScroll(table_view, scrollBehaviour);
+    gwinSetFont(table_view, titleFont);
+    gwinSetStyle(table_view, &WhiteWidgetStyle);
 
-    titleFont = gdispOpenFont("DejaVuSans20");
-    gwinSetDefaultFont(titleFont);
+    gwinWidgetClearInit(&wi);
+    wi.g.show = false;
+    wi.g.width = 0;
+    wi.g.height = 15;
+    wi.g.parent = *parent;
+    wi.g.x = 350;
+    wi.g.y = 2;
+    wi.text = "Please wait...";
+    ghPleaseWaitLabel = gwinLabelCreate(nullptr, &wi);
+    gwinSetFont(ghPleaseWaitLabel, gdispOpenFont("DejaVuSans16"));
 
-    gwinSetDefaultBgColor(oldDefaultColor);
     return table_view;
 }
 
@@ -47,4 +46,8 @@ void CCanView::deleteTableWidget() {
     if (table_view != NULL) {
         gwinDestroy(table_view);
     }
+}
+
+void CCanView::setWaitingLabelVisibility(bool show) {
+    gwinSetVisible(ghPleaseWaitLabel, show);
 }

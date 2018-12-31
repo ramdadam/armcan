@@ -3,58 +3,51 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static GHandle ghKeyboard = 0;
-void createKeyBoard(AC_KEYBOARD_TYPE keyBoardType)
-{
-	deleteKeyBoard();
-	GWidgetInit wi;
-	static font_t font;
+static GHandle ghKeyboard = nullptr;
 
-	font = gdispOpenFont("DejaVuSans12");
-	gwinSetDefaultFont(font);
-	gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
+void createKeyBoard(AC_KEYBOARD_TYPE keyBoardType) {
+    deleteKeyBoard();
+    GWidgetInit wi;
+    static font_t font;
 
-	gwinWidgetClearInit(&wi);
+    font = gdispOpenFont("DejaVuSans12");
 
-	wi.g.x = 0;
-	wi.g.width = gdispGetWidth();
-	wi.g.height = gdispGetHeight() / 3;
-	wi.g.y = gdispGetHeight() - wi.g.height;
+    gwinWidgetClearInit(&wi);
 
-	wi.g.show = FALSE;
-	static GVKeyTable keyboardLayout;
-	switch (keyBoardType)
-	{
-	case HEX_KEYBOARD:
-	{
-		keyboardLayout = VirtualKeyboardHexInput;
-		break;
-	}
-	case NUMERIC_KEYBOARD:
-	{
-		keyboardLayout = VirtualKeyboardNumInput;
-		break;
-	}
-	}
-	ghKeyboard = gwinKeyboardCreate(0, &wi);
-	gwinKeyboardSetLayout(ghKeyboard, &keyboardLayout);
+    wi.g.x = 0;
+    wi.g.width = gdispGetWidth();
+    wi.g.height = gdispGetHeight() / 3;
+    wi.g.y = gdispGetHeight() - wi.g.height;
+
+    wi.g.show = FALSE;
+    static GVKeyTable keyboardLayout;
+    switch (keyBoardType) {
+        case HEX_KEYBOARD: {
+            keyboardLayout = VirtualKeyboardHexInput;
+            break;
+        }
+        case NUMERIC_KEYBOARD: {
+            keyboardLayout = VirtualKeyboardNumInput;
+            break;
+        }
+    }
+    ghKeyboard = gwinKeyboardCreate(nullptr, &wi);
+    gwinSetFont(ghKeyboard, font);
+    gwinSetStyle(ghKeyboard, &WhiteWidgetStyle);
+    gwinKeyboardSetLayout(ghKeyboard, &keyboardLayout);
 }
 
-void deleteKeyBoard()
-{
-	if (ghKeyboard != 0)
-	{
-		gwinDestroy(ghKeyboard);
-		ghKeyboard = 0;
-	}
+void deleteKeyBoard() {
+    if (ghKeyboard != nullptr) {
+        gwinDestroy(ghKeyboard);
+        ghKeyboard = nullptr;
+    }
 }
 
-void showKeyBoard()
-{
-	gwinShow(ghKeyboard);
+void showKeyBoard() {
+    gwinShow(ghKeyboard);
 }
 
-void hideKeyBoard()
-{
-	gwinHide(ghKeyboard);
+void hideKeyBoard() {
+    gwinHide(ghKeyboard);
 }

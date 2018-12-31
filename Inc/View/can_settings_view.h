@@ -11,7 +11,7 @@ class CCanSettingsView : public CEventListener {
         CCanSettingsView();
         void createSettingsPage(GHandle *parent);
 
-        void updateHeapLabel();
+        void refreshSettings();
         EVENT_ACTION evalEvent(GEvent*, EVENT_ACTION currentAction);
         EVENT_ACTION_STATUS performAction(EVENT_ACTION, GEvent*);
 

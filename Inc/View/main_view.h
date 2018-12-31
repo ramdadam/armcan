@@ -20,6 +20,7 @@ protected:
     void refreshActiveTab();
 
 private:
+    void takeScreenshot(CCanView*);
 
     void triggerRxRedraw();
 
@@ -40,6 +41,8 @@ private:
     CCanSettingsView canSettingsView;
     CSdSettingsView sdSettingsView;
     CAddCanMessageView addMessageView;
+
+    bool disableActiveTabRefresh = false;
 
 };
 

@@ -74,17 +74,15 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
-    const uint16_t width = 400;
-    const uint16_t height = 160;
 
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
     wi.g.width = gdispGetWidth();
     wi.g.height = gdispGetHeight();
     wi.g.y = 0;
     wi.g.x = 0;
-    ghFrame = gwinContainerCreate(0, &wi, GWIN_CONTAINER_BORDER);
+    ghFrame = gwinContainerCreate(nullptr, &wi, GWIN_CONTAINER_BORDER);
+    font_t font = gdispOpenFont("DejaVuSans24");
+    gwinSetFont(ghFrame, font);
 
-    // gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
     wi.g.width = 25;
@@ -94,7 +92,7 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
     wi.g.y = 1;
     wi.text = "X";
     ghEditBackButton = gwinButtonCreate(nullptr, &wi);
-    gwinSetDefaultFont(gdispOpenFont("DejaVuSans24"));
+    gwinSetFont(ghEditBackButton, font);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
@@ -105,6 +103,7 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
     wi.g.y = 0;
     wi.text = "Save";
     ghEditAcceptButton = gwinButtonCreate(nullptr, &wi);
+    gwinSetFont(ghEditAcceptButton, font);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
@@ -114,10 +113,12 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
     wi.g.height = 0;
     wi.g.parent = ghFrame;
 
-    char *idString = (char *) gfxAlloc(sizeof(char) * 5);
-    snprintf(idString, 5, "ID(hex): 0x%x", package->id);
-    wi.text = (const char *) idString;
+    char idString[30] = {' '};
+    snprintf(idString, 30, "ID(hex): 0x%x", package->id);
+    wi.text = idString;
     ghEditIDLabel = gwinLabelCreate(nullptr, &wi);
+    gwinSetFont(ghEditIDLabel, font);
+    gwinSetText(ghEditIDLabel, idString, true);
 
     if (package->isRemote) {
         gwinWidgetClearInit(&wi);
@@ -132,11 +133,13 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
         wi.customParam = 0;
         wi.customStyle = 0;
         ghEditCheckbox = gwinCheckboxCreate(nullptr, &wi);
+        gwinSetFont(ghEditCheckbox, font);
+
         gwinCheckboxCheck(ghEditCheckbox, 1);
         gwinDisable(ghEditCheckbox);
     } else {
         gwinWidgetClearInit(&wi);
-        char *dlcString = (char *) gfxAlloc(sizeof(char) * 12);
+        char dlcString[12];
         snprintf(dlcString, 12, "DLC: %d Byte |", package->dlc);
 
         wi.g.show = TRUE;
@@ -145,17 +148,19 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
         wi.g.width = 0;
         wi.g.height = 0;
         wi.g.parent = ghFrame;
-        wi.text = (const char *) dlcString;
-        ghEditIDLabel = gwinLabelCreate(nullptr, &wi);
+        ghEditDLCLabel = gwinLabelCreate(nullptr, &wi);
+        gwinSetFont(ghEditDLCLabel, font);
+        gwinSetText(ghEditDLCLabel, dlcString, true);
+
         // example: D: 00:00:00:00:00:00:00
-        char *dataString = (char *) gfxAlloc(sizeof(char) * 30);
+        char dataString[30];
         for (int i = 0; i < 30; i++) {
             dataString[i] = 0;
         }
         const char *dataDescription = "D: ";
         const char *format = "%02X";
         const char *formatDpp = "%02X:";
-        uint16_t pos = strlen(dataDescription);
+        size_t pos = strlen(dataDescription);
         strncat(&dataString[0], dataDescription, strlen(dataDescription));
 
         for (uint8_t i = 0; i < package->dlc; i++) {
@@ -178,14 +183,17 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
         wi.g.width = 470;
         wi.g.height = 30;
         wi.g.parent = ghFrame;
-        wi.text = (const char *) dataString;
         ghEditDataValue = gwinLabelCreate(nullptr, &wi);
+        gwinSetFont(ghEditDataValue, font);
+        gwinSetText(ghEditDataValue, dataString, true);
+
     }
+
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
-    wi.customDraw = 0;
-    wi.customParam = 0;
-    wi.customStyle = 0;
+    wi.customDraw = nullptr;
+    wi.customParam = nullptr;
+    wi.customStyle = nullptr;
     wi.g.x = 60;
     wi.g.y = 105;
     wi.g.width = 170;
@@ -193,6 +201,7 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
     wi.g.parent = ghFrame;
     wi.text = "Zyklisch";
     ghEditRadioSelectCyclic = gwinRadioCreate(NULL, &wi, 0);
+    gwinSetFont(ghEditRadioSelectCyclic, font);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
@@ -206,6 +215,7 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
     wi.g.parent = ghFrame;
     wi.text = "Einzeln";
     ghEditRadioSelectOnce = gwinRadioCreate(NULL, &wi, 0);
+    gwinSetFont(ghEditRadioSelectOnce, font);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = 0;
@@ -219,6 +229,7 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
     wi.g.parent = ghFrame;
     wi.text = "Zyklus: ";
     ghEditCycleLabel = gwinLabelCreate(NULL, &wi);
+    gwinSetFont(ghEditCycleLabel, font);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = 0;
@@ -228,6 +239,7 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
     wi.g.height = 30;
     wi.g.parent = ghFrame;
     ghEditCycleTextEdit = gwinTexteditCreate(NULL, &wi, 4);
+    gwinSetFont(ghEditCycleTextEdit, font);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = 0;
@@ -238,6 +250,7 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
     wi.g.parent = ghFrame;
     wi.text = "ms";
     ghEditCycleMsLabel = gwinLabelCreate(nullptr, &wi);
+    gwinSetFont(ghEditCycleMsLabel, font);
 
     createKeyBoard(NUMERIC_KEYBOARD);
 

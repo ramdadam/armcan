@@ -123,6 +123,7 @@ EVENT_ACTION_STATUS CTxCanView::performAction(EVENT_ACTION action, GEvent *gEven
 }
 
 void CTxCanView::createButtonGroup(GHandle *parent) {
+    font_t font = gdispOpenFont("DejaVuSans20");
     GWidgetInit wi;
     gwinWidgetClearInit(&wi);
     wi.g.show = TRUE;
@@ -132,7 +133,7 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     wi.g.x = 430;
     wi.g.y = 222;
     wi.text = "+";
-    ghAddButton = gwinButtonCreate(NULL, &wi);
+    ghAddButton = gwinButtonCreate(nullptr, &wi);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = FALSE;
@@ -142,7 +143,7 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     wi.g.parent = *parent;
     wi.g.y = 222;
     wi.text = "-";
-    ghDeleteTXItemButton = gwinButtonCreate(NULL, &wi);
+    ghDeleteTXItemButton = gwinButtonCreate(nullptr, &wi);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = false;
@@ -181,32 +182,16 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     editButtonParameter.iconHover = nullptr;
     editButtonParameter.iconEnabled = iconEdit;
     ghTxEditButton = createImagePushButton(&wi, &editButtonParameter);
+
+    gwinSetFont(ghAddButton, font);
+    gwinSetFont(ghDeleteTXItemButton, font);
 }
 
 GHandle CTxCanView::createTxCanViewTable(GHandle *parent) {
     table = createBaseTableWidget(parent, 480, 195);
     createButtonGroup(parent);
     txCanContainer = (can_gui_package_array) gfxAlloc(TX_MAX_PACKAGES * sizeof(can_gui_package *));
-
-    GWidgetInit wi;
-    gwinWidgetClearInit(&wi);
-    wi.g.show = false;
-    wi.g.width = 0;
-    wi.g.height = 15;
-    wi.g.parent = *parent;
-    wi.g.x = 350;
-    wi.g.y = 2;
-    wi.text = "Please wait...";
-    ghPleaseWaitLabel = gwinLabelCreate(nullptr, &wi);
-    gwinSetFont(ghPleaseWaitLabel, gdispOpenFont("DejaVuSans16"));
-
     return table;
-}
-
-void CTxCanView::deleteTxCanViewTable() {
-    deleteTableWidget();
-    gwinDestroy(ghAddButton);
-    gwinDestroy(ghDeleteTXItemButton);
 }
 
 void CTxCanView::syncList() {
@@ -242,7 +227,7 @@ int8_t CTxCanView::putTxCanPackage(can_gui_package *package, uint8_t allowPackag
 }
 
 can_gui_package *CTxCanView::getTxSelectedCANPackage() {
-    int16_t index = gwinListGetSelected(table);
+    int16_t index = static_cast<int16_t>(gwinListGetSelected(table));
     if (index > txCanContainerSize) {
         return nullptr;
     } else if (index == -1) {
@@ -280,10 +265,4 @@ void CTxCanView::hideAllActionButtons() {
     gwinHide(ghDeleteTXItemButton);
     gwinHide(ghScreenshotButton);
     gwinHide(ghRepeatOneButton);
-}
-
-void CTxCanView::takeScreenshot() {
-    gwinShow(ghPleaseWaitLabel);
-    sdDriver.saveScreenshot();
-    gwinHide(ghPleaseWaitLabel);
 }
