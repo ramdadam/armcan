@@ -11,6 +11,10 @@
 #include <string.h>
 #include "bsp_driver_sd.h"
 #include "sd_driver.h"
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 extern SD_HandleTypeDef hsd1;
 extern gfxQueueGSync *sdNotificationQueue;
@@ -163,7 +167,10 @@ uint32_t CSdDriver::getSDCardState(char *text, uint32_t *sdCardStateCode) {
 }
 
 bool CSdDriver::formatFAT32() {
-    return (f_mkfs((TCHAR const *) SDPath, FM_FAT32, 0, buffer, sizeof(buffer)) != FR_OK);
+	unmountSDCard();
+	volatile FRESULT fMkfs = f_mkfs("", FM_FAT32, 0, buffer, sizeof(buffer));
+	mountSDCard();
+	return (fMkfs != FR_OK);
 }
 
 bool CSdDriver::mountSDCard() {
@@ -172,6 +179,32 @@ bool CSdDriver::mountSDCard() {
 
 bool CSdDriver::unmountSDCard() {
     return (f_mount(0, "", 0) != FR_OK);
+}
+
+uint32_t CSdDriver::getLatestScreenshotNumber() {
+	FRESULT res;
+	DIR dir;
+	static FILINFO fno;
+
+
+	res = f_opendir(&dir, "/");
+	char buffer[13] = {' '};
+	volatile uint32_t imgId = 0;
+	if(res == FR_OK) {
+		for(;;) {
+			res = f_readdir(&dir, &fno);
+            if (res != FR_OK || fno.fname[0] == 0) break;
+            if (!(fno.fattrib & AM_DIR)) {
+            	strncpy(&buffer[0], (const char*) &fno.fname[4], 13);
+                char* fileDot = strchr(buffer, '.');
+                *fileDot = '\0';
+                uint32_t tempImgId = atoi(buffer);
+                imgId = tempImgId > imgId ? tempImgId: imgId;
+            }
+		}
+	}
+    f_closedir(&dir);
+	return imgId;
 }
 
 bool CSdDriver::saveScreenshot() {
@@ -201,6 +234,10 @@ bool CSdDriver::saveScreenshot() {
 
 bool CSdDriver::deInitSdDriver() {
     return FATFS_UnLinkDriver(SDPath) != FR_OK;;
+}
+
+void CSdDriver::setImageCounter(uint32_t counter) {
+    imageCounter = counter;
 }
 
 CSdDriver sdDriver;

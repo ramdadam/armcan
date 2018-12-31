@@ -17,27 +17,29 @@ protected:
 
     void hideMainpage();
 
+    void refreshActiveTab();
+
 private:
 
     void triggerRxRedraw();
 
     void triggerTxRedraw();
 
-    void triggerSettingsUpdate();
+    void triggerCanSettingsUpdate();
 
     GHandle ghTabset = 0;
-    GHandle tabset_page_1;
-    GHandle tabset_page_2;
-    GHandle tabset_page_3;
-    GHandle tabset_page_4;
+    GHandle txTabPage;
+    GHandle rxTabPage;
+    GHandle canSettingsTabPage;
+    GHandle sdSettingsTabPage;
 
     /* Views */
-    CEditMessageView cEditMessageView;
-    CRxCanView cRxCanView;
-    CTxCanView cTxCanView;
-    CCanSettingsView cCanSettingsPage;
+    CEditMessageView editMessageView;
+    CRxCanView rxView;
+    CTxCanView txView;
+    CCanSettingsView canSettingsView;
     CSdSettingsView sdSettingsView;
-    CAddCanMessageView cAddCanMessageView;
+    CAddCanMessageView addMessageView;
 
 };
 

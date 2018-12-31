@@ -8,6 +8,7 @@
 #include "notification_helper.h"
 #include "gwin_table.h"
 #include <stdio.h>
+
 #include "Inc/View/can_settings_view.h"
 #include "can_view.h"
 #include "Inc/View/tx_can_view.h"
@@ -19,21 +20,14 @@
 #include "logger.h"
 #include "can_driver.h"
 
-
 gfxQueueGSync *canTransmitQueue = nullptr;
 gfxQueueGSync *canReceiveQueue = nullptr;
 
 void CMainView::createTable() {
-    static bool firstRun = true;
-    if (!firstRun) {
-        cTxCanView.deleteTxCanViewTable();
-        cRxCanView.deleteRxCanViewTable();
-    }
-    cTxCanView.createTxCanViewTable(&tabset_page_1);
-    cRxCanView.createRxCanViewTable(&tabset_page_2);
-    cCanSettingsPage.createSettingsPage(&tabset_page_3);
-    sdSettingsView.createSettingsPage(&tabset_page_4);
-    firstRun = false;
+    txView.createTxCanViewTable(&txTabPage);
+    rxView.createRxCanViewTable(&rxTabPage);
+    canSettingsView.createSettingsPage(&canSettingsTabPage);
+    sdSettingsView.createSettingsPage(&sdSettingsTabPage);
 }
 
 void CMainView::createTabset() {
@@ -46,45 +40,51 @@ void CMainView::createTabset() {
     wi.g.x = 0;
     wi.g.y = 0;
     ghTabset = gwinTabsetCreate(nullptr, &wi, GWIN_TABSET_BORDER);
-    tabset_page_2 = gwinTabsetAddTab(ghTabset, "Receive", 1);
-    tabset_page_1 = gwinTabsetAddTab(ghTabset, "Transmit", 1);
-    tabset_page_3 = gwinTabsetAddTab(ghTabset, "CAN Settings", 1);
-    tabset_page_4 = gwinTabsetAddTab(ghTabset, "SD Settings", 1);
+    rxTabPage = gwinTabsetAddTab(ghTabset, "Receive", 1);
+    txTabPage = gwinTabsetAddTab(ghTabset, "Transmit", 1);
+    canSettingsTabPage = gwinTabsetAddTab(ghTabset, "CAN Settings", 1);
+    sdSettingsTabPage = gwinTabsetAddTab(ghTabset, "SD Settings", 1);
     createTable();
 }
 
 void CMainView::showMainpage() {
     gwinShow(ghTabset);
-//    gwinShow(cTxCanView.getAddButton());
 }
 
 void CMainView::hideMainpage() {
     gwinHide(ghTabset);
-//    gwinHide(cTxCanView.getAddButton());
-//    gwinHide(cTxCanView.getTXEditButton());
 }
 
 void CMainView::addRxCanPackage(can_gui_package* package) {
-    cRxCanView.putRxCanPackage(package);
+    rxView.putRxCanPackage(package);
 }
 
 void CMainView::triggerRxRedraw() {
-    cRxCanView.redrawTable();
+    rxView.redrawTable();
 }
 
 void CMainView::triggerTxRedraw() {
-    cTxCanView.redrawTable();
+    txView.redrawTable();
 }
 
-void CMainView::triggerSettingsUpdate() {
-    cCanSettingsPage.updateHeapLabel();
+void CMainView::triggerCanSettingsUpdate() {
+    canSettingsView.updateHeapLabel();
+}
+
+void CMainView::refreshActiveTab() {
+
+    if(gwinGetVisible(txTabPage)) {
+        triggerTxRedraw();
+    } else if(gwinGetVisible(rxTabPage)){
+        triggerRxRedraw();
+    } else if(gwinGetVisible(canSettingsTabPage)){
+        triggerCanSettingsUpdate();
+    }
 }
 
 void redrawTables(void* cMainViewParam) {
     CMainView* cMainView = (CMainView*) cMainViewParam;
-    cMainView->triggerRxRedraw();
-    cMainView->triggerTxRedraw();
-    cMainView->triggerSettingsUpdate();
+    cMainView->refreshActiveTab();
 }
 
 void CMainView::initMainPage(void) {
@@ -94,7 +94,6 @@ void CMainView::initMainPage(void) {
     gwinSetDefaultFont(gdispOpenFont("DejaVuSans12"));
     gwinSetDefaultStyle(&WhiteWidgetStyle, FALSE);
     gdispClear(White);
-//    MX_FATFS_Init();
     createTabset();
     initNotifications();
     geventListenerInit(&gl);
@@ -107,22 +106,33 @@ void CMainView::initMainPage(void) {
     while (true) {
         pe = geventEventWait(&gl, TIME_INFINITE);
 
-        EVENT_ACTION action = NO_ACTION;
-        LOG("\n\naction handler start");
-        action = cAddCanMessageView.evalEvent(pe, action);
-        LOG_NUMBER("cAddCanMessageView action Handler: %d", action);
-        action = cTxCanView.evalEvent(pe, action);
-        LOG_NUMBER("cTxCanView action Handler: %d", action);
-        action = cEditMessageView.evalEvent(pe, action);
-        LOG_NUMBER("cEditMessageView action Handler: %d", action);
-        action = cCanSettingsPage.evalEvent(pe, action);
-        LOG_NUMBER("cCanSettingsPage action Handler: %d", action);
+        volatile EVENT_ACTION action = NO_ACTION;
+        action = addMessageView.evalEvent(pe, action);
+        action = txView.evalEvent(pe, action);
+        action = editMessageView.evalEvent(pe, action);
+        action = canSettingsView.evalEvent(pe, action);
+        action = sdSettingsView.evalEvent(pe, action);
+        action = rxView.evalEvent(pe, action);
 
-        cAddCanMessageView.performAction(action, pe);
-        cEditMessageView.performAction(action, pe);
-        cCanSettingsPage.performAction(action, pe);
-        cTxCanView.performAction(action, pe);
+        addMessageView.performAction(action, pe);
+        editMessageView.performAction(action, pe);
+        canSettingsView.performAction(action, pe);
+        txView.performAction(action, pe);
+        rxView.performAction(action, pe);
+        sdSettingsView.performAction(action, pe);
         switch (action) {
+            case TAKE_TX_SCREENSHOT: {
+                gwinDisable(ghTabset);
+                txView.takeScreenshot();
+                gwinEnable(ghTabset);
+                break;
+            }
+            case TAKE_RX_SCREENSHOT: {
+                gwinDisable(ghTabset);
+                rxView.takeScreenshot();
+                gwinEnable(ghTabset);
+                break;
+            }
             case CLOSE_ADD_VIEW: {
                 showMainpage();
                 break;
@@ -133,13 +143,13 @@ void CMainView::initMainPage(void) {
             }
             case ADD_MESSAGE: {
                 can_gui_form_data formData;
-                if (cAddCanMessageView.getFormData(&formData) == 0) {
+                if (addMessageView.getFormData(&formData) == 0) {
                     break;
                 }
                 can_gui_package *package = convertCANFormDataToGuiPackage(&formData);
                 buildStringInCanGuiPackage(package);
-                if (cTxCanView.putTxCanPackage(package, TRUE) != -1) {
-                    cAddCanMessageView.hideAddFrame();
+                if (txView.putTxCanPackage(package, TRUE) != -1) {
+                    addMessageView.hideAddFrame();
                     showMainpage();
                 }
 
@@ -154,9 +164,9 @@ void CMainView::initMainPage(void) {
                 break;
             }
             case SHOW_EDIT_VIEW: {
-                can_gui_package *tempCanPackage = cTxCanView.getTxSelectedCANPackage();
+                can_gui_package *tempCanPackage = txView.getTxSelectedCANPackage();
                 if (tempCanPackage != 0) {
-                    cEditMessageView.editCanMessage(tempCanPackage, FALSE);
+                    editMessageView.editCanMessage(tempCanPackage, FALSE);
                     hideMainpage();
                 }
                 break;
@@ -168,6 +178,7 @@ void CMainView::initMainPage(void) {
 void CMainView::notifySdCardChanges() {
     sdSettingsView.updateSettings();
 }
+
 
 
 #endif

@@ -15,8 +15,6 @@
 
 #include "ImagePushButton.h"
 
-#define TX_CAN_TABLE_COL_COUNT 3
-
 EVENT_ACTION CTxCanView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {
     switch (gEvent->type) {
         case GEVENT_GWIN_BUTTON: {
@@ -56,12 +54,6 @@ EVENT_ACTION CTxCanView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {
 
 EVENT_ACTION_STATUS CTxCanView::performAction(EVENT_ACTION action, GEvent *gEvent) {
     switch(action) {
-        case TAKE_TX_SCREENSHOT: {
-            gwinShow(ghPleaseWaitLabel);
-            sdDriver.saveScreenshot();
-            gwinHide(ghPleaseWaitLabel);
-            break;
-        }
         case SHOW_EDIT_VIEW:
         case SHOW_ADD_VIEW: {
             hideAllActionButtons();
@@ -159,9 +151,9 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     wi.g.x = 250;
     wi.g.parent = *parent;
     wi.g.y = 220;
-    loadImageFromRomFs(&iconRepeatOne, REPEAT_ONE_IMAGE);
-    repeatOneButtonParameter.iconHover = &iconRepeatOne;
-    repeatOneButtonParameter.iconEnabled = &iconRepeatOne;
+    iconRepeatOne = loadImageFromRomFs(REPEAT_ONE_IMAGE);
+    repeatOneButtonParameter.iconHover = iconRepeatOne;
+    repeatOneButtonParameter.iconEnabled = iconRepeatOne;
     ghRepeatOneButton = createImagePushButton(&wi, &repeatOneButtonParameter);
 
     gwinWidgetClearInit(&wi);
@@ -171,10 +163,10 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     wi.g.x = 10;
     wi.g.parent = *parent;
     wi.g.y = 220;
-    loadImageFromRomFs(&iconScreenshot, SCREENSHOT_IMAGE);
-    loadImageFromRomFs(&iconPressedScreenshot, SCREENSHOT_PRESSED_IMAGE);
-    screenshotButtonParameter.iconHover = &iconPressedScreenshot;
-    screenshotButtonParameter.iconEnabled = &iconScreenshot;
+    iconScreenshot = loadImageFromRomFs(SCREENSHOT_IMAGE);
+    iconPressedScreenshot = loadImageFromRomFs(SCREENSHOT_PRESSED_IMAGE);
+    screenshotButtonParameter.iconHover = iconPressedScreenshot;
+    screenshotButtonParameter.iconEnabled = iconScreenshot;
     ghScreenshotButton = createImagePushButton(&wi, &screenshotButtonParameter);
 
     gwinWidgetClearInit(&wi);
@@ -185,12 +177,10 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     wi.g.parent = *parent;
     wi.g.y = 220;
     wi.text = nullptr;
-    loadImageFromRomFs(&iconEdit, EDIT_IMAGE);
+    iconEdit = loadImageFromRomFs(EDIT_IMAGE);
     editButtonParameter.iconHover = nullptr;
-    editButtonParameter.iconEnabled = &iconEdit;
+    editButtonParameter.iconEnabled = iconEdit;
     ghTxEditButton = createImagePushButton(&wi, &editButtonParameter);
-
-
 }
 
 GHandle CTxCanView::createTxCanViewTable(GHandle *parent) {
@@ -290,4 +280,10 @@ void CTxCanView::hideAllActionButtons() {
     gwinHide(ghDeleteTXItemButton);
     gwinHide(ghScreenshotButton);
     gwinHide(ghRepeatOneButton);
+}
+
+void CTxCanView::takeScreenshot() {
+    gwinShow(ghPleaseWaitLabel);
+    sdDriver.saveScreenshot();
+    gwinHide(ghPleaseWaitLabel);
 }

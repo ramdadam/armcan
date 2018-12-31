@@ -11,6 +11,7 @@ public:
     EVENT_ACTION_STATUS performAction(EVENT_ACTION, GEvent*) override;
     can_gui_package_array txCanContainer = 0;
     uint32_t txCanContainerSize = 0;
+    void takeScreenshot();
     void syncList();
     GHandle createTxCanViewTable(GHandle* parent);
     void deleteTxCanViewTable();
@@ -42,14 +43,14 @@ private:
     GHandle ghPleaseWaitLabel;
 
 
-    gdispImage iconRepeatOne;
+    gdispImage* iconRepeatOne;
     ImageButtonParameter repeatOneButtonParameter;
 
-    gdispImage iconEdit;
+    gdispImage* iconEdit;
     ImageButtonParameter editButtonParameter;
 
-    gdispImage iconScreenshot;
-    gdispImage iconPressedScreenshot;
+    gdispImage* iconScreenshot;
+    gdispImage* iconPressedScreenshot;
     ImageButtonParameter screenshotButtonParameter;
 };
 #endif

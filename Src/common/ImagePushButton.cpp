@@ -5,6 +5,11 @@
 #include "ImagePushButton.h"
 #include "romfs_files.h"
 
+gdispImage iconScreenshot;
+gdispImage iconPressedScreenshot;
+gdispImage iconRepeatOne;
+gdispImage iconEdit;
+
 const GWidgetStyle ImageButtonStyle = {
         HTML2COLOR(0x000000),			// window background
         HTML2COLOR(0x2A8FCD),			// focused
@@ -44,8 +49,10 @@ void myButtonRendering(GWidgetObject *gw, void *param) {
     }
     gdispImage *icon = nullptr;
     // Get the appropriate color pallete from the widget style
-    if (!gwinGetEnabled((GHandle) gw))
-        colors = &gw->pstyle->disabled;
+    if (!gwinGetEnabled((GHandle) gw)) {
+    	icon = imageButtonParameter->iconEnabled;
+        colors = &gw->pstyle->enabled;
+    }
     else if ((gw->g.flags & GBUTTON_FLG_PRESSED) && imageButtonParameter->iconHover != nullptr) {
         icon = imageButtonParameter->iconHover;
         colors = &gw->pstyle->pressed;
@@ -58,10 +65,6 @@ void myButtonRendering(GWidgetObject *gw, void *param) {
     // Draw the basic rectangle with border
     gdispGFillArea(gw->g.display, gw->g.x + 1, gw->g.y + 1, gw->g.width - 2, gw->g.height - 2, colors->fill);
     gdispGDrawBox(gw->g.display, gw->g.x, gw->g.y, gw->g.width, gw->g.height, colors->edge);
-//    // Draw the string. Use StringBox() for proper justification and word-wrapping support
-//    gdispGDrawStringBox(gw->g.display, gw->g.x + gw->g.height, gw->g.y, gw->g.width - gw->g.height, gw->g.height,
-//                        gw->text, gw->g.font, colors->text, justifyLeft);
-    // Draw the image
     gdispGImageDraw(gw->g.display, icon, gw->g.x + (gw->g.height - icon->width) / 2,
                     gw->g.y + (gw->g.height - icon->height) / 2, icon->width, icon->height, 0, 0);
 }
@@ -73,31 +76,19 @@ GHandle createImagePushButton(GWidgetInit *wi, ImageButtonParameter* imageButton
     return gwinButtonCreate(nullptr, wi);
 }
 
-void loadImageFromRomFs(gdispImage * imageContainer, ImageID desiredImage) {
+gdispImage * loadImageFromRomFs(ImageID desiredImage) {
     switch (desiredImage) {
         case REPEAT_ONE_IMAGE:
-            gdispImageOpenFile(imageContainer, "repeat_one.bmp");
-            break;
+            gdispImageOpenFile(&iconRepeatOne, "repeat_one.bmp");
+            return &iconRepeatOne;
         case SCREENSHOT_PRESSED_IMAGE:
-            gdispImageOpenFile(imageContainer, "screenshot_pressed.bmp");
-            break;
+            gdispImageOpenFile(&iconPressedScreenshot, "screenshot_pressed.bmp");
+            return &iconPressedScreenshot;
         case SCREENSHOT_IMAGE:
-            gdispImageOpenFile(imageContainer, "screenshot.bmp");
-            break;
-        case ADD_IMAGE:
-            gdispImageOpenFile(imageContainer, "add.bmp");
-            break;
+            gdispImageOpenFile(&iconScreenshot, "screenshot.bmp");
+            return &iconScreenshot;
         case EDIT_IMAGE:
-            gdispImageOpenFile(imageContainer, "out.bmp");
-            break;
-        case SAVE_IMAGE:
-            gdispImageOpenFile(imageContainer, "save.bmp");
-            break;
-        case BACK_IMAGE:
-            gdispImageOpenFile(imageContainer, "back.bmp");
-            break;
-        case TIMER_IMAGE:
-            gdispImageOpenFile(imageContainer, "timer.bmp");
-            break;
+            gdispImageOpenFile(&iconEdit, "out.bmp");
+            return &iconEdit;
     }
 }

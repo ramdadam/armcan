@@ -16,7 +16,7 @@ struct ImageButtonParameter {
     gdispImage *iconEnabled = nullptr;
     gdispImage *iconHover = nullptr;
 };
-void loadImageFromRomFs(gdispImage*, ImageID);
+gdispImage* loadImageFromRomFs(ImageID);
 GHandle createImagePushButton(GWidgetInit*, ImageButtonParameter*);
 
 #endif

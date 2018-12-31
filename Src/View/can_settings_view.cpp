@@ -50,7 +50,6 @@ void CCanSettingsView::updateHeapLabel() {
         gwinSetStyle(ghCanErrorCodeLabel, &RedTextStyle);
         gwinSetStyle(ghCanStateLabel, &RedTextStyle);
     } else if (errorDidChange) {
-        gwinHide(ghReInitCANButton);
         gwinSetStyle(ghCanErrorCodeLabel, &GreenTextStyle);
         gwinSetStyle(ghCanStateLabel, &GreenTextStyle);
     }
@@ -238,7 +237,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     wi.g.y = 225;
     wi.g.width = 135;
     wi.g.height = 30;
-    wi.g.show = (canErrorCodeIsError || canStateHasError);
+    wi.g.show = true;
     wi.text = "Re-Init CAN";
     wi.g.parent = *parent;
     ghReInitCANButton = gwinButtonCreate(nullptr, &wi);
@@ -339,7 +338,9 @@ EVENT_ACTION_STATUS CCanSettingsView::performAction(EVENT_ACTION action, GEvent 
             break;
         }
         case REINIT_CAN: {
+        	gwinDisable(ghReInitCANButton);
             canDriver.MX_CAN1_Init(canPrescaler, canSleepModeActive);
+        	gwinEnable(ghReInitCANButton);
             break;
         }
     }

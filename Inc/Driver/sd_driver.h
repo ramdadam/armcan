@@ -6,6 +6,7 @@
 #define ARMCAN_SD_DRIVER_H
 
 #include "fatfs.h"
+
 namespace SD_Driver_IRQ {
     extern "C" void EXTI15_10_IRQHandler(void);
 }
@@ -13,6 +14,8 @@ class CSdDriver {
     friend void SD_Driver_IRQ::EXTI15_10_IRQHandler(void);
 public:
     CSdDriver();
+    void setImageCounter(uint32_t counter);
+    uint32_t getLatestScreenshotNumber();
     bool initSdDriver();
     bool deInitSdDriver();
     bool isSdConnected();

@@ -3,6 +3,8 @@
 //
 //#include <Inc/ffconf.h>
 #include "gfx.h"
+#include "event_listener.h"
+
 #include <Inc/common/WidgetStyles.h>
 #include <Inc/View/sd_settings_view.h>
 
@@ -26,11 +28,59 @@ const uint16_t sdCardStateMaxLength = 60;
 CSdSettingsView::CSdSettingsView() {
 }
 
+EVENT_ACTION CSdSettingsView::evalEvent(GEvent * gEvent, EVENT_ACTION currentAction) {
+    switch (gEvent->type) {
+        case GEVENT_GWIN_BUTTON: {
+            GWindowObject *target = ((GEventGWinButton *) gEvent)->gwin;
+
+            if (target == formatBtn) {
+                return FORMAT_SD;
+            }
+            break;
+        }
+        case GEVENT_GWIN_CHECKBOX: {
+            GEventGWinCheckbox *checkBoxEvent = (GEventGWinCheckbox *) gEvent;
+            GWindowObject *target = checkBoxEvent->gwin;
+            if (target == showFormatBtnCheckBox) {
+                if (checkBoxEvent->isChecked) {
+                    return SHOW_FORMAT_BUTTON;
+                } else {
+                    return HIDE_FORMAT_BUTTON;
+                }
+            }
+            break;
+        }
+        default: {
+            return currentAction != NO_ACTION ? currentAction : NO_ACTION;
+        }
+    }
+    return currentAction != NO_ACTION ? currentAction : NO_ACTION;
+}
+
+EVENT_ACTION_STATUS CSdSettingsView::performAction(EVENT_ACTION action, GEvent * gEvent) {
+    switch (action) {
+        case SHOW_FORMAT_BUTTON: {
+            gwinShow(formatBtn);
+            break;
+        }
+        case HIDE_FORMAT_BUTTON: {
+            gwinHide(formatBtn);
+            break;
+        }
+        case FORMAT_SD: {
+            gwinShow(formatLabel);
+            gwinHide(formatBtn);
+            sdDriver.formatFAT32();
+            gwinHide(formatLabel);
+        }
+    }
+    return EVENT_NOT_HANDLED;
+}
+
 void CSdSettingsView::createSettingsPage(GHandle *parent) {
 
-    sdDriver.initSdDriver();
-
-    bool isDetected = sdDriver.isSdConnected();
+	bool isDetected = sdDriver.isSdConnected();
+    isDetected && sdDriver.initSdDriver();
 	isDetected && sdDriver.mountSDCard();
 
     this->parent = *parent;
@@ -103,33 +153,47 @@ void CSdSettingsView::createSettingsPage(GHandle *parent) {
     wi.text = sdCardStateLabelText;
     sdCardStateLabel = gwinLabelCreate(nullptr, &wi);
     gwinSetStyle(sdCardStateLabel, sdCardStateIsError != 0 ? &RedTextStyle : &GreenTextStyle);
+//
+//    gwinWidgetClearInit(&wi);
+//    wi.g.show = 1;
+//    wi.g.width = 170;
+//    wi.g.height = 20;
+//    wi.g.x = 5;
+//    wi.g.y = 120;
+//    wi.g.parent = *parent;
+//    wi.text = "Enable Formatting";
+//    showFormatBtnCheckBox = gwinCheckboxCreate(nullptr, &wi);
+//    gwinCheckboxCheck(showFormatBtnCheckBox, false);
 
-    gwinWidgetClearInit(&wi);
-    wi.g.show = 1;
-    wi.g.width = 170;
-    wi.g.height = 20;
-    wi.g.x = 5;
-    wi.g.y = 120;
-    wi.g.parent = *parent;
-    wi.text = "Enable Formatting";
-    showFormatBtnCheckBox = gwinCheckboxCreate(nullptr, &wi);
-    gwinCheckboxCheck(showFormatBtnCheckBox, false);
-
-    gwinWidgetClearInit(&wi);
-    wi.g.show = 1;
-    wi.g.width = 130;
-    wi.g.height = 25;
-    wi.g.x = 190;
-    wi.g.y = 117;
-    wi.g.parent = *parent;
-    wi.text = "FORMAT SD";
-    formatBtn = gwinButtonCreate(nullptr, &wi);
-    gwinSetStyle(formatBtn, &RedButtonStyle);
+//    gwinWidgetClearInit(&wi);
+//    wi.g.show = false;
+//    wi.g.width = 130;
+//    wi.g.height = 25;
+//    wi.g.x = 190;
+//    wi.g.y = 117;
+//    wi.g.parent = *parent;
+//    wi.text = "FORMAT SD";
+//    formatBtn = gwinButtonCreate(nullptr, &wi);
+//    gwinSetStyle(formatBtn, &RedButtonStyle);
+//
+//    gwinWidgetClearInit(&wi);
+//    wi.g.show = false;
+//    wi.g.width = 0;
+//    wi.g.height = 25;
+//    wi.g.x = 190;
+//    wi.g.y = 117;
+//    wi.g.parent = *parent;
+//    wi.text = "Formatting...";
+//    formatLabel = gwinLabelCreate(nullptr, &wi);
+//    gwinSetStyle(formatLabel, &RedButtonStyle);
 
     gwinSetText(isDetectedLabel, isDetectedLabelText, 0);
     gwinSetText(freeSpaceLabel, freeSpaceLabelText, 0);
     gwinSetText(sdStateLabel, sdStateLabelText, 0);
     gwinSetText(sdCardStateLabel, sdCardStateLabelText, 0);
+
+    uint32_t imageCounter = sdDriver.getLatestScreenshotNumber();
+    sdDriver.setImageCounter(++imageCounter);
 }
 
 void CSdSettingsView::updateSettings() {
