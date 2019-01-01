@@ -13,6 +13,7 @@ protected:
 private:
     GHandle ghPleaseWaitLabel;
     GHandle ghCanStatusLabel;
+    GHandle ghCanStatusLED;
 
 };
 #endif

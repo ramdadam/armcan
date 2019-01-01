@@ -16,6 +16,7 @@
 #include "Inc/View/rx_can_view.h"
 #include "Inc/View/add_can_message.h"
 #include "Inc/View/sd_settings_view.h"
+#include "Inc/View/chat_view.h"
 #include "fatfs.h"
 #include "Inc/View/main_view.h"
 #include "logger.h"
@@ -30,6 +31,7 @@ void CMainView::createTable() {
     rxView.createRxCanViewTable(&rxTabPage);
     canSettingsView.createSettingsPage(&canSettingsTabPage);
     sdSettingsView.createSettingsPage(&sdSettingsTabPage);
+    chatView.createChatView(&chatTabPage);
 }
 
 void CMainView::createTabset() {
@@ -42,6 +44,7 @@ void CMainView::createTabset() {
     wi.g.x = 0;
     wi.g.y = 0;
     ghTabset = gwinTabsetCreate(nullptr, &wi, GWIN_TABSET_BORDER);
+    chatTabPage = gwinTabsetAddTab(ghTabset, "Chat", 1);
     rxTabPage = gwinTabsetAddTab(ghTabset, "Receive", 1);
     txTabPage = gwinTabsetAddTab(ghTabset, "Transmit", 1);
     canSettingsTabPage = gwinTabsetAddTab(ghTabset, "CAN Settings", 1);
@@ -77,6 +80,7 @@ void CMainView::refreshActiveTab() {
     if(disableActiveTabRefresh) {
         return;
     }
+    chatView.addMessage();
     if(gwinGetVisible(txTabPage)) {
         triggerTxRedraw();
     } else if(gwinGetVisible(rxTabPage)){

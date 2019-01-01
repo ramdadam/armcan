@@ -58,7 +58,7 @@
 #define GDISP_NEED_CIRCLE               TRUE
 #define GDISP_NEED_ELLIPSE              FALSE
 #define GDISP_NEED_ARC                  FALSE
-#define GDISP_NEED_SCROLL               FALSE
+#define GDISP_NEED_SCROLL               TRUE
 #define GDISP_NEED_PIXELREAD            TRUE
 #define GDISP_NEED_CONTROL              FALSE
 #define GDISP_NEED_ASYNC                FALSE
@@ -68,10 +68,10 @@
 #define GWIN_NEED_KEYBOARD              TRUE
 #define GWIN_NEED_CHECKBOX              TRUE
 #define GWIN_NEED_SLIDER              	TRUE
-#define GWIN_LABEL_ATTRIBUTE            TRUE
+#define GWIN_LABEL_ATTRIBUTE            FALSE
 #define GWIN_NEED_TEXTEDIT				TRUE
 #define GWIN_NEED_CONTAINERS            TRUE
-#define GWIN_NEED_CONTAINER            TRUE
+#define GWIN_NEED_CONTAINER             TRUE
 #define GDISP_NEED_TEXT					TRUE
 #define GWIN_NEED_LABEL					TRUE
 #define GWIN_NEED_BUTTON                TRUE
@@ -79,7 +79,11 @@
 #define GWIN_NEED_TABSET			    TRUE
 #define GWIN_NEED_LIST					TRUE
 #define GWIN_NEED_IMAGE					TRUE
-#define GDISP_NEED_IMAGE					TRUE
+#define GDISP_NEED_IMAGE				TRUE
+#define GWIN_CONSOLE_USE_HISTORY        TRUE
+#define GWIN_NEED_CONSOLE               TRUE
+#define GWIN_CONSOLE_ESCSEQ             TRUE
+#define GWIN_CONSOLE_HISTORY_ATCREATE   TRUE
 /* Builtin Fonts */
 #define GDISP_INCLUDE_FONT_SMALL        FALSE
 #define GDISP_INCLUDE_FONT_LARGER       FALSE
@@ -94,10 +98,10 @@
 #define GDISP_NEED_CONVEX_POLYGON		TRUE
 #define GDISP_NEED_MULTITHREAD			TRUE
 #define GWIN_NEED_WINDOWMANAGER			TRUE
-#define GFILE_NEED_MEMFS			TRUE
+#define GFILE_NEED_MEMFS			    TRUE
 #define GFX_USE_GTIMER					TRUE
 #define GFX_USE_GQUEUE					TRUE
-#define GFX_USE_GFILE                                TRUE
+#define GFX_USE_GFILE                   TRUE
 
 #define GFILE_NEED_ROMFS                             TRUE
 #define GQUEUE_NEED_ASYNC				TRUE

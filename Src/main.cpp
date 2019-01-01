@@ -56,6 +56,7 @@
 #include "event_listener.h"
 #include "sd_settings_view.h"
 #include "Inc/View/edit_can_message.h"
+#include "Inc/View/chat_view.h"
 #include "can_view.h"
 #include "Inc/View/rx_can_view.h"
 #include "Inc/View/tx_can_view.h"

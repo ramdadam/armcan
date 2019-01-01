@@ -45,9 +45,10 @@ public:
 
     uint8_t getUserFriendlyErrorText(char* text, uint32_t* canErrorCode);
     uint8_t getUserFriendlyState(char* text, uint32_t* canState);
-
+    bool hasError();
 private:
     bool disableCAN = false;
+    bool error = false;
     CAN_HandleTypeDef hcan;
 
     CAN_RxHeaderTypeDef RxHeader;

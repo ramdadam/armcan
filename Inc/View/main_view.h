@@ -1,6 +1,7 @@
 #ifndef MAIN_VIEW_H_
 #define MAIN_VIEW_H_
 
+
 class CMainView {
     friend void redrawTables(void *cMainViewParam);
 
@@ -33,6 +34,7 @@ private:
     GHandle rxTabPage;
     GHandle canSettingsTabPage;
     GHandle sdSettingsTabPage;
+    GHandle chatTabPage;
 
     /* Views */
     CEditMessageView editMessageView;
@@ -41,6 +43,7 @@ private:
     CCanSettingsView canSettingsView;
     CSdSettingsView sdSettingsView;
     CAddCanMessageView addMessageView;
+    CChatView chatView;
 
     bool disableActiveTabRefresh = false;
 

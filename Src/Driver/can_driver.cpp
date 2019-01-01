@@ -123,6 +123,7 @@ uint8_t CCanDriver::sendCANPackage(can_gui_package *package) {
 
 uint8_t CCanDriver::getUserFriendlyErrorText(char *text, uint32_t* canErrorCode) {
     uint32_t currentCanErrorCode = HAL_CAN_GetError(&hcan);
+    error = currentCanErrorCode != 0;
     *canErrorCode = currentCanErrorCode;
     switch(currentCanErrorCode) {
         case HAL_CAN_ERROR_NONE: {
@@ -250,50 +251,62 @@ uint8_t CCanDriver::getUserFriendlyErrorText(char *text, uint32_t* canErrorCode)
 
 uint8_t CCanDriver::getUserFriendlyState(char *text, uint32_t* canState) {
     HAL_CAN_StateTypeDef state = HAL_CAN_GetState(&hcan);
+
     *canState = state;
     switch(state) {
         case HAL_CAN_STATE_RESET:
         {
             const char *CAN_STATE_TEXT = "CAN not yet initialized or disabled";
             strncpy(text, CAN_STATE_TEXT, strlen(CAN_STATE_TEXT));
+            error = true;
             return 1;
         }
         case HAL_CAN_STATE_READY:
         {
             const char *CAN_STATE_TEXT = "CAN initialized and ready for use";
             strncpy(text, CAN_STATE_TEXT, strlen(CAN_STATE_TEXT));
+            error = false;
             return 0;
         }
         case HAL_CAN_STATE_LISTENING:
         {
             const char *CAN_STATE_TEXT = "CAN receive process is ongoing";
             strncpy(text, CAN_STATE_TEXT, strlen(CAN_STATE_TEXT));
+            error = false;
             return 0;
         }
         case HAL_CAN_STATE_SLEEP_PENDING:
         {
             const char *CAN_STATE_TEXT = "CAN sleep request is pending";
             strncpy(text, CAN_STATE_TEXT, strlen(CAN_STATE_TEXT));
+            error = true;
             return 1;
         }
         case HAL_CAN_STATE_SLEEP_ACTIVE:
         {
             const char *CAN_STATE_TEXT = "CAN sleep mode is active";
             strncpy(text, CAN_STATE_TEXT, strlen(CAN_STATE_TEXT));
+            error = false;
             return 0;
         }
         case HAL_CAN_STATE_ERROR:
         {
             const char *CAN_STATE_TEXT = "CAN error state";
             strncpy(text, CAN_STATE_TEXT, strlen(CAN_STATE_TEXT));
+            error = true;
             return 1;
         }
         default: {
             const char *CAN_STATE_TEXT = "Unknown state";
             strncpy(text, CAN_STATE_TEXT, strlen(CAN_STATE_TEXT));
+            error = true;
             return 1;
         }
     }
+}
+
+bool CCanDriver::hasError() {
+    return error;
 }
 
 namespace CAN_driver_ISR // need a namespace to declare friend functions

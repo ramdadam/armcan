@@ -51,6 +51,7 @@ SRC	 += Src/View/can_view.cpp
 SRC	 += Src/View/tx_can_view.cpp
 SRC	 += Src/View/rx_can_view.cpp
 SRC	 += Src/View/sd_settings_view.cpp
+SRC	 += Src/View/chat_view.cpp
 SRC	 += Src/common/can_gui_package.cpp
 SRC      += Src/main.cpp \
 ./res/startup_stm32f746xx.s \
