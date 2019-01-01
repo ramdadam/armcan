@@ -12,6 +12,7 @@ protected:
     void addRow(char* item);
 private:
     GHandle ghPleaseWaitLabel;
+    GHandle ghCanStatusLabel;
 
 };
 #endif

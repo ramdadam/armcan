@@ -54,22 +54,18 @@ EVENT_ACTION CTxCanView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {
 
 EVENT_ACTION_STATUS CTxCanView::performAction(EVENT_ACTION action, GEvent *gEvent) {
     switch(action) {
-        case SHOW_EDIT_VIEW:
-        case SHOW_ADD_VIEW: {
-            hideAllActionButtons();
-            break;
-        }
         case CLOSE_EDIT_VIEW:
         case CLOSE_ADD_VIEW:
         case ACCEPT_EDIT: {
-            showAllActionButtons();
             int16_t index = gwinListGetSelected(table);
             checkRepeatBtnVisibility(index);
             break;
         }
         case ADD_MESSAGE:
         {
-            showAllActionButtons();
+            gwinShow(ghDeleteTXItemButton);
+            gwinShow(ghRepeatOneButton);
+            gwinShow(ghTxEditButton);
             break;
         }
         case TX_ITEM_SELECTED: {
@@ -81,6 +77,7 @@ EVENT_ACTION_STATUS CTxCanView::performAction(EVENT_ACTION action, GEvent *gEven
         case SEND_ONE_MESSAGE: {
             int16_t index = gwinListGetSelected(table);
             if(index >= 0 && txCanContainerSize > 0) {
+                //TODO: move tx handling to main and replace with queue
                 can_gui_package *temp = txCanContainer[index];
                 canDriver.sendCANPackage(temp);
             }
@@ -110,12 +107,13 @@ EVENT_ACTION_STATUS CTxCanView::performAction(EVENT_ACTION action, GEvent *gEven
 
                 txCanContainerSize-=1;
                 if(txCanContainerSize == 0) {
-
                     gwinHide(ghTxEditButton);
                     gwinHide(ghDeleteTXItemButton);
+                    gwinHide(ghRepeatOneButton);
+                    return EVENT_HANDLED;
                 }
-                int16_t index = gwinListGetSelected(table);
-                checkRepeatBtnVisibility(index);
+                gwinListSetSelected(table, 0, true);
+                checkRepeatBtnVisibility(0);
             }
         }
     }

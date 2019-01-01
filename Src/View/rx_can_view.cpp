@@ -100,9 +100,9 @@ void CRxCanView::createButtonGroup(GHandle *parent) {
     wi.g.parent = *parent;
     wi.g.x = 400;
     wi.g.y = 222;
-    wi.text = "Clear";
     ghClearBtn = gwinButtonCreate(nullptr, &wi);
     gwinSetFont(ghClearBtn, font);
+    gwinSetText(ghClearBtn, "Clear", 1);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = true;

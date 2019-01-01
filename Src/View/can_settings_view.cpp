@@ -250,6 +250,8 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
 
     font_t font = gdispOpenFont("DejaVuSans16");
 
+    gwinSetFont(ghPrescalerSlider, font);
+
     gwinSetFont(ghFreeBytesLabel, font);
     gwinSetFont(ghCanStateLabel, font);
     gwinSetFont(ghCanErrorCodeLabel, font);
