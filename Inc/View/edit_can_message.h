@@ -1,5 +1,8 @@
 #ifndef EDIT_CAN_MESSAGE_H_
 #define EDIT_CAN_MESSAGE_H_
+
+#include <Inc/VirtualKeyBoard/vkeyboard.h>
+
 #define MAX_TRANSMIT_TIMERS 10
 
 class CEditMessageView : public CEventListener {
@@ -32,6 +35,7 @@ public:
     void showCyclicTextbox();
 
 private:
+    VirtualKeyBoard* hexKeyboard = nullptr;
     GHandle ghFrame = 0;
     GHandle ghEditIDLabel = 0;
     GHandle ghEditDLCLabel = 0;

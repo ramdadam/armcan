@@ -152,6 +152,9 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
 
 }
 
+void HAL_RNG_MspInit(RNG_HandleTypeDef *hrng) {
+  __HAL_RCC_RNG_CLK_ENABLE();
+}
 /**
 * @brief CAN MSP De-Initialization
 * This function freeze the hardware resources used in this example

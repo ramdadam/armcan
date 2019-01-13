@@ -33,32 +33,32 @@ GHandle CCanView::createBaseTableWidget(GHandle *parent, uint16_t width, uint16_
     ghPleaseWaitLabel = gwinLabelCreate(nullptr, &wi);
     gwinSetFont(ghPleaseWaitLabel, gdispOpenFont("DejaVuSans16"));
 
-    gwinWidgetClearInit(&wi);
-    wi.g.show = true;
-    wi.g.width = 0;
-    wi.g.height = 15;
-    wi.g.parent = *parent;
-    wi.g.x = 5;
-    wi.g.y = 3;
-    wi.text = "    CAN";
-    ghCanStatusLabel = gwinLabelCreate(nullptr, &wi);
-    gwinSetFont(ghCanStatusLabel, gdispOpenFont("DejaVuSans12"));
+//    gwinWidgetClearInit(&wi);
+//    wi.g.show = true;
+//    wi.g.width = 0;
+//    wi.g.height = 15;
+//    wi.g.parent = *parent;
+//    wi.g.x = 5;
+//    wi.g.y = 3;
+//    wi.text = "    CAN";
+//    ghCanStatusLabel = gwinLabelCreate(nullptr, &wi);
+//    gwinSetFont(ghCanStatusLabel, gdispOpenFont("DejaVuSans12"));
 
-    gwinSetColor(ghCanStatusLabel, HTML2COLOR(0x28A745));
-    gwinFillCircle(ghCanStatusLabel, 7, 6, 5);
+//    gwinSetColor(ghCanStatusLabel, HTML2COLOR(0x28A745));
+//    gwinFillCircle(ghCanStatusLabel, 7, 6, 5);
 
     return table_view;
 }
 
 void CCanView::redrawTable() {
     gwinRedraw(table_view);
-    if(canDriver.hasError()) {
-        gwinSetColor(ghCanStatusLabel, HTML2COLOR(0xDC3545));
-        gwinFillCircle(ghCanStatusLabel, 7, 6, 5);
-    } else {
-        gwinSetColor(ghCanStatusLabel, HTML2COLOR(0x28A745));
-        gwinFillCircle(ghCanStatusLabel, 7, 6, 5);
-    }
+//    if(canDriver.hasError()) {
+//        gwinSetColor(ghCanStatusLabel, HTML2COLOR(0xDC3545));
+//        gwinFillCircle(ghCanStatusLabel, 7, 6, 5);
+//    } else {
+//        gwinSetColor(ghCanStatusLabel, HTML2COLOR(0x28A745));
+//        gwinFillCircle(ghCanStatusLabel, 7, 6, 5);
+//    }
 }
 
 void CCanView::addRow(char *item) {

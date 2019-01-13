@@ -62,6 +62,7 @@ void CMainView::hideMainpage() {
 
 void CMainView::addRxCanPackage(can_gui_package* package) {
     rxView.putRxCanPackage(package);
+    chatView.receiveCanMessage(package);
 }
 
 void CMainView::triggerRxRedraw() {
@@ -80,13 +81,14 @@ void CMainView::refreshActiveTab() {
     if(disableActiveTabRefresh) {
         return;
     }
-    chatView.addMessage();
     if(gwinGetVisible(txTabPage)) {
         triggerTxRedraw();
     } else if(gwinGetVisible(rxTabPage)){
         triggerRxRedraw();
     } else if(gwinGetVisible(canSettingsTabPage)){
         triggerCanSettingsUpdate();
+    } else if(gwinGetVisible(chatTabPage)) {
+        chatView.addMessage();
     }
 }
 
@@ -121,6 +123,7 @@ void CMainView::initMainPage(void) {
         action = canSettingsView.evalEvent(pe, action);
         action = sdSettingsView.evalEvent(pe, action);
         action = rxView.evalEvent(pe, action);
+        action = chatView.evalEvent(pe, action);
 
         addMessageView.performAction(action, pe);
         editMessageView.performAction(action, pe);
@@ -128,6 +131,7 @@ void CMainView::initMainPage(void) {
         txView.performAction(action, pe);
         rxView.performAction(action, pe);
         sdSettingsView.performAction(action, pe);
+        chatView.performAction(action, pe);
         switch (action) {
             case TAKE_TX_SCREENSHOT: {
                 takeScreenshot(&txView);
@@ -174,6 +178,9 @@ void CMainView::initMainPage(void) {
                     hideMainpage();
                 }
                 break;
+            }
+            case CHAT_HIDE_KEYBOARDS: {
+            	refreshActiveTab();
             }
         }
     }

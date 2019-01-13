@@ -32,14 +32,14 @@ CMSIS			= ./res/Drivers/CMSIS
 # Set these for your project
 #
 ARCH     = /opt/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-
-SRCFLAGS = -ggdb -O1
+SRCFLAGS = -ggdb -O0
 CFLAGS   = 
 CXXFLAGS = -fno-rtti
 ASFLAGS  = 
-LDFLAGS  = --specs=nosys.specs
+LDFLAGS  = --specs=nosys.specs -lstdc++
 
-SRC	 = Src/VirtualKeyBoard/vkeyboard.cpp
-SRC	 += Src/Driver/can_driver.cpp
+SRC	 = Src/Driver/can_driver.cpp
+SRC	 += Src/VirtualKeyBoard/vkeyboard.cpp
 SRC	 += Src/Driver/sd_driver.cpp
 SRC	 += Src/common/ImagePushButton.cpp
 SRC	 += Src/common/notification_helper.cpp
@@ -62,6 +62,7 @@ SRC      += Src/main.cpp \
 ./Src/stm32f7xx_it.c \
 ./res/Src/stm32f7xx_hal_msp.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_can.c \
+./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rng.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_sdmmc.c \
 ./res/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sd.c \
@@ -87,7 +88,7 @@ SRC      += Src/main.cpp \
 ./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c
 
 OBJS     =
-DEFS     = GFX_OS_HEAP_SIZE=40960 STM32F746xx GFX_OS_NO_INIT CAN_INTERRUPT_PRIORITY=10 ENTER_ISR LEAVE_ISR CAN_HARDWARE_ENABLED MAX_SEMAPHORE_COUNT=50
+DEFS     = GFX_OS_HEAP_SIZE=40960 STM32F746xx GFX_OS_NO_INIT CAN_INTERRUPT_PRIORITY=10 ENTER_ISR LEAVE_ISR CAN_HARDWARE_ENABLED MAX_SEMAPHORE_COUNT=50 CHAT_LOOPBACK_MODE
 #DEFS     = 
 LIBS     =
 INCPATH  = ./Inc
@@ -96,6 +97,7 @@ INCPATH  += Inc/images
 INCPATH  += Inc/common
 INCPATH  += Inc/events
 INCPATH  += Inc/Driver
+INCPATH  += Inc/VirtualKeyBoard
 INCPATH  += ./res/Drivers/CMSIS/Device/ST/STM32F7xx/Include
 INCPATH  += ./res/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 INCPATH  += ./res/Drivers/CMSIS/Include

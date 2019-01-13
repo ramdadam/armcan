@@ -2,11 +2,11 @@
 #include "gfx.h"
 #include "event_listener.h"
 #include "can_gui_package.h"
+#include "Inc/VirtualKeyBoard/vkeyboard.h"
 #include "Inc/View/add_can_message.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include "vkeyboard.h"
 #include "ImagePushButton.h"
 
 #include <string.h>
@@ -81,7 +81,7 @@ EVENT_ACTION_STATUS CAddCanMessageView::performAction(EVENT_ACTION action, GEven
 void CAddCanMessageView::showAddFrame() {
     createAddFrame();
     showVirtualKeyboard();
-    showKeyBoard();
+    hexKeyboard->showKeyBoard();
     byteOrderLabelVisible = 1;
 }
 
@@ -190,7 +190,7 @@ void CAddCanMessageView::createAddFrame() {
     ghAcceptButton = gwinButtonCreate(nullptr, &wi);
     gwinSetFont(ghAcceptButton, font);
 
-    createKeyBoard(HEX_KEYBOARD);
+    hexKeyboard = new VirtualKeyBoard(HEX_KEYBOARD);
 
     gwinWidgetClearInit(&wi);
 
@@ -309,9 +309,9 @@ void CAddCanMessageView::showSlider() {
 }
 
 void CAddCanMessageView::showVirtualKeyboard() {
-    createKeyBoard(HEX_KEYBOARD);
+    hexKeyboard->showKeyBoard();
 }
 
 void CAddCanMessageView::hideVirtualKeyboard() {
-    deleteKeyBoard();
+    hexKeyboard->hideKeyBoard();
 }

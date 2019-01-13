@@ -1,6 +1,7 @@
 #ifndef ADDCANMESSAGE_H_
 #define ADDCANMESSAGE_H_
 
+
 class CAddCanMessageView : public CEventListener{
 public:
     EVENT_ACTION evalEvent(GEvent*, EVENT_ACTION currentAction);
@@ -34,7 +35,7 @@ public:
     }
 private:
     GHandle ghFrame1 = 0;
-    GHandle ghKeyboard = 0;
+    VirtualKeyBoard* hexKeyboard = nullptr;
     GHandle ghIDTextEdit = 0;
     GHandle ghLabel1 = 0;
     GHandle ghLabel2 = 0;

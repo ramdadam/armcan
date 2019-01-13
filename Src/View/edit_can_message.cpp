@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "vkeyboard.h"
+#include "Inc/VirtualKeyBoard/vkeyboard.h"
 #include "stm32f7xx_hal.h"
 #include "can_driver.h"
 
@@ -252,7 +252,7 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
     ghEditCycleMsLabel = gwinLabelCreate(nullptr, &wi);
     gwinSetFont(ghEditCycleMsLabel, font);
 
-    createKeyBoard(NUMERIC_KEYBOARD);
+    hexKeyboard = new VirtualKeyBoard(NUMERIC_KEYBOARD);
 
     if (package->timer != nullptr && package->cycle > 0) {
         char buffer[6];
@@ -267,7 +267,7 @@ void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc
 }
 
 void CEditMessageView::hideCyclicTextbox() {
-    hideKeyBoard();
+    hexKeyboard->hideKeyBoard();
     gwinHide(ghEditCycleTextEdit);
     gwinHide(ghEditCycleLabel);
     gwinHide(ghEditCycleMsLabel);
@@ -275,7 +275,7 @@ void CEditMessageView::hideCyclicTextbox() {
 }
 
 void CEditMessageView::showCyclicTextbox() {
-    showKeyBoard();
+    hexKeyboard->showKeyBoard();
     gwinShow(ghEditCycleTextEdit);
     gwinShow(ghEditCycleLabel);
     gwinShow(ghEditCycleMsLabel);
@@ -323,5 +323,5 @@ void CEditMessageView::deleteEditForm() {
     ghEditCheckbox = nullptr;
     ghEditDataValue = nullptr;
     ghFrame = 0;
-    deleteKeyBoard();
+    hexKeyboard->deleteKeyBoard();
 }

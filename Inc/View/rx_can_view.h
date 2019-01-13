@@ -16,6 +16,8 @@ public:
 
     void createButtonGroup(GHandle* parent);
     void createRxCanViewTable(GHandle* parent);
+
+    void redrawTable() override;
 private:
     GHandle ghClearBtn;
     GHandle ghScreenshotButton;

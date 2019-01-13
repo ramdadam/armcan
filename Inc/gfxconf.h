@@ -48,6 +48,8 @@
 #define GWIN_BUTTON_LAZY_RELEASE        TRUE
 #define GFX_USE_GINPUT					TRUE
 #define GFX_EMULATE_MALLOC              TRUE
+#define GDISP_NEED_TEXT_WORDWRAP        FALSE
+#define GDISP_NEED_TEXT_KERNING         TRUE
 /* GFX sub-systems to turn on */
 #define GFX_USE_GDISP                   TRUE
 #define GFX_USE_GEVENT					TRUE

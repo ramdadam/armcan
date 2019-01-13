@@ -4,7 +4,7 @@
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-##Firmware/Library Versions
+## Firmware/Library Versions
 * ugfx v2.8
 * STM HAL v1.12
 * FreeRTOS v9
@@ -22,8 +22,8 @@ These instructions will get you a copy of the project up and running on your loc
 * gcc-multilib
 
 
-#### Only for Ubuntu 18.04:
-Currently libsdl2-dev is broken on 18.04. Follow this guide to downgrade libsdl2-dev ([source](https://www.gog.com/forum/xenonauts/ubuntu_1804_lts_bionic_beaver_dbus_error_solution))
+#### libsdl2 Fix for Ubuntu 18.04:
+Only needed for desktop binaries: Currently libsdl2-dev is broken on 18.04. Follow this guide to downgrade libsdl2-dev ([source](https://www.gog.com/forum/xenonauts/ubuntu_1804_lts_bionic_beaver_dbus_error_solution)).
 ```
 1a. Remove current version
 

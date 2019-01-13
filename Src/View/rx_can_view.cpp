@@ -117,3 +117,9 @@ void CRxCanView::createButtonGroup(GHandle *parent) {
     screenshotButtonParameter.iconEnabled = iconScreenshot;
     ghScreenshotButton = createImagePushButton(&wi, &screenshotButtonParameter);
 }
+
+void CRxCanView::redrawTable() {
+    CCanView::redrawTable();
+    gwinRedraw(ghScreenshotButton);
+    gwinRedraw(ghClearBtn);
+}
