@@ -42,8 +42,8 @@ void CMainView::createTabset() {
     wi.g.x = 0;
     wi.g.y = 0;
     ghTabset = gwinTabsetCreate(nullptr, &wi, GWIN_TABSET_BORDER);
-    rxTabPage = gwinTabsetAddTab(ghTabset, "Receive", 1);
     txTabPage = gwinTabsetAddTab(ghTabset, "Transmit", 1);
+    rxTabPage = gwinTabsetAddTab(ghTabset, "Receive", 1);
     canSettingsTabPage = gwinTabsetAddTab(ghTabset, "CAN Settings", 1);
     sdSettingsTabPage = gwinTabsetAddTab(ghTabset, "SD Settings", 1);
     createTable();
