@@ -44,7 +44,7 @@ int8_t CRxCanView::putRxCanPackage(can_gui_package *package) {
             temp->data.data_l == package->data.data_l) {
             found = TRUE;
             temp->count += 1;
-            bumpPackageCounter((can_gui_package *) temp);
+            //bumpPackageCounter((can_gui_package *) temp);
             delete package;
             return 0;
         }
@@ -54,7 +54,7 @@ int8_t CRxCanView::putRxCanPackage(can_gui_package *package) {
             packageToString(package);
             rxCanContainer[rxCanContainerSize] = package;
             rxCanContainerSize += 1;
-            syncRxList();
+            //syncRxList();
         }
     }
 }

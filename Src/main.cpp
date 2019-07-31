@@ -267,7 +267,7 @@ void receiveThread(void *_) {
     while (true) {
         gfxQueueGSyncGet(canNotificationQueue, TIME_INFINITE);
         auto rxPackage = canDriver.receiveCANPackage();
-        cMainView.addRxCanPackage(rxPackage);
+        //cMainView.addRxCanPackage(rxPackage);
     }
 }
 void sdNotificationThread(void *_) {

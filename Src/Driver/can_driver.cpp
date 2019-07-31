@@ -10,7 +10,7 @@
 #include <Inc/Driver/can_driver.h>
 CCanDriver canDriver;
 
-void CCanDriver::MX_CAN1_Init(uint16_t prescaler = DEFAULT_CAN_PRESCALER, bool sleepMode = false) {
+void CCanDriver::MX_CAN1_Init(uint16_t prescaler = 1024, bool sleepMode = false) {
     disableCAN = true;
     hcan.Instance = CAN1;
     hcan.Init.Prescaler = prescaler;
