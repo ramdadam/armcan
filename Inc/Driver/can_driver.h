@@ -5,8 +5,8 @@
 #ifndef ARMCAN_CAN_DRIVER_H
 #define ARMCAN_CAN_DRIVER_H
 
-#define DEFAULT_CAN_PRESCALER 50
-#define DEFAULT_CAN_SPEED 5000000
+#define DEFAULT_CAN_PRESCALER 500
+#define DEFAULT_CAN_SPEED 50000000
 
 namespace CAN_driver_ISR // need a namespace to declare friend functions
 {
@@ -26,7 +26,9 @@ public:
 
     void MX_CAN1_Init(uint16_t prescaler, bool sleepMode);
 
-    can_gui_package *receiveCANPackage();
+    can_gui_package *receiveCANPackage(int fifo);
+    uint8_t resetCanErrors();
+    void activateNotifications(int fifo);
 
     uint8_t sendCANPackage(can_gui_package *package);
 
@@ -43,6 +45,7 @@ public:
         msgPendingTx2 = false;
     }
 
+    uint8_t hasError(uint32_t errorFlag);
     uint8_t getUserFriendlyErrorText(char* text, uint32_t* canErrorCode);
     uint8_t getUserFriendlyState(char* text, uint32_t* canState);
 

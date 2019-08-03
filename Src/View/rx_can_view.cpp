@@ -2,13 +2,10 @@
 #include "can_gui_package.h"
 #include "ImagePushButton.h"
 #include "can_view.h"
-#include <Inc/events/event_listener.h>
-#include "Inc/View/rx_can_view.h"
-#include <stdio.h>
-#include <Inc/View/rx_can_view.h>
-#include "sd_driver.h"
-
-#include "notification_helper.h"
+#include <event_listener.h>
+#include "rx_can_view.h"
+#include <cstdio>
+#include <cstring>
 
 extern gfxQueueGSync *canReceiveQueue;
 
@@ -36,30 +33,48 @@ void CRxCanView::syncRxList() {
     }
 }
 
-int8_t CRxCanView::putRxCanPackage(can_gui_package *package) {
+
+void CRxCanView::putRxCanPackage(can_gui_package *package) {
     bool found = FALSE;
     for (uint16_t i = 0; i < rxCanContainerSize; i++) {
         volatile can_gui_package *temp = rxCanContainer[i];
-        if (temp && temp->id == package->id && temp->isRemote == package->isRemote &&
-            temp->data.data_l == package->data.data_l) {
+        if(!temp) {
+            continue;
+        }
+        bool isSameId = temp->id == package->id;
+        bool isSameRemote = temp->isRemote == package->isRemote;
+        bool hasSameLength = temp->dlc == package->dlc;
+        bool hasData = package->dlc > 0;
+        bool hasSameData = temp->data.data_l == package->data.data_l;
+        if (isSameId && isSameRemote &&
+            (hasData && hasSameLength && hasSameData)) {
             found = TRUE;
             temp->count += 1;
             bumpPackageCounter((can_gui_package *) temp);
-            delete package;
-            return 0;
         }
     }
     if (!found) {
         if (rxCanContainerSize < RX_MAX_PACKAGES) {
-            packageToString(package);
-            rxCanContainer[rxCanContainerSize] = package;
+            auto *copiedPackage = new can_gui_package();
+
+            copiedPackage->id = package->id;
+            copiedPackage->isRemote = package->isRemote;
+            copiedPackage->dlc = package->dlc;
+            memset(copiedPackage->displayText,'\0',
+                  sizeof(copiedPackage->displayText) / sizeof(copiedPackage->displayText[0]));
+            for (uint32_t i = 0; i < package->dlc; i++) {
+                copiedPackage->data.data_b[i] = package->data.data_b[i];
+            }
+
+            packageToString(copiedPackage);
+            rxCanContainer[rxCanContainerSize] = copiedPackage;
             rxCanContainerSize += 1;
             syncRxList();
         }
     }
 }
 
-EVENT_ACTION CRxCanView::evalEvent(GEvent * gEvent, EVENT_ACTION currentAction) {
+EVENT_ACTION CRxCanView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {
     switch (gEvent->type) {
         case GEVENT_GWIN_BUTTON: {
             GWindowObject *target = ((GEventGWinButton *) gEvent)->gwin;
@@ -76,8 +91,8 @@ EVENT_ACTION CRxCanView::evalEvent(GEvent * gEvent, EVENT_ACTION currentAction) 
     }
 }
 
-EVENT_ACTION_STATUS CRxCanView::performAction(EVENT_ACTION action, GEvent * gEvent) {
-    switch(action) {
+EVENT_ACTION_STATUS CRxCanView::performAction(EVENT_ACTION action, GEvent *gEvent) {
+    switch (action) {
         case CLEAR_RX_VIEW: {
             gwinListDeleteAll(table_view);
             for (uint16_t i = 0; i < rxCanContainerSize; i++) {
@@ -104,16 +119,4 @@ void CRxCanView::createButtonGroup(GHandle *parent) {
     ghClearBtn = gwinButtonCreate(nullptr, &wi);
     gwinSetFont(ghClearBtn, font);
 
-    gwinWidgetClearInit(&wi);
-    wi.g.show = true;
-    wi.g.width = 32;
-    wi.g.height = 32;
-    wi.g.x = 10;
-    wi.g.parent = *parent;
-    wi.g.y = 220;
-    iconScreenshot = loadImageFromRomFs(SCREENSHOT_IMAGE);
-    iconPressedScreenshot = loadImageFromRomFs(SCREENSHOT_PRESSED_IMAGE);
-    screenshotButtonParameter.iconHover = iconPressedScreenshot;
-    screenshotButtonParameter.iconEnabled = iconScreenshot;
-    ghScreenshotButton = createImagePushButton(&wi, &screenshotButtonParameter);
 }

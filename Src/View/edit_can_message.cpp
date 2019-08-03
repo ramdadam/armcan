@@ -1,14 +1,12 @@
 #include "gfx.h"
-#include "ImagePushButton.h"
 #include "can_gui_package.h"
 #include "event_listener.h"
-#include "Inc/View/edit_can_message.h"
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+#include "edit_can_message.h"
+#include <cstdio>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
 #include "vkeyboard.h"
-#include "stm32f7xx_hal.h"
 #include "can_driver.h"
 
 extern gfxQueueGSync *canTransmitQueue;
@@ -65,7 +63,9 @@ EVENT_ACTION_STATUS CEditMessageView::performAction(EVENT_ACTION action, GEvent 
             hideCyclicTextbox();
             break;
         }
+
     }
+        return EVENT_HANDLED;
 }
 
 void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc = FALSE) {

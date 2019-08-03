@@ -1,6 +1,8 @@
 #ifndef CAN_GUI_PACKAGE_H_
 #define CAN_GUI_PACKAGE_H_
 
+#include <string.h>
+
 typedef struct
 {
     gfxQueueGSyncItem q_item;
@@ -36,6 +38,8 @@ typedef struct
 
 void bumpPackageCounter(can_gui_package* package);
 void packageToString(can_gui_package* package);
+
+can_gui_package* copy_package(can_gui_package* orig);
 
 void buildStringInCanGuiPackage(can_gui_package *package);
 

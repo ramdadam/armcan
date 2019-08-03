@@ -4,32 +4,31 @@
 #include "gfx.h"
 #include "can_gui_package.h"
 #include "event_listener.h"
-#include "Inc/View/edit_can_message.h"
+#include "edit_can_message.h"
 #include "notification_helper.h"
 #include "gwin_table.h"
-#include <stdio.h>
+#include <cstdio>
 #include "WidgetStyles.h"
 
-#include "Inc/View/can_settings_view.h"
+#include "can_status_view.h"
+#include "can_settings_view.h"
 #include "can_view.h"
-#include "Inc/View/tx_can_view.h"
-#include "Inc/View/rx_can_view.h"
-#include "Inc/View/add_can_message.h"
-#include "Inc/View/sd_settings_view.h"
-#include "fatfs.h"
-#include "Inc/View/main_view.h"
+#include "tx_can_view.h"
+#include "rx_can_view.h"
+#include "add_can_message.h"
+#include "main_view.h"
 #include "logger.h"
 #include "can_driver.h"
-#include "sd_driver.h"
 
 gfxQueueGSync *canTransmitQueue = nullptr;
 gfxQueueGSync *canReceiveQueue = nullptr;
+gfxQueueGSync *canReceiveQueue2 = nullptr;
 
 void CMainView::createTable() {
     txView.createTxCanViewTable(&txTabPage);
     rxView.createRxCanViewTable(&rxTabPage);
     canSettingsView.createSettingsPage(&canSettingsTabPage);
-    sdSettingsView.createSettingsPage(&sdSettingsTabPage);
+    canStatusView.createStatusPage(&canStatusTabPage);
 }
 
 void CMainView::createTabset() {
@@ -42,10 +41,10 @@ void CMainView::createTabset() {
     wi.g.x = 0;
     wi.g.y = 0;
     ghTabset = gwinTabsetCreate(nullptr, &wi, GWIN_TABSET_BORDER);
-    rxTabPage = gwinTabsetAddTab(ghTabset, "Receive", 1);
+    canStatusTabPage = gwinTabsetAddTab(ghTabset, "CAN Status", 1);
     txTabPage = gwinTabsetAddTab(ghTabset, "Transmit", 1);
+    rxTabPage = gwinTabsetAddTab(ghTabset, "Receive", 1);
     canSettingsTabPage = gwinTabsetAddTab(ghTabset, "CAN Settings", 1);
-    sdSettingsTabPage = gwinTabsetAddTab(ghTabset, "SD Settings", 1);
     createTable();
 }
 
@@ -73,6 +72,10 @@ void CMainView::triggerCanSettingsUpdate() {
     canSettingsView.refreshSettings();
 }
 
+void CMainView::triggerCanStatusUpdate() {
+    canStatusView.refreshView();
+}
+
 void CMainView::refreshActiveTab() {
     if(disableActiveTabRefresh) {
         return;
@@ -83,6 +86,8 @@ void CMainView::refreshActiveTab() {
         triggerRxRedraw();
     } else if(gwinGetVisible(canSettingsTabPage)){
         triggerCanSettingsUpdate();
+    }else if(gwinGetVisible(canStatusTabPage)){
+        triggerCanStatusUpdate();
     }
 }
 
@@ -113,26 +118,16 @@ void CMainView::initMainPage(void) {
         volatile EVENT_ACTION action = NO_ACTION;
         action = addMessageView.evalEvent(pe, action);
         action = txView.evalEvent(pe, action);
-        action = editMessageView.evalEvent(pe, action);
         action = canSettingsView.evalEvent(pe, action);
-        action = sdSettingsView.evalEvent(pe, action);
         action = rxView.evalEvent(pe, action);
+        action = editMessageView.evalEvent(pe, action);
 
         addMessageView.performAction(action, pe);
-        editMessageView.performAction(action, pe);
         canSettingsView.performAction(action, pe);
         txView.performAction(action, pe);
         rxView.performAction(action, pe);
-        sdSettingsView.performAction(action, pe);
+        editMessageView.performAction(action, pe);
         switch (action) {
-            case TAKE_TX_SCREENSHOT: {
-                takeScreenshot(&txView);
-                break;
-            }
-            case TAKE_RX_SCREENSHOT: {
-                takeScreenshot(&rxView);
-                break;
-            }
             case CLOSE_ADD_VIEW: {
                 showMainpage();
                 break;
@@ -152,7 +147,6 @@ void CMainView::initMainPage(void) {
                     addMessageView.hideAddFrame();
                     showMainpage();
                 }
-
                 break;
             }
             case ACCEPT_EDIT: {
@@ -173,24 +167,6 @@ void CMainView::initMainPage(void) {
             }
         }
     }
-}
-
-void CMainView::notifySdCardChanges() {
-    sdSettingsView.updateSettings();
-}
-
-void CMainView::takeScreenshot(CCanView* canView) {
-    gwinSetDefaultStyle(&ScreenshotWidgetStyle, 1);
-    disableActiveTabRefresh = true;
-    gwinDisable(ghTabset);
-    canView->setWaitingLabelVisibility(true);
-
-    sdDriver.saveScreenshot();
-
-    gwinSetDefaultStyle(&WhiteWidgetStyle, 1);
-    canView->setWaitingLabelVisibility(false);
-    gwinEnable(ghTabset);
-    disableActiveTabRefresh = false;
 }
 
 

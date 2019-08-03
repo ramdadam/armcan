@@ -4,14 +4,9 @@
 
 #include "can_gui_package.h"
 #include "can_view.h"
-#include "Inc/View/tx_can_view.h"
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <Inc/View/tx_can_view.h>
+#include "tx_can_view.h"
+#include <cstdint>
 #include "can_driver.h"
-#include "sd_driver.h"
 
 #include "ImagePushButton.h"
 
@@ -156,19 +151,6 @@ void CTxCanView::createButtonGroup(GHandle *parent) {
     repeatOneButtonParameter.iconHover = iconRepeatOne;
     repeatOneButtonParameter.iconEnabled = iconRepeatOne;
     ghRepeatOneButton = createImagePushButton(&wi, &repeatOneButtonParameter);
-
-    gwinWidgetClearInit(&wi);
-    wi.g.show = true;
-    wi.g.width = 32;
-    wi.g.height = 32;
-    wi.g.x = 10;
-    wi.g.parent = *parent;
-    wi.g.y = 220;
-    iconScreenshot = loadImageFromRomFs(SCREENSHOT_IMAGE);
-    iconPressedScreenshot = loadImageFromRomFs(SCREENSHOT_PRESSED_IMAGE);
-    screenshotButtonParameter.iconHover = iconPressedScreenshot;
-    screenshotButtonParameter.iconEnabled = iconScreenshot;
-    ghScreenshotButton = createImagePushButton(&wi, &screenshotButtonParameter);
 
     gwinWidgetClearInit(&wi);
     wi.g.show = false;

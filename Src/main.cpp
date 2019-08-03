@@ -54,22 +54,22 @@
 #include "cmsis_os.h"
 
 #include "event_listener.h"
-#include "sd_settings_view.h"
-#include "Inc/View/edit_can_message.h"
+#include "edit_can_message.h"
 #include "can_view.h"
-#include "Inc/View/rx_can_view.h"
-#include "Inc/View/tx_can_view.h"
-#include "Inc/View/add_can_message.h"
-#include "Inc/View/can_settings_view.h"
+#include "rx_can_view.h"
+#include "tx_can_view.h"
+#include "add_can_message.h"
+#include "can_settings_view.h"
+#include "can_status_view.h"
 
-#include "Inc/View/main_view.h"
+#include "main_view.h"
 
-#include <stdio.h>
-#include <Inc/fatfs.h>
+#include <cstdio>
 
 /* USER CODE BEGIN Includes */
 extern gfxQueueGSync *canTransmitQueue;
 extern gfxQueueGSync *canReceiveQueue;
+extern gfxQueueGSync *canReceiveQueue2;
 
 
 void *operator new(size_t size) {
@@ -107,8 +107,8 @@ void StartDefaultTask(void const *argument);
 
 void transmitThread(void *_);
 
-void receiveThread(void *_);
-void sdNotificationThread(void *_);
+[[noreturn]] void receiveThread(void *_);
+[[noreturn]] void receiveThread2(void *_);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -169,18 +169,21 @@ int main(void) {
     canNotificationQueue = (gfxQueueGSync *) gfxAlloc(sizeof(gfxQueueGSync));
     canTransmitQueue = (gfxQueueGSync *) gfxAlloc(sizeof(gfxQueueGSync));
     canReceiveQueue = (gfxQueueGSync *) gfxAlloc(sizeof(gfxQueueGSync));
+    canReceiveQueue2 = (gfxQueueGSync *) gfxAlloc(sizeof(gfxQueueGSync));
     gfxQueueGSyncInit(sdNotificationQueue);
     gfxQueueGSyncInit(canNotificationQueue);
     gfxQueueGSyncInit(canTransmitQueue);
     gfxQueueGSyncInit(canReceiveQueue);
+    gfxQueueGSyncInit(canReceiveQueue2);
     gfxQueueGSyncInit(txMailboxNotificationQueue);
 
     osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 3, 1024);
     defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
 //    gfxThreadCreate(NULL, 128, LOW_PRIORITY, transmitThread, 0);
-    gfxThreadCreate(NULL, 128, LOW_PRIORITY + 1, receiveThread, 0);
-    gfxThreadCreate(NULL, 128, LOW_PRIORITY, sdNotificationThread, 0);
+    gfxThreadCreate(NULL, 1024, 10, receiveThread, 0);
+    gfxThreadCreate(NULL, 1024, 10, receiveThread2, 0);
+//gfxThreadCreate(NULL, 1024, 10, sdNotificationThread, 0);
 
     /* USER CODE END RTOS_THREADS */
 
@@ -263,17 +266,20 @@ void SystemClock_Config(void) {
 	  }
 }
 
-void receiveThread(void *_) {
+[[noreturn]] void receiveThread(void *_) {
     while (true) {
-        gfxQueueGSyncGet(canNotificationQueue, TIME_INFINITE);
-        auto rxPackage = canDriver.receiveCANPackage();
-        cMainView.addRxCanPackage(rxPackage);
+        gfxQueueGSyncGet(canReceiveQueue, TIME_INFINITE);
+        can_gui_package* rxPackage1 = canDriver.receiveCANPackage(0);
+        cMainView.addRxCanPackage(rxPackage1);
+        canDriver.activateNotifications(0);
     }
 }
-void sdNotificationThread(void *_) {
+[[noreturn]] void receiveThread2(void *_) {
     while (true) {
-        gfxQueueGSyncGet(sdNotificationQueue, TIME_INFINITE);
-        cMainView.notifySdCardChanges();
+        gfxQueueGSyncGet(canReceiveQueue2, TIME_INFINITE);
+        can_gui_package* rxPackage1 = canDriver.receiveCANPackage(1);
+        cMainView.addRxCanPackage(rxPackage1);
+        canDriver.activateNotifications(1);
     }
 }
 
@@ -286,7 +292,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
         _Error_Handler(__FILE__, __LINE__);
         return;
     }
-    gfxQueueGSyncPushI(canNotificationQueue, &q_item);
+    gfxQueueGSyncPushI(canReceiveQueue, &q_item);
 }
 
 void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
@@ -295,7 +301,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
         _Error_Handler(__FILE__, __LINE__);
         return;
     }
-    gfxQueueGSyncPushI(canNotificationQueue, &q_item2);
+    gfxQueueGSyncPushI(canReceiveQueue2, &q_item2);
 }
 
 void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan) {

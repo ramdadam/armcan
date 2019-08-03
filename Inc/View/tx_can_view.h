@@ -2,7 +2,7 @@
 #ifndef __TX_VIEW_H
 #define __TX_VIEW_H
 
-#include <Inc/common/ImagePushButton.h>
+#include <ImagePushButton.h>
 
 #define TX_MAX_PACKAGES 25
 

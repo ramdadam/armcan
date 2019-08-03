@@ -3,7 +3,7 @@
 
 
 GHandle CCanView::createBaseTableWidget(GHandle *parent, uint16_t width, uint16_t height) {
-    font_t titleFont = gdispOpenFont("DejaVuSans16");
+    font_t titleFont = gdispOpenFont("DejaVuSans20");
     enum scroll_t scrollBehaviour = scrollSmooth;
     GWidgetInit wi;
 

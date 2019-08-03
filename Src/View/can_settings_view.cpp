@@ -3,13 +3,11 @@
 //
 #include "gfx.h"
 #include "event_listener.h"
-#include "Inc/View/can_settings_view.h"
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <locale.h>
-#include <Inc/View/can_settings_view.h>
+#include "can_settings_view.h"
+#include <cstdio>
+#include <cstdint>
+#include <cstring>
+#include <clocale>
 
 #include "WidgetStyles.h"
 #include "can_gui_package.h"
@@ -105,7 +103,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     gwinWidgetClearInit(&wi);
 
     wi.g.show = 1;
-    wi.g.width = 0;
+    wi.g.width = 450;
     wi.g.height = 20;
     wi.g.x = 5;
     wi.g.y = 20;
@@ -116,7 +114,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
 
     gwinWidgetClearInit(&wi);
     wi.g.show = 1;
-    wi.g.width = 0;
+    wi.g.width = 450;
     wi.g.height = 20;
     wi.g.x = 5;
     wi.g.y = 40;
@@ -127,7 +125,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
 
     gwinWidgetClearInit(&wi);
     wi.g.show = 1;
-    wi.g.width = 0;
+    wi.g.width = 450;
     wi.g.height = 20;
     wi.g.x = 5;
     wi.g.y = 60;
@@ -170,7 +168,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
     gwinWidgetClearInit(&wi);
     wi.g.x = 5;
     wi.g.y = 125;
-    wi.g.width = 0;
+    wi.g.width = 250;
     wi.g.height = 20;
     wi.g.show = TRUE;
     wi.text = "CAN Prescaler";
@@ -180,7 +178,7 @@ void CCanSettingsView::createSettingsPage(GHandle *parent) {
 
     wi.g.x = 5;
     wi.g.y = 145;
-    wi.g.width = 0;
+    wi.g.width = 250;
     wi.g.height = 20;
     wi.g.show = TRUE;
     wi.text = "CAN Speed";

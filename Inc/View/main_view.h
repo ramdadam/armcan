@@ -7,7 +7,6 @@ class CMainView {
 public:
     void initMainPage();
     void addRxCanPackage(can_gui_package* package);
-    void notifySdCardChanges();
 protected:
     void createTable(void);
 
@@ -28,10 +27,13 @@ private:
 
     void triggerCanSettingsUpdate();
 
+    void triggerCanStatusUpdate();
+
     GHandle ghTabset = 0;
     GHandle txTabPage;
     GHandle rxTabPage;
     GHandle canSettingsTabPage;
+    GHandle canStatusTabPage;
     GHandle sdSettingsTabPage;
 
     /* Views */
@@ -39,7 +41,7 @@ private:
     CRxCanView rxView;
     CTxCanView txView;
     CCanSettingsView canSettingsView;
-    CSdSettingsView sdSettingsView;
+    CCanStatusView canStatusView;
     CAddCanMessageView addMessageView;
 
     bool disableActiveTabRefresh = false;

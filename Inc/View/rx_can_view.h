@@ -12,7 +12,7 @@ public:
     EVENT_ACTION evalEvent(GEvent*, EVENT_ACTION currentAction) override;
     EVENT_ACTION_STATUS performAction(EVENT_ACTION, GEvent*) override;
 
-    int8_t putRxCanPackage(can_gui_package *package);
+    void putRxCanPackage(can_gui_package *package);
 
     void createButtonGroup(GHandle* parent);
     void createRxCanViewTable(GHandle* parent);

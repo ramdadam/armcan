@@ -44,7 +44,10 @@ enum EVENT_ACTION {
     //SD Settings View
     SHOW_FORMAT_BUTTON,
     HIDE_FORMAT_BUTTON,
-    FORMAT_SD
+    FORMAT_SD,
+
+    // CAN Status View
+    RESET_CAN_ERRORS
 
 };
 

@@ -2,16 +2,13 @@
 #include "gfx.h"
 #include "event_listener.h"
 #include "can_gui_package.h"
-#include "Inc/View/add_can_message.h"
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
+#include "add_can_message.h"
+#include <cstdio>
+#include <cstdint>
+#include <cstdlib>
 #include "vkeyboard.h"
-#include "ImagePushButton.h"
-
-#include <string.h>
-#include "../armcan/ugfx/src/gwin/gwin_class.h"
-#include "../armcan/ugfx/src/gwin/gwin_container.h"
+#include <cstring>
+#include "src/gwin/gwin_class.h"
 
 EVENT_ACTION CAddCanMessageView::evalEvent(GEvent *gEvent, EVENT_ACTION currentAction) {
     switch (gEvent->type) {
@@ -114,8 +111,8 @@ void CAddCanMessageView::createAddFrame() {
     wi.g.show = TRUE;
     wi.g.x = 35;
     wi.g.y = 5;
-    wi.g.width = 0;
-    wi.g.height = 0;
+    wi.g.width = 100;
+    wi.g.height = 30;
     wi.g.parent = ghFrame1;
     wi.text = "ID(hex)";
     ghLabel1 = gwinLabelCreate(nullptr, &wi);

@@ -11,7 +11,7 @@ void buildStringInCanGuiPackage(can_gui_package *package) {
     }
     // package->displayText = {0};
     char idString[30] = {0};
-    snprintf(idString, 30, "ID: 0x%X | ", package->id);
+    sprintf(idString, "ID: 0x%X | ", package->id);
     size_t idStrLen = strlen(idString);
     strncat(package->displayText, idString, idStrLen);
     package->dataPosStart += idStrLen;
@@ -70,11 +70,24 @@ void increaseOnlyCounter(can_gui_package *package) {
 }
 
 void bumpPackageCounter(can_gui_package *package) {
-     increaseOnlyCounter(package);
+    increaseOnlyCounter(package);
 }
 
 void packageToString(can_gui_package *package) {
     buildStringInCanGuiPackage(package);
+}
+
+can_gui_package *copy_package(can_gui_package *orig) {
+    auto copiedPackage = new can_gui_package();
+    copiedPackage->id = orig->id;
+    copiedPackage->isRemote = orig->isRemote;
+    copiedPackage->dlc = orig->dlc;
+    memset(copiedPackage->displayText, '\0',
+           sizeof(copiedPackage->displayText) / sizeof(copiedPackage->displayText[0]));
+    for (uint32_t i = 0; i < orig->dlc; i++) {
+        copiedPackage->data.data_b[i] = orig->data.data_b[i];
+    }
+    return copiedPackage;
 }
 
 can_gui_package *convertCANFormDataToGuiPackage(can_gui_form_data *package) {
