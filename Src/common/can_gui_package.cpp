@@ -11,7 +11,7 @@ void buildStringInCanGuiPackage(can_gui_package *package) {
     }
     // package->displayText = {0};
     char idString[30] = {0};
-    snprintf(idString, 30, "ID: 0x%X | ", package->id);
+    sprintf(idString, "ID: 0x%X | ", package->id);
     size_t idStrLen = strlen(idString);
     strncat(package->displayText, idString, idStrLen);
     package->dataPosStart += idStrLen;
