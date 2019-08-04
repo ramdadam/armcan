@@ -28,10 +28,13 @@ private:
 
     void triggerCanSettingsUpdate();
 
+    void triggerCanStatusUpdate();
+
     GHandle ghTabset = 0;
     GHandle txTabPage;
     GHandle rxTabPage;
     GHandle canSettingsTabPage;
+    GHandle canStatusTabPage;
     GHandle sdSettingsTabPage;
 
     /* Views */
@@ -39,6 +42,7 @@ private:
     CRxCanView rxView;
     CTxCanView txView;
     CCanSettingsView canSettingsView;
+    CCanStatusView canStatusView;
     CSdSettingsView sdSettingsView;
     CAddCanMessageView addMessageView;
 

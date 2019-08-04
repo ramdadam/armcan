@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "WidgetStyles.h"
 
+#include "Inc/View/can_status_view.h"
 #include "Inc/View/can_settings_view.h"
 #include "can_view.h"
 #include "Inc/View/tx_can_view.h"
@@ -30,6 +31,7 @@ void CMainView::createTable() {
     rxView.createRxCanViewTable(&rxTabPage);
     canSettingsView.createSettingsPage(&canSettingsTabPage);
     sdSettingsView.createSettingsPage(&sdSettingsTabPage);
+    canStatusView.createStatusPage(&canStatusTabPage);
 }
 
 void CMainView::createTabset() {
@@ -42,6 +44,7 @@ void CMainView::createTabset() {
     wi.g.x = 0;
     wi.g.y = 0;
     ghTabset = gwinTabsetCreate(nullptr, &wi, GWIN_TABSET_BORDER);
+    canStatusTabPage = gwinTabsetAddTab(ghTabset, "CAN Status", 1);
     txTabPage = gwinTabsetAddTab(ghTabset, "Transmit", 1);
     rxTabPage = gwinTabsetAddTab(ghTabset, "Receive", 1);
     canSettingsTabPage = gwinTabsetAddTab(ghTabset, "CAN Settings", 1);
@@ -73,6 +76,10 @@ void CMainView::triggerCanSettingsUpdate() {
     canSettingsView.refreshSettings();
 }
 
+void CMainView::triggerCanStatusUpdate() {
+    canStatusView.refreshView();
+}
+
 void CMainView::refreshActiveTab() {
     if(disableActiveTabRefresh) {
         return;
@@ -83,6 +90,8 @@ void CMainView::refreshActiveTab() {
         triggerRxRedraw();
     } else if(gwinGetVisible(canSettingsTabPage)){
         triggerCanSettingsUpdate();
+    }else if(gwinGetVisible(canStatusTabPage)){
+        triggerCanStatusUpdate();
     }
 }
 
@@ -152,7 +161,6 @@ void CMainView::initMainPage(void) {
                     addMessageView.hideAddFrame();
                     showMainpage();
                 }
-
                 break;
             }
             case ACCEPT_EDIT: {

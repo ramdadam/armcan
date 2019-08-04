@@ -157,6 +157,10 @@ uint8_t CCanDriver::sendCANPackage(can_gui_package *package) {
     return 0;
 }
 
+uint8_t CCanDriver::hasError(uint32_t errorFlag) {
+    uint32_t currentCanErrorCode = HAL_CAN_GetError(&hcan);
+    return (currentCanErrorCode & errorFlag) != 0;
+}
 
 uint8_t CCanDriver::getUserFriendlyErrorText(char *text, uint32_t *canErrorCode) {
     uint32_t currentCanErrorCode = HAL_CAN_GetError(&hcan);

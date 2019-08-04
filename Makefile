@@ -45,6 +45,7 @@ SRC	 += Src/common/ImagePushButton.cpp
 SRC	 += Src/common/notification_helper.cpp
 SRC	 += Src/View/main_view.cpp
 SRC	 += Src/View/can_settings_view.cpp
+SRC	 += Src/View/can_status_view.cpp
 SRC	 += Src/View/add_can_message.cpp
 SRC	 += Src/View/edit_can_message.cpp
 SRC	 += Src/View/can_view.cpp

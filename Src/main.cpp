@@ -61,6 +61,7 @@
 #include "Inc/View/tx_can_view.h"
 #include "Inc/View/add_can_message.h"
 #include "Inc/View/can_settings_view.h"
+#include "Inc/View/can_status_view.h"
 
 #include "Inc/View/main_view.h"
 

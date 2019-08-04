@@ -43,6 +43,7 @@ public:
         msgPendingTx2 = false;
     }
 
+    uint8_t hasError(uint32_t errorFlag);
     uint8_t getUserFriendlyErrorText(char* text, uint32_t* canErrorCode);
     uint8_t getUserFriendlyState(char* text, uint32_t* canState);
 
