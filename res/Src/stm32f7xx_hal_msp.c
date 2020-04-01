@@ -131,8 +131,6 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
       GPIO_InitTypeDef GPIO_Init;
 
       __HAL_RCC_CAN1_CLK_ENABLE();
-      __HAL_RCC_GPIOA_CLK_ENABLE();
-      __HAL_RCC_GPIOB_CLK_ENABLE();
       //Enable CAN power pin PD5 for 5V on USB FS connector
       __HAL_RCC_GPIOD_CLK_ENABLE();
       GPIO_Init.Pin = GPIO_PIN_5;
@@ -142,19 +140,32 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
       HAL_GPIO_Init ( GPIOD, &GPIO_Init);
       HAL_GPIO_WritePin( GPIOD, GPIO_PIN_5, GPIO_PIN_SET);
 
-
       //Can configure Pin RX and TX
-      GPIO_Init.Pin = GPIO_PIN_8;
-      //	  GPIO_Init.Mode = GPIO_MODE_AF_OD;
-      //	  GPIO_Init.Pull = GPIO_PULLUP;
+//#ifdef CAN_USE_ARDUINO_PINS
+//      __HAL_RCC_GPIOB_CLK_ENABLE();
+//      GPIO_Init.Pin = GPIO_PIN_8;
+//      GPIO_Init.Mode = GPIO_MODE_AF_OD;
+//      GPIO_Init.Pull = GPIO_PULLUP;
+//      GPIO_Init.Speed = GPIO_SPEED_HIGH;
+//      GPIO_Init.Alternate = GPIO_AF9_CAN1;
+//      HAL_GPIO_Init ( GPIOB, &GPIO_Init);
+//
+//
+//      GPIO_Init.Pin = GPIO_PIN_9;
+//      HAL_GPIO_Init ( GPIOB, &GPIO_Init);
+//#else
+      __HAL_RCC_GPIOA_CLK_ENABLE();
+      GPIO_Init.Pin = GPIO_PIN_12;
+      GPIO_Init.Mode = GPIO_MODE_AF_OD;
+      GPIO_Init.Pull = GPIO_PULLUP;
       GPIO_Init.Speed = GPIO_SPEED_HIGH;
       GPIO_Init.Alternate = GPIO_AF9_CAN1;
-      HAL_GPIO_Init ( GPIOB, &GPIO_Init);
+      HAL_GPIO_Init ( GPIOA, &GPIO_Init);
 
 
-      GPIO_Init.Pin = GPIO_PIN_9;
-      HAL_GPIO_Init ( GPIOB, &GPIO_Init);
-
+      GPIO_Init.Pin = GPIO_PIN_11;
+      HAL_GPIO_Init ( GPIOA, &GPIO_Init);
+//#endif
 
       HAL_NVIC_SetPriority(CAN1_TX_IRQn, 0x0F, 0);
       HAL_NVIC_EnableIRQ(CAN1_TX_IRQn);

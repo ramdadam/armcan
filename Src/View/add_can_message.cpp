@@ -133,7 +133,7 @@ void CAddCanMessageView::createAddFrame() {
     gwinSetFont(ghIDTextEdit, font);
 
     // Apply the checkbox parameters
-    wi.g.x = 32;
+    wi.g.x = 70;
     wi.g.show = TRUE;
     wi.g.y = 50;
     wi.g.width = 180;
@@ -276,7 +276,11 @@ uint8_t CAddCanMessageView::getFormData(can_gui_form_data *formData) {
         return 0;
     }
     formData->dlc = static_cast<uint8_t>(gwinSliderGetPosition(ghSlider1));
-    formData->isRemote = static_cast<uint8_t>(gwinCheckboxIsChecked(ghAddIsRemote));
+    uint8_t val = 0;
+    if (static_cast<uint8_t>(gwinCheckboxIsChecked(ghAddIsRemote)) > 0) {
+    	val = CAN_RTR_REMOTE;
+    }
+    formData->isRemote = val;
     formData->data.data_l = 0;
     for (uint8_t i = 0; i < formData->dlc; i++) {
         const char *textStr = gwinGetText(ghDataTextEdits[i]);
