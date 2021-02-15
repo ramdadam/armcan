@@ -14,7 +14,7 @@ CCanDriver canDriver;
 void CCanDriver::MX_CAN1_Init(uint16_t prescaler = DEFAULT_CAN_PRESCALER, bool sleepMode = false) {
     disableCAN = true;
     hcan.Instance = CAN1;
-    hcan.Init.Prescaler = prescaler;
+    hcan.Init.Prescaler = 50;
     hcan.Init.Mode = sleepMode ? CAN_MODE_SILENT : CAN_MODE_NORMAL;
     hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
     hcan.Init.TimeSeg1 = CAN_BS1_8TQ;
@@ -59,6 +59,50 @@ void CCanDriver::MX_CAN1_Init(uint16_t prescaler = DEFAULT_CAN_PRESCALER, bool s
     if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_TX_MAILBOX_EMPTY) != HAL_OK) {
         return;
     }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO1_MSG_PENDING) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_OVERRUN) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO1_OVERRUN) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_FULL) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO1_FULL) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_LAST_ERROR_CODE) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_ERROR_WARNING) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_ERROR_PASSIVE) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_BUSOFF) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
+    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_ERROR) != HAL_OK) {
+        /* Notification Error */
+        return;
+    }
 
     if (HAL_CAN_Start(&hcan) != HAL_OK) {
         return;
@@ -81,47 +125,13 @@ can_gui_package *CCanDriver::receiveCANPackage() {
     }
     if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK) {
         /* Notification Error */
-        return nullptr;
+        _Error_Handler(__FILE__, __LINE__);
+        return 0;
     }
     if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO1_MSG_PENDING) != HAL_OK) {
         /* Notification Error */
-        return nullptr;
-    }
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_OVERRUN) != HAL_OK) {
-        /* Notification Error */
-        return nullptr;
-    }
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO1_OVERRUN) != HAL_OK) {
-        /* Notification Error */
-        return nullptr;
-    }
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_FULL) != HAL_OK) {
-        /* Notification Error */
-        return nullptr;
-    }
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO1_FULL) != HAL_OK) {
-        /* Notification Error */
-        return nullptr;
-    }
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_LAST_ERROR_CODE) != HAL_OK) {
-        /* Notification Error */
-        return nullptr;
-    }
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_ERROR_WARNING) != HAL_OK) {
-        /* Notification Error */
-        return nullptr;
-    }
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_ERROR_PASSIVE) != HAL_OK) {
-        /* Notification Error */
-        return nullptr;
-    }
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_BUSOFF) != HAL_OK) {
-        /* Notification Error */
-        return nullptr;
-    }
-    if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_ERROR) != HAL_OK) {
-        /* Notification Error */
-        return nullptr;
+        _Error_Handler(__FILE__, __LINE__);
+        return 0;
     }
     return rxPackage;
 }
@@ -134,27 +144,35 @@ uint8_t CCanDriver::sendCANPackage(can_gui_package *package) {
     if (disableCAN) {
         return 1;
     }
+    uint8_t mailboxesAreFull = msgPendingTx0 && msgPendingTx1 && msgPendingTx2;
+    if (mailboxesAreFull) {
+        return 0;
+    }
     package->count += 1;
     bumpPackageCounter(package);
 
     uint8_t TxData0[8] = {0};
-    uint8_t TxData1[8] = {0};
-    uint8_t TxData2[8] = {0};
     TxHeader.StdId = package->id;
     TxHeader.ExtId = 0x00;
     TxHeader.RTR = package->isRemote;
     TxHeader.IDE = CAN_ID_STD;
     TxHeader.DLC = package->dlc;
     TxHeader.TransmitGlobalTime = DISABLE;
-
-    volatile uint32_t freelevel = HAL_CAN_GetTxMailboxesFreeLevel(&hcan);
-    if (freelevel > 0) {
-        for (int i = 0; i < 8; i++) {
-            TxData0[i] = package->data.data_b[i];
-        }
-        HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData0, &TxMailbox);
+    for (int i = 0; i < 8; i++) {
+        TxData0[i] = package->data.data_b[i];
+    }
+    HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData0, &TxMailbox);
+    if (hcan.ErrorCode == HAL_CAN_ERROR_PARAM ) {
+    	MX_CAN1_Init();
+        //HAL_CAN_AbortTxRequest(&hcan, CAN_TX_MAILBOX0 | CAN_TX_MAILBOX1 | CAN_TX_MAILBOX2);
+    } else if(hcan.ErrorCode != 0) {
+        resetCanErrors();
     }
     return 0;
+}
+
+uint8_t CCanDriver::resetCanErrors() {
+    return HAL_CAN_ResetError(&this->hcan) != HAL_ERROR ? 1 : 0;
 }
 
 uint8_t CCanDriver::hasError(uint32_t errorFlag) {
@@ -367,6 +385,22 @@ namespace CAN_driver_ISR // need a namespace to declare friend functions
         /* USER CODE BEGIN CAN1_RX1_IRQn 1 */
 
         /* USER CODE END CAN1_RX1_IRQn 1 */
+    }
+
+    extern "C" void CAN1_SCE_IRQHandler(void) {
+        /* USER CODE BEGIN CAN1_RX1_IRQn 0 */
+
+        /* USER CODE END CAN1_RX1_IRQn 0 */
+        HAL_CAN_IRQHandler(canDriver.getHandle());
+        /* USER CODE BEGIN CAN1_RX1_IRQn 1 */
+
+        /* USER CODE END CAN1_RX1_IRQn 1 */
+    }
+
+    extern "C" void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
+        if (hcan->ErrorCode != 0) {
+            canDriver.resetCanErrors();
+        }
     }
 
 }

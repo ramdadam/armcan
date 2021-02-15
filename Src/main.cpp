@@ -180,8 +180,8 @@ int main(void) {
     defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
 //    gfxThreadCreate(NULL, 128, LOW_PRIORITY, transmitThread, 0);
-    gfxThreadCreate(NULL, 1024, LOW_PRIORITY + 1, receiveThread, 0);
-    gfxThreadCreate(NULL, 1024, LOW_PRIORITY, sdNotificationThread, 0);
+    gfxThreadCreate(NULL, 1024, 10, receiveThread, 0);
+    gfxThreadCreate(NULL, 1024, 10, sdNotificationThread, 0);
 
     /* USER CODE END RTOS_THREADS */
 

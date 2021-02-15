@@ -11,6 +11,11 @@ public:
     CCanStatusView();
     void createStatusPage(GHandle* parent);
     void refreshView();
+
+    //EVENT_ACTION evalEvent(GEvent *event, EVENT_ACTION currentAction) override;
+
+    //EVENT_ACTION_STATUS performAction(EVENT_ACTION action, GEvent *event) override;
+
 private:
     void drawStatus(uint32_t x, uint32_t y, uint32_t color, GHandle parent);
 
@@ -61,6 +66,8 @@ private:
     GHandle ghTX1ContainerLabel;
     GHandle ghTX1ArbLostErrorLabel;
     GHandle ghTX1TransmitErrorLabel;
+
+    GHandle ghResetButton;
 
     GHandle ghTX2Container;
     GHandle ghTX2ContainerLabel;

@@ -306,6 +306,7 @@ void CCanStatusView::buildTX2Group() {
     ghTX2TransmitErrorLabel = gwinLabelCreate(nullptr, &wi);
     gwinSetFont(ghTX2TransmitErrorLabel, font);
 
+
 }
 
 
@@ -319,6 +320,19 @@ void CCanStatusView::createStatusPage(GHandle *parent) {
     buildTX0Group();
     buildTX1Group();
     buildTX2Group();
+
+
+    font_t font = gdispOpenFont("DejaVuSans20");
+    GWidgetInit wi;
+    gwinWidgetClearInit(&wi);
+    wi.g.show = TRUE;
+    wi.g.width = 90;
+    wi.g.height = 25;
+    wi.g.parent = *parent;
+    wi.g.x = 350;
+    wi.g.y = 215;
+    wi.text = "Reset Errors";
+    ghResetButton = gwinButtonCreate(nullptr, &wi);
 
 
     gwinShow(ghRXFifo0Container);
@@ -364,3 +378,30 @@ void CCanStatusView::refreshView() {
     drawStatus(130, 15, getStatusColorForErrorFlag(HAL_CAN_ERROR_TX_ALST2), ghTX2Container);
     drawStatus(130, 35, getStatusColorForErrorFlag(HAL_CAN_ERROR_TX_TERR2), ghTX2Container);
 }
+//
+//EVENT_ACTION CCanStatusView::evalEvent(GEvent *event, EVENT_ACTION currentAction) {
+//    switch (event->type) {
+//        case GEVENT_GWIN_BUTTON: {
+//            GWindowObject *target = ((GEventGWinButton *) event)->gwin;
+//
+//            if(target == ghResetButton) {
+//                return RESET_CAN_ERRORS;
+//            }
+//            break;
+//        }
+//        default: {
+//            return currentAction != NO_ACTION ? currentAction : NO_ACTION;
+//        }
+//    }
+//    return currentAction != NO_ACTION ? currentAction : NO_ACTION;
+//}
+//
+//EVENT_ACTION_STATUS CCanStatusView::performAction(EVENT_ACTION action, GEvent *event) {
+//
+//    if(action == RESET_CAN_ERRORS) {
+//        canDriver.resetCanErrors();
+//        return EVENT_HANDLED;
+//    }
+//
+//    return EVENT_NOT_HANDLED;
+//}

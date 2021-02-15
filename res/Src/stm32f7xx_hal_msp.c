@@ -120,6 +120,7 @@ void HAL_MspInit(void) {
 * @param hcan: CAN handle pointer
 * @retval None
 */
+#define USE_ARDUINO_PINS
 void HAL_CAN_MspInit(CAN_HandleTypeDef *hcan) {
 
     GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -128,29 +129,64 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef *hcan) {
 
         /* USER CODE END CAN1_MspInit 0 */
         /* Peripheral clock enable */
+#ifdef USE_ARDUINO_PINS
+
+        __HAL_RCC_CAN1_CLK_ENABLE();
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    /**CAN1 GPIO Configuration
+    PA12     ------> CAN1_TX
+    PA11     ------> CAN1_RX
+    */
+        __HAL_RCC_CAN1_CLK_ENABLE();
+
+        __HAL_RCC_GPIOB_CLK_ENABLE();
+    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#else
         __HAL_RCC_CAN1_CLK_ENABLE();
 
         __HAL_RCC_GPIOA_CLK_ENABLE();
         __HAL_RCC_GPIOB_CLK_ENABLE();
+        __HAL_RCC_GPIOD_CLK_ENABLE();
+
+        __HAL_RCC_CAN1_CLK_ENABLE();
+        GPIO_InitTypeDef GPIO_Init;
+
+        //Enable CAN power pin PD5 for 5V on USB FS connector
+        GPIO_Init.Pin = GPIO_PIN_5;
+        GPIO_Init.Mode = GPIO_MODE_AF_PP;
+        GPIO_Init.Pull = GPIO_NOPULL;
+        GPIO_Init.Speed = GPIO_SPEED_HIGH;
+        HAL_GPIO_Init(GPIOD, &GPIO_Init);
+        HAL_GPIO_WritePin(GPIOD, GPIO_PIN_5, GPIO_PIN_SET);
+
         /**CAN1 GPIO Configuration
         PA12     ------> CAN1_TX
         PA11     ------> CAN1_RX
         */
-        GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+        GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_11;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
-        HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-        HAL_NVIC_SetPriority(CAN1_TX_IRQn, 0x0F, 0);
+        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#endif
+        HAL_NVIC_SetPriority(CAN1_TX_IRQn, 0x0D, 0);
         HAL_NVIC_EnableIRQ(CAN1_TX_IRQn);
 
-        HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 0x0F, 0);
+        HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 0x0D, 0);
         HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
 
-        HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0x0F, 0);
+        HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0x0D, 0);
         HAL_NVIC_EnableIRQ(CAN1_RX1_IRQn);
+
+        HAL_NVIC_SetPriority(CAN1_SCE_IRQn, 0x0F, 0);
+        HAL_NVIC_EnableIRQ(CAN1_SCE_IRQn);
 
         /* USER CODE BEGIN CAN1_MspInit 1 */
 
