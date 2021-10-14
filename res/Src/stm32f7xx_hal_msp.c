@@ -129,11 +129,7 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef *hcan) {
 
         /* USER CODE END CAN1_MspInit 0 */
         /* Peripheral clock enable */
-#ifdef USE_ARDUINO_PINS
 
-        __HAL_RCC_CAN1_CLK_ENABLE();
-
-    __HAL_RCC_GPIOA_CLK_ENABLE();
     /**CAN1 GPIO Configuration
     PA12     ------> CAN1_TX
     PA11     ------> CAN1_RX
@@ -147,35 +143,7 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef *hcan) {
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-#else
-        __HAL_RCC_CAN1_CLK_ENABLE();
 
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-        __HAL_RCC_GPIOD_CLK_ENABLE();
-
-        __HAL_RCC_CAN1_CLK_ENABLE();
-        GPIO_InitTypeDef GPIO_Init;
-
-        //Enable CAN power pin PD5 for 5V on USB FS connector
-        GPIO_Init.Pin = GPIO_PIN_5;
-        GPIO_Init.Mode = GPIO_MODE_AF_PP;
-        GPIO_Init.Pull = GPIO_NOPULL;
-        GPIO_Init.Speed = GPIO_SPEED_HIGH;
-        HAL_GPIO_Init(GPIOD, &GPIO_Init);
-        HAL_GPIO_WritePin(GPIOD, GPIO_PIN_5, GPIO_PIN_SET);
-
-        /**CAN1 GPIO Configuration
-        PA12     ------> CAN1_TX
-        PA11     ------> CAN1_RX
-        */
-        GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_11;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_NOPULL;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
-        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-#endif
         HAL_NVIC_SetPriority(CAN1_TX_IRQn, 0x0D, 0);
         HAL_NVIC_EnableIRQ(CAN1_TX_IRQn);
 
@@ -232,40 +200,40 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef *hcan) {
 */
 void HAL_SD_MspInit(SD_HandleTypeDef *hsd) {
 
-
+/*
     static DMA_HandleTypeDef dma_rx_handle;
     static DMA_HandleTypeDef dma_tx_handle;
     GPIO_InitTypeDef gpio_init_structure;
 
-    /* Enable SDIO clock */
+    *//* Enable SDIO clock *//*
     __HAL_RCC_SDMMC1_CLK_ENABLE();
 
-    /* Enable DMA2 clocks */
+    *//* Enable DMA2 clocks *//*
             __DMAx_TxRx_CLK_ENABLE();
 
-    /* Enable GPIOs clock */
+    *//* Enable GPIOs clock *//*
     __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOD_CLK_ENABLE();
 
-    /* Common GPIO configuration */
+    *//* Common GPIO configuration *//*
     gpio_init_structure.Mode = GPIO_MODE_AF_PP;
     gpio_init_structure.Pull = GPIO_PULLUP;
     gpio_init_structure.Speed = GPIO_SPEED_HIGH;
     gpio_init_structure.Alternate = GPIO_AF12_SDMMC1;
 
-    /* GPIOC configuration */
+    *//* GPIOC configuration *//*
     gpio_init_structure.Pin = GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12;
     HAL_GPIO_Init(GPIOC, &gpio_init_structure);
 
-    /* GPIOD configuration */
+    *//* GPIOD configuration *//*
     gpio_init_structure.Pin = GPIO_PIN_2;
     HAL_GPIO_Init(GPIOD, &gpio_init_structure);
 
-    /* NVIC configuration for SDIO interrupts */
+    *//* NVIC configuration for SDIO interrupts *//*
     HAL_NVIC_SetPriority(SDMMC1_IRQn, 0x0E, 0);
     HAL_NVIC_EnableIRQ(SDMMC1_IRQn);
 
-    /* Configure DMA Rx parameters */
+    *//* Configure DMA Rx parameters *//*
     dma_rx_handle.Init.Channel = SD_DMAx_Rx_CHANNEL;
     dma_rx_handle.Init.Direction = DMA_PERIPH_TO_MEMORY;
     dma_rx_handle.Init.PeriphInc = DMA_PINC_DISABLE;
@@ -281,16 +249,16 @@ void HAL_SD_MspInit(SD_HandleTypeDef *hsd) {
 
     dma_rx_handle.Instance = SD_DMAx_Rx_STREAM;
 
-    /* Associate the DMA handle */
+    *//* Associate the DMA handle *//*
     __HAL_LINKDMA(hsd, hdmarx, dma_rx_handle);
 
-    /* Deinitialize the stream for new transfer */
+    *//* Deinitialize the stream for new transfer *//*
     HAL_DMA_DeInit(&dma_rx_handle);
 
-    /* Configure the DMA stream */
+    *//* Configure the DMA stream *//*
     HAL_DMA_Init(&dma_rx_handle);
 
-    /* Configure DMA Tx parameters */
+    *//* Configure DMA Tx parameters *//*
     dma_tx_handle.Init.Channel = SD_DMAx_Tx_CHANNEL;
     dma_tx_handle.Init.Direction = DMA_MEMORY_TO_PERIPH;
     dma_tx_handle.Init.PeriphInc = DMA_PINC_DISABLE;
@@ -306,22 +274,22 @@ void HAL_SD_MspInit(SD_HandleTypeDef *hsd) {
 
     dma_tx_handle.Instance = SD_DMAx_Tx_STREAM;
 
-    /* Associate the DMA handle */
+    *//* Associate the DMA handle *//*
     __HAL_LINKDMA(hsd, hdmatx, dma_tx_handle);
 
-    /* Deinitialize the stream for new transfer */
+    *//* Deinitialize the stream for new transfer *//*
     HAL_DMA_DeInit(&dma_tx_handle);
 
-    /* Configure the DMA stream */
+    *//* Configure the DMA stream *//*
     HAL_DMA_Init(&dma_tx_handle);
 
-    /* NVIC configuration for DMA transfer complete interrupt */
+    *//* NVIC configuration for DMA transfer complete interrupt *//*
     HAL_NVIC_SetPriority(SD_DMAx_Rx_IRQn, 0x0F, 0);
     HAL_NVIC_EnableIRQ(SD_DMAx_Rx_IRQn);
 
-    /* NVIC configuration for DMA transfer complete interrupt */
+    *//* NVIC configuration for DMA transfer complete interrupt *//*
     HAL_NVIC_SetPriority(SD_DMAx_Tx_IRQn, 0x0F, 0);
-    HAL_NVIC_EnableIRQ(SD_DMAx_Tx_IRQn);
+    HAL_NVIC_EnableIRQ(SD_DMAx_Tx_IRQn);*/
 }
 
 /**

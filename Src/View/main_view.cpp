@@ -30,7 +30,7 @@ void CMainView::createTable() {
     txView.createTxCanViewTable(&txTabPage);
     rxView.createRxCanViewTable(&rxTabPage);
     canSettingsView.createSettingsPage(&canSettingsTabPage);
-    sdSettingsView.createSettingsPage(&sdSettingsTabPage);
+    //sdSettingsView.createSettingsPage(&sdSettingsTabPage);
     canStatusView.createStatusPage(&canStatusTabPage);
 }
 
@@ -48,7 +48,7 @@ void CMainView::createTabset() {
     txTabPage = gwinTabsetAddTab(ghTabset, "Transmit", 1);
     rxTabPage = gwinTabsetAddTab(ghTabset, "Receive", 1);
     canSettingsTabPage = gwinTabsetAddTab(ghTabset, "CAN Settings", 1);
-    sdSettingsTabPage = gwinTabsetAddTab(ghTabset, "SD Settings", 1);
+    //sdSettingsTabPage = gwinTabsetAddTab(ghTabset, "SD Settings", 1);
     createTable();
 }
 
@@ -122,26 +122,26 @@ void CMainView::initMainPage(void) {
         volatile EVENT_ACTION action = NO_ACTION;
         action = addMessageView.evalEvent(pe, action);
         action = txView.evalEvent(pe, action);
-        action = editMessageView.evalEvent(pe, action);
         action = canSettingsView.evalEvent(pe, action);
         action = sdSettingsView.evalEvent(pe, action);
         action = rxView.evalEvent(pe, action);
+        action = editMessageView.evalEvent(pe, action);
 
         addMessageView.performAction(action, pe);
-        editMessageView.performAction(action, pe);
         canSettingsView.performAction(action, pe);
         txView.performAction(action, pe);
         rxView.performAction(action, pe);
         sdSettingsView.performAction(action, pe);
+        editMessageView.performAction(action, pe);
         switch (action) {
-            case TAKE_TX_SCREENSHOT: {
-                takeScreenshot(&txView);
-                break;
-            }
-            case TAKE_RX_SCREENSHOT: {
-                takeScreenshot(&rxView);
-                break;
-            }
+//            case TAKE_TX_SCREENSHOT: {
+//                takeScreenshot(&txView);
+//                break;
+//            }
+//            case TAKE_RX_SCREENSHOT: {
+//                takeScreenshot(&rxView);
+//                break;
+//            }
             case CLOSE_ADD_VIEW: {
                 showMainpage();
                 break;

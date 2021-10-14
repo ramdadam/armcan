@@ -31,7 +31,7 @@ CMSIS			= ./res/Drivers/CMSIS
 ##############################################################################################
 # Set these for your project
 #
-ARCH     = /opt/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-
+ARCH     = /opt/gcc-arm-none-eabi-9-2019-q4-major/bin/arm-none-eabi-
 SRCFLAGS = -ggdb -O1
 CFLAGS   = 
 CXXFLAGS = -fno-rtti

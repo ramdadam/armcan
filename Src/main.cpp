@@ -181,7 +181,7 @@ int main(void) {
 
 //    gfxThreadCreate(NULL, 128, LOW_PRIORITY, transmitThread, 0);
     gfxThreadCreate(NULL, 1024, 10, receiveThread, 0);
-    gfxThreadCreate(NULL, 1024, 10, sdNotificationThread, 0);
+//gfxThreadCreate(NULL, 1024, 10, sdNotificationThread, 0);
 
     /* USER CODE END RTOS_THREADS */
 

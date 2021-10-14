@@ -65,7 +65,9 @@ EVENT_ACTION_STATUS CEditMessageView::performAction(EVENT_ACTION action, GEvent 
             hideCyclicTextbox();
             break;
         }
+
     }
+        return EVENT_HANDLED;
 }
 
 void CEditMessageView::editCanMessage(can_gui_package *package, uint8_t useAlloc = FALSE) {

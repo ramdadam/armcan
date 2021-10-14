@@ -343,11 +343,10 @@ void CCanStatusView::createStatusPage(GHandle *parent) {
     gwinShow(ghTX2Container);
     gwinRedraw(*parent);
     refreshView();
-    sdDriver.saveScreenshot();
 }
 
 uint32_t getStatusColorForErrorFlag(uint32_t errorFlag) {
-    return canDriver.hasError(errorFlag) ? Red : SuccessGreen;
+    return canDriver.hasError(errorFlag) ? Red : Green;
 }
 
 void CCanStatusView::drawStatus(uint32_t x, uint32_t y, uint32_t color, GHandle parent) {
