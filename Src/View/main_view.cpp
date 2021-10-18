@@ -62,6 +62,8 @@ void CMainView::hideMainpage() {
 
 void CMainView::addRxCanPackage(can_gui_package* package) {
     rxView.putRxCanPackage(package);
+
+    //canDriver.MX_CAN1_Init(50, false);
 }
 
 void CMainView::triggerRxRedraw() {

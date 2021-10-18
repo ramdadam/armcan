@@ -14,11 +14,11 @@ CCanDriver canDriver;
 void CCanDriver::MX_CAN1_Init(uint16_t prescaler = DEFAULT_CAN_PRESCALER, bool sleepMode = false) {
     disableCAN = true;
     hcan.Instance = CAN1;
-    hcan.Init.Prescaler = 50;
+    hcan.Init.Prescaler = 100;
     hcan.Init.Mode = sleepMode ? CAN_MODE_SILENT : CAN_MODE_NORMAL;
     hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
     hcan.Init.TimeSeg1 = CAN_BS1_8TQ;
-    hcan.Init.TimeSeg2 = CAN_BS2_1TQ;
+    hcan.Init.TimeSeg2 = CAN_BS2_3TQ;
     hcan.Init.TimeTriggeredMode = DISABLE;
     hcan.Init.AutoBusOff = DISABLE;
     hcan.Init.AutoWakeUp = DISABLE;
@@ -112,9 +112,12 @@ void CCanDriver::MX_CAN1_Init(uint16_t prescaler = DEFAULT_CAN_PRESCALER, bool s
 }
 
 can_gui_package *CCanDriver::receiveCANPackage() {
+
+    //canDriver.resetCanErrors();
     if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
         return nullptr;
     }
+
     auto *rxPackage = new can_gui_package();
     rxPackage->id = RxHeader.StdId;
     rxPackage->isRemote = RxHeader.RTR;
@@ -133,6 +136,7 @@ can_gui_package *CCanDriver::receiveCANPackage() {
         _Error_Handler(__FILE__, __LINE__);
         return 0;
     }
+
     return rxPackage;
 }
 
@@ -144,10 +148,10 @@ uint8_t CCanDriver::sendCANPackage(can_gui_package *package) {
     if (disableCAN) {
         return 1;
     }
-    uint8_t mailboxesAreFull = msgPendingTx0 && msgPendingTx1 && msgPendingTx2;
-    if (mailboxesAreFull) {
-        return 0;
-    }
+//    uint8_t mailboxesAreFull = msgPendingTx0 && msgPendingTx1 && msgPendingTx2;
+//    if (mailboxesAreFull) {
+//        return 0;
+//    }
     package->count += 1;
     bumpPackageCounter(package);
 
@@ -398,6 +402,8 @@ namespace CAN_driver_ISR // need a namespace to declare friend functions
     }
 
     extern "C" void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
+        hcan->ErrorCode &= ~(HAL_CAN_ERROR_RX_FOV0);
+        hcan->ErrorCode &= ~(CAN_RF0R_FULL0);
         if (hcan->ErrorCode != 0) {
             canDriver.resetCanErrors();
         }
